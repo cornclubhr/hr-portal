@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Kiosk — Training Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & base ──────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#198754;--yellow:#e6a800;--cyan:#0dcaf0;
+  --red:#dc3545;--orange:#fd7e14;--teal:oklch(0.65 0.13 190);
+  --dark:#1a1a2e;--mid:#6c757d;--light:#f0f2f5;
+  --border:#dee2e6;
+}
+body{font-family:'Noto Sans',sans-serif;color:#222;background:#fff;line-height:1.6}
+.hi,.hi *{font-family:'Noto Sans Devanagari','Noto Sans',sans-serif}
+.np,.np *{font-family:'Noto Sans Devanagari','Noto Sans',sans-serif}
+.bn,.bn *{font-family:'Noto Sans Bengali','Noto Sans',sans-serif}
+
+/* ── Print ─────────────────────────────────────────────────── */
+@media print{
+  .no-print{display:none}
+  .lang-section{page-break-before:always}
+  .page-break{page-break-after:always}
+  body{font-size:11pt}
+  .mock-device{zoom:0.75}
+}
+
+/* ── Cover ─────────────────────────────────────────────────── */
+.cover{
+  background:var(--dark);color:#fff;
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:40px 20px;
+}
+.cover-logo{
+  width:80px;height:80px;border-radius:18px;
+  background:var(--teal);display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;
+  color:var(--dark);margin-bottom:28px;
+}
+.cover h1{font-family:'Space Grotesk',sans-serif;font-size:2.6rem;font-weight:700;margin-bottom:12px}
+.cover h2{font-size:1.3rem;font-weight:400;opacity:0.7;margin-bottom:30px}
+.cover-langs{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-bottom:40px}
+.cover-langs a{
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+  border-radius:8px;padding:6px 18px;font-size:1rem;
+  color:#fff;text-decoration:none;
+  transition:background 0.15s,border-color 0.15s;
+  cursor:pointer;
+}
+.cover-langs a:hover{
+  background:rgba(255,255,255,0.22);border-color:rgba(255,255,255,0.5);
+}
+.cover-company{opacity:0.5;font-size:0.9rem;margin-top:auto}
+
+/* ── Nav bar ───────────────────────────────────────────────── */
+.nav-bar{
+  position:sticky;top:0;z-index:100;
+  background:#fff;border-bottom:2px solid var(--border);
+  display:flex;gap:0;overflow-x:auto;
+  font-family:'Space Grotesk',sans-serif;
+}
+.nav-bar a{
+  padding:14px 22px;color:var(--mid);text-decoration:none;
+  font-weight:600;font-size:0.95rem;white-space:nowrap;
+  border-bottom:3px solid transparent;
+}
+.nav-bar a:hover{color:var(--dark)}
+
+/* ── Section layout ────────────────────────────────────────── */
+.lang-section{max-width:920px;margin:0 auto;padding:48px 24px}
+.section-header{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:36px;padding-bottom:16px;
+  border-bottom:3px solid var(--teal);
+}
+.lang-flag{
+  width:54px;height:54px;border-radius:12px;
+  background:var(--teal);display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;flex-shrink:0;
+}
+.section-header h2{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700}
+.section-header p{color:var(--mid);font-size:0.95rem}
+
+/* ── Rule box ──────────────────────────────────────────────── */
+.rules-box{
+  background:#fff3cd;border:2px solid #ffc107;
+  border-radius:14px;padding:24px 28px;margin-bottom:36px;
+}
+.rules-box h3{color:#856404;font-size:1.1rem;font-weight:700;margin-bottom:14px}
+.rules-box ol{padding-left:22px}
+.rules-box li{margin-bottom:10px;color:#5a4400}
+.rules-box li strong{color:#333}
+
+/* ── Step ──────────────────────────────────────────────────── */
+.step{display:flex;gap:28px;margin-bottom:44px;align-items:flex-start}
+.step-left{flex:1;min-width:0}
+.step-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:32px;border-radius:50%;background:var(--teal);
+  color:var(--dark);font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:1rem;margin-bottom:10px;flex-shrink:0;
+}
+.step-title{font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:10px}
+.step p{margin-bottom:8px;color:#333}
+.step ul,
+.step ol{padding-left:20px;margin-bottom:8px}
+.step li{margin-bottom:6px}
+.step .note{
+  background:#e8f4fd;border-left:4px solid #0d6efd;
+  padding:10px 14px;border-radius:0 8px 8px 0;
+  font-size:0.92rem;color:#0a3d62;margin-top:10px;
+}
+.step .warn{
+  background:#fff3cd;border-left:4px solid #ffc107;
+  padding:10px 14px;border-radius:0 8px 8px 0;
+  font-size:0.92rem;color:#5a4400;margin-top:10px;
+}
+
+/* ── Mock device ───────────────────────────────────────────── */
+.mock-device{
+  width:240px;flex-shrink:0;
+  background:var(--dark);border-radius:24px;
+  padding:12px;box-shadow:0 12px 40px rgba(0,0,0,0.25);
+}
+.mock-screen{
+  background:var(--light);border-radius:16px;
+  padding:16px 12px;min-height:300px;
+  font-family:'Space Grotesk',sans-serif;
+}
+.mock-header{text-align:center;margin-bottom:12px}
+.mock-header .mock-icon{font-size:2rem;color:var(--teal);display:block;margin-bottom:4px}
+.mock-header h4{font-size:0.9rem;font-weight:700;color:var(--dark);margin-bottom:2px}
+.mock-header p{font-size:0.72rem;color:var(--mid)}
+.mock-input{
+  background:#fff;border:1.5px solid var(--border);border-radius:8px;
+  padding:8px 10px;font-size:0.8rem;width:100%;margin-bottom:8px;
+  color:#999;text-align:center;
+}
+.mock-btn{
+  display:block;width:100%;padding:10px;border-radius:10px;
+  font-weight:700;font-size:0.85rem;text-align:center;
+  margin-bottom:8px;cursor:default;border:none;
+}
+.mock-btn-primary{background:var(--teal);color:var(--dark)}
+.mock-btn-green  {background:var(--green);color:#fff}
+.mock-btn-gray   {background:var(--mid);color:#fff}
+.mock-btn-yellow {background:var(--yellow);color:#333}
+.mock-btn-cyan   {background:var(--cyan);color:#333}
+.mock-btn-red    {background:var(--red);color:#fff}
+.mock-btn-orange {background:var(--orange);color:#fff}
+.mock-btn-outline{background:#fff;color:var(--mid);border:1.5px solid var(--border)!important}
+.mock-btn-big{min-height:90px;font-size:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:14px;width:100%}
+.mock-btn-big i{font-size:1.8rem}
+.mock-row{display:flex;gap:8px;margin-bottom:8px}
+.mock-row .mock-btn-big{font-size:0.8rem}
+.mock-done{text-align:center;padding:20px 8px;color:var(--green)}
+.mock-done i{font-size:3rem;display:block;margin-bottom:8px}
+.mock-done span{font-size:0.9rem;font-weight:700}
+.mock-label{font-size:0.68rem;color:var(--mid);margin-bottom:3px}
+.mock-small-btn{
+  background:rgba(0,0,0,0.06);border:none;border-radius:8px;
+  padding:8px;font-size:0.75rem;width:100%;text-align:center;
+  color:var(--mid);font-weight:600;margin-bottom:8px;
+}
+
+/* ── Summary table ──────────────────────────────────────────── */
+.summary-table{width:100%;border-collapse:collapse;margin-bottom:36px;font-size:0.9rem}
+.summary-table th{background:var(--dark);color:#fff;padding:10px 14px;text-align:left}
+.summary-table td{padding:10px 14px;border-bottom:1px solid var(--border)}
+.summary-table tr:nth-child(even) td{background:#f8f9fa}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.8rem;font-weight:600}
+.badge-green{background:#d1e7dd;color:#0a5233}
+.badge-yellow{background:#fff3cd;color:#664d03}
+.badge-red{background:#f8d7da;color:#58151c}
+
+/* ── Divider ─────────────────────────────────────────────────── */
+.lang-divider{border:none;border-top:3px solid var(--light);margin:0}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media(max-width:680px){
+  .step{flex-direction:column}
+  .mock-device{width:100%;max-width:280px;margin:0 auto}
+  .cover h1{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     COVER
+════════════════════════════════════════════════════════════ -->
+<div class="cover page-break">
+  <div class="cover-logo">M</div>
+  <h1>HR Kiosk</h1>
+  <h2>Staff Training Guide · कर्मचारी प्रशिक्षण मार्गदर्शिका</h2>
+  <div class="cover-langs">
+    <a href="#en">🇬🇧 English</a>
+    <a href="#hi">🇮🇳 हिन्दी</a>
+    <a href="#np">🇳🇵 नेपाली</a>
+    <a href="#bn">🇧🇩 বাংলা</a>
+  </div>
+  <p style="opacity:0.6;max-width:480px;font-size:0.95rem">
+    This guide explains how to use the attendance kiosk tablet at your branch.
+    Read your language section carefully before using the kiosk for the first time.
+  </p>
+  <div class="cover-company" style="margin-top:60px">Your Company — HR Department</div>
+</div>
+
+<!-- Nav -->
+<nav class="nav-bar no-print">
+  <a href="#en">🇬🇧 English</a>
+  <a href="#hi">🇮🇳 हिन्दी</a>
+  <a href="#np">🇳🇵 नेपाली</a>
+  <a href="#bn">🇧🇩 বাংলা</a>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     ENGLISH
+════════════════════════════════════════════════════════════ -->
+<section id="en" class="lang-section">
+  <div class="section-header">
+    <div class="lang-flag">🇬🇧</div>
+    <div>
+      <h2>English</h2>
+      <p>Complete guide to using the HR Kiosk</p>
+    </div>
+  </div>
+
+  <!-- Rules -->
+  <div class="rules-box">
+    <h3>⚠️ Important Rules — Read First</h3>
+    <ol>
+      <li><strong>Always punch from your branch.</strong> Check In, Break Out, Break In and Check Out must be done on the kiosk tablet at your workplace. The system records your GPS location every time you punch.</li>
+      <li><strong>Day Off is the only exception.</strong> You can record a Day Off from anywhere — the system does not require you to be at the branch.</li>
+      <li><strong>Submit OT only after Check Out.</strong> You must complete your Check Out for the day before submitting Overtime. Submitting OT while still on shift will not reflect the correct hours.</li>
+      <li><strong>OT is not automatic.</strong> Your submitted OT goes to HR for review. It will only be paid after HR approves it. Do not expect payment without approval.</li>
+      <li><strong>Do not share your PIN.</strong> Your PIN is personal. Never give it to anyone else.</li>
+    </ol>
+  </div>
+
+  <!-- Step 1: Login -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">Login</div>
+      <p>Go to the kiosk tablet at your branch. The login screen will be showing.</p>
+      <ol>
+        <li>Tap the <strong>Employee ID</strong> field and type your ID (e.g. <code>HR-EMP-00001</code>).</li>
+        <li>Tap the <strong>PIN</strong> field and type your 4-digit PIN.</li>
+        <li>Tap <strong>Clock In / Out</strong>.</li>
+        <li>If your ID or PIN is wrong, you will see an error message. Try again carefully.</li>
+      </ol>
+      <div class="note">💡 Your Employee ID and PIN were given to you by HR. Contact HR if you have forgotten them.</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-header">
+          <span class="mock-icon">🏢</span>
+          <h4>HR Kiosk</h4>
+          <p>Enter your ID and PIN</p>
+        </div>
+        <div class="mock-label">Employee ID</div>
+        <div class="mock-input">HR-EMP-00001</div>
+        <div class="mock-label">PIN</div>
+        <div class="mock-input">••••</div>
+        <button class="mock-btn mock-btn-primary">⏩ Clock In / Out</button>
+        <p style="text-align:center;font-size:0.65rem;color:#999;margin-top:8px">For authorized staff use only</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Day Off Question -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">After Login — Day Off or Check In?</div>
+      <p>If you have <strong>no punches yet today</strong>, the kiosk will ask:</p>
+      <p style="font-size:1.1rem;font-weight:700;margin:10px 0">"Is today your Day Off?"</p>
+      <ul>
+        <li><strong>If it IS your day off:</strong> Tap <strong style="color:var(--mid)">Yes — Day Off</strong>. The kiosk records your day off and shows a confirmation. You are done — you can leave.</li>
+        <li><strong>If it is NOT your day off (you came to work):</strong> Tap <strong style="color:var(--green)">No — Check In</strong>. The Check In button will appear. Proceed to Step 3.</li>
+      </ul>
+      <div class="note">📍 You can record a Day Off from any location. You do not need to be at the branch for this step only.</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-header">
+          <h4 style="font-size:1rem;margin-bottom:14px">Is today your<br>Day Off?</h4>
+        </div>
+        <div class="mock-row">
+          <button class="mock-btn-big mock-btn-gray" style="flex:1">🌙<br><span style="font-size:0.7rem">Yes — Day Off</span></button>
+          <button class="mock-btn-big mock-btn-green" style="flex:1">▶<br><span style="font-size:0.7rem">No — Check In</span></button>
+        </div>
+        <button class="mock-small-btn">📅 Log a previous Day Off ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Check In -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+      <div class="step-title">Check In — Start of Shift</div>
+      <p>After tapping "No — Check In", a large green button appears.</p>
+      <ol>
+        <li>Make sure you are physically <strong>at your branch</strong>.</li>
+        <li>Tap the large <strong style="color:var(--green)">Check In</strong> button.</li>
+        <li>The kiosk will detect your location. Wait 1–2 seconds.</li>
+        <li>A confirmation message appears. Your shift has started.</li>
+      </ol>
+      <div class="warn">⚠️ Do NOT check in from outside the branch. The system records your GPS and HR can see if you were not at the branch when you punched.</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-green" style="width:100%;min-height:130px;margin-bottom:12px">
+          ▶<br>Check In
+        </button>
+        <button class="mock-btn mock-btn-orange">⏱ Submit Overtime</button>
+        <button class="mock-btn mock-btn-outline" style="margin-top:4px">↩ Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: Break Out -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+      <div class="step-title">Break Out — Starting a Break</div>
+      <p>After you check in, the screen shows two options:</p>
+      <ul>
+        <li><strong style="color:var(--yellow)">Break Out</strong> — tap this when you are starting a break (meal break, prayer, etc.).</li>
+        <li><strong style="color:var(--red)">Check Out (no break)</strong> — if your shift is very short and you did not take any break, you can go directly to Check Out without a break. This is the secondary smaller button.</li>
+      </ul>
+      <ol>
+        <li>When your break starts, tap <strong>Break Out</strong> at the branch kiosk.</li>
+        <li>You may leave the branch for your break after punching.</li>
+      </ol>
+      <div class="note">💡 You can take <strong>multiple breaks</strong> in one shift. Each Break Out must be followed by a Break In.</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-yellow" style="width:100%;min-height:110px;margin-bottom:8px">
+          ⏸<br>Break Out
+        </button>
+        <button class="mock-btn mock-btn-outline" style="font-size:0.8rem">⏹ Check Out (no break)</button>
+        <button class="mock-btn mock-btn-orange" style="margin-top:6px">⏱ Submit Overtime</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 5: Break In -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">5</div>
+      <div class="step-title">Break In — Returning from Break</div>
+      <p>When your break is over and you return to the branch:</p>
+      <ol>
+        <li>Go to the kiosk tablet at your branch.</li>
+        <li>Login with your ID and PIN.</li>
+        <li>Tap the large <strong style="color:var(--cyan)">Break In</strong> button.</li>
+        <li>Your break is recorded. You are back on shift.</li>
+      </ol>
+      <div class="warn">⚠️ You must tap Break In from the branch, not from outside.</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-cyan" style="width:100%;min-height:130px;margin-bottom:12px">
+          ▶<br>Break In
+        </button>
+        <button class="mock-btn mock-btn-orange">⏱ Submit Overtime</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 6: After Break - Another or Check Out -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">6</div>
+      <div class="step-title">After Break In — Another Break or Check Out</div>
+      <p>After returning from a break, the screen shows two equal buttons:</p>
+      <ul>
+        <li><strong style="color:var(--yellow)">Break Out</strong> — tap this to start another break.</li>
+        <li><strong style="color:var(--red)">Check Out</strong> — tap this when your shift is fully finished for the day.</li>
+      </ul>
+      <p>You can take as many breaks as needed. Each time, tap Break Out when leaving and Break In when returning.</p>
+      <div class="note">💡 Always end your shift with <strong>Check Out</strong>. An open shift (Check In with no Check Out) cannot be processed for pay.</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-row" style="margin-bottom:12px">
+          <button class="mock-btn-big mock-btn-yellow" style="flex:1;min-height:120px">⏸<br><span style="font-size:0.75rem">Break Out</span></button>
+          <button class="mock-btn-big mock-btn-red"    style="flex:1;min-height:120px">⏹<br><span style="font-size:0.75rem">Check Out</span></button>
+        </div>
+        <button class="mock-btn mock-btn-orange">⏱ Submit Overtime</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 7: Check Out -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">7</div>
+      <div class="step-title">Check Out — End of Shift</div>
+      <p>When your shift is fully finished:</p>
+      <ol>
+        <li>Go to the kiosk at your branch.</li>
+        <li>Login and tap <strong style="color:var(--red)">Check Out</strong>.</li>
+        <li>The kiosk shows "All done for today" with a green tick.</li>
+        <li>Your attendance for the day is now complete.</li>
+      </ol>
+      <div class="warn">⚠️ Check Out from the branch. Do not check out remotely.</div>
+      <div class="note">✅ After Check Out, if you worked overtime, you may now submit your OT (see Step 8).</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-done">
+          <i>✅</i>
+          <span>All done for today!</span>
+          <p style="font-size:0.7rem;color:var(--mid);margin-top:6px">Have a great rest of your day!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 8: OT -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">8</div>
+      <div class="step-title">Submit Overtime (OT)</div>
+      <p><strong>You must complete Check Out before submitting OT.</strong></p>
+      <ol>
+        <li>After Check Out, login again if needed.</li>
+        <li>Tap the orange <strong style="color:var(--orange)">Submit Overtime</strong> button.</li>
+        <li>Select the <strong>date</strong> (usually today).</li>
+        <li>Enter the number of <strong>OT hours</strong> (e.g. 2, 2.5, 3).</li>
+        <li>Tap <strong>Submit</strong>.</li>
+        <li>A confirmation says "Submitted — pending HR review."</li>
+      </ol>
+      <div class="warn">⚠️ <strong>Do NOT submit OT before Check Out.</strong> The system will show "incomplete punch" and HR cannot verify your hours.</div>
+      <div class="note">⏳ OT is reviewed by HR. You will only be paid after approval. There is no payment for unapproved OT.</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen" style="background:#1a1a2e">
+        <div style="background:#fff;border-radius:12px;padding:16px">
+          <p style="font-size:0.9rem;font-weight:700;margin-bottom:12px">⏱ Submit Overtime</p>
+          <div class="mock-label">Date</div>
+          <div class="mock-input" style="margin-bottom:10px">06-09-2026</div>
+          <div class="mock-label">OT Hours (e.g. 2.5)</div>
+          <div class="mock-input" style="margin-bottom:10px">2</div>
+          <div style="display:flex;gap:8px">
+            <button class="mock-btn mock-btn-outline" style="flex:1">Cancel</button>
+            <button class="mock-btn mock-btn-yellow" style="flex:1">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 9: Backdated Day Off -->
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">9</div>
+      <div class="step-title">Log a Previous Day Off (Backdated)</div>
+      <p>If you forgot to record a Day Off on a past day, you can submit it up to <strong>7 days back</strong>.</p>
+      <ol>
+        <li>Login at any kiosk (you do not need to be at the branch for Day Off).</li>
+        <li>The Day Off screen appears. Tap <strong>"Log a previous Day Off ↓"</strong>.</li>
+        <li>A date picker appears. Select the date of your day off.</li>
+        <li>Tap <strong>Submit Day Off</strong>.</li>
+        <li>A confirmation appears. HR will see this in the system.</li>
+      </ol>
+      <div class="warn">⚠️ You cannot submit a backdated Day Off for today or a future date — only past dates.</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div style="text-align:center;margin-bottom:14px">
+          <h4 style="font-size:0.95rem;font-weight:700">Is today your Day Off?</h4>
+        </div>
+        <div class="mock-row" style="margin-bottom:10px">
+          <button class="mock-btn-big mock-btn-gray"  style="flex:1">🌙<br><span style="font-size:0.65rem">Yes</span></button>
+          <button class="mock-btn-big mock-btn-green" style="flex:1">▶<br><span style="font-size:0.65rem">No</span></button>
+        </div>
+        <button class="mock-small-btn">📅 Log a previous Day Off ↑</button>
+        <div style="border-top:1px solid #dee2e6;padding-top:10px;margin-top:2px">
+          <div class="mock-label">Which day?</div>
+          <div class="mock-input" style="margin-bottom:8px">05-09-2026</div>
+          <button class="mock-btn mock-btn-gray">✓ Submit Day Off</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Reference Table -->
+  <h3 style="font-family:'Space Grotesk',sans-serif;margin-bottom:16px">Quick Reference — What to press and when</h3>
+  <table class="summary-table">
+    <thead><tr><th>Situation</th><th>Button to press</th><th>Must be at branch?</th></tr></thead>
+    <tbody>
+      <tr><td>Starting work today</td><td><span class="badge badge-green">Check In</span></td><td>✅ Yes</td></tr>
+      <tr><td>Going on break</td><td><span class="badge badge-yellow">Break Out</span></td><td>✅ Yes</td></tr>
+      <tr><td>Returning from break</td><td><span class="badge" style="background:#d1ecf1;color:#0c5460">Break In</span></td><td>✅ Yes</td></tr>
+      <tr><td>Ending shift</td><td><span class="badge badge-red">Check Out</span></td><td>✅ Yes</td></tr>
+      <tr><td>Recording day off</td><td><span class="badge" style="background:#e2e3e5;color:#383d41">Day Off</span></td><td>❌ No</td></tr>
+      <tr><td>Submitting overtime</td><td><span class="badge" style="background:#ffe5d0;color:#6a2500">Submit OT</span></td><td>✅ Yes (after Check Out)</td></tr>
+    </tbody>
+  </table>
+</section>
+<hr class="lang-divider">
+
+<!-- ══════════════════════════════════════════════════════════
+     HINDI
+════════════════════════════════════════════════════════════ -->
+<section id="hi" class="lang-section hi lang-section">
+  <div class="section-header">
+    <div class="lang-flag">🇮🇳</div>
+    <div>
+      <h2>हिन्दी</h2>
+      <p>HR Kiosk के उपयोग की पूरी जानकारी</p>
+    </div>
+  </div>
+
+  <div class="rules-box">
+    <h3>⚠️ महत्वपूर्ण नियम — पहले पढ़ें</h3>
+    <ol>
+      <li><strong>हमेशा अपनी शाखा से पंच करें।</strong> Check In, Break Out, Break In और Check Out — ये सभी आपकी कार्यस्थल पर रखी कियोस्क टेबलेट से ही करने होंगे। सिस्टम हर बार आपकी GPS लोकेशन रिकॉर्ड करता है।</li>
+      <li><strong>Day Off एकमात्र अपवाद है।</strong> Day Off आप कहीं से भी रिकॉर्ड कर सकते हैं — इसके लिए शाखा पर होना जरूरी नहीं।</li>
+      <li><strong>OT केवल Check Out के बाद सबमिट करें।</strong> OT सबमिट करने से पहले उस दिन का Check Out जरूरी है। अगर शिफ्ट अभी चल रही हो तो OT सबमिट न करें।</li>
+      <li><strong>OT स्वचालित नहीं होती।</strong> आपकी सबमिट की गई OT HR द्वारा समीक्षा के बाद ही भुगतान की जाएगी। बिना अनुमोदन के भुगतान नहीं होगा।</li>
+      <li><strong>अपना PIN किसी को न दें।</strong> आपका PIN व्यक्तिगत है।</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">लॉगिन (Login)</div>
+      <p>अपनी शाखा की कियोस्क टेबलेट पर जाएं।</p>
+      <ol>
+        <li><strong>Employee ID</strong> बॉक्स में अपनी ID टाइप करें (जैसे <code>HR-EMP-00001</code>)।</li>
+        <li><strong>PIN</strong> बॉक्स में अपना 4 अंकों का PIN टाइप करें।</li>
+        <li><strong>Clock In / Out</strong> बटन दबाएं।</li>
+        <li>अगर ID या PIN गलत हो तो त्रुटि संदेश आएगा — ध्यान से दोबारा कोशिश करें।</li>
+      </ol>
+      <div class="note">💡 Employee ID और PIN HR ने आपको दिए हैं। भूल जाने पर HR से संपर्क करें।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-header">
+          <span class="mock-icon">🏢</span>
+          <h4>HR Kiosk</h4>
+          <p>ID और PIN दर्ज करें</p>
+        </div>
+        <div class="mock-label">Employee ID</div>
+        <div class="mock-input">HR-EMP-00001</div>
+        <div class="mock-label">PIN</div>
+        <div class="mock-input">••••</div>
+        <button class="mock-btn mock-btn-primary">⏩ Clock In / Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">लॉगिन के बाद — Day Off या Check In?</div>
+      <p>अगर आज का कोई पंच नहीं है तो स्क्रीन पर पूछा जाएगा:</p>
+      <p style="font-size:1.1rem;font-weight:700;margin:10px 0">"क्या आज आपकी छुट्टी है?"</p>
+      <ul>
+        <li><strong>अगर आज छुट्टी है:</strong> <strong style="color:var(--mid)">हाँ — Day Off</strong> बटन दबाएं। सिस्टम छुट्टी दर्ज कर देगा।</li>
+        <li><strong>अगर आज काम पर आए हैं:</strong> <strong style="color:var(--green)">नहीं — Check In</strong> बटन दबाएं। Check In बटन दिखेगा।</li>
+      </ul>
+      <div class="note">📍 Day Off कहीं से भी रिकॉर्ड किया जा सकता है — शाखा पर होना जरूरी नहीं।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div style="text-align:center;margin-bottom:14px">
+          <h4 style="font-size:0.9rem;font-weight:700">क्या आज आपकी छुट्टी है?</h4>
+        </div>
+        <div class="mock-row">
+          <button class="mock-btn-big mock-btn-gray" style="flex:1">🌙<br><span style="font-size:0.65rem">हाँ — छुट्टी</span></button>
+          <button class="mock-btn-big mock-btn-green" style="flex:1">▶<br><span style="font-size:0.65rem">नहीं — काम</span></button>
+        </div>
+        <button class="mock-small-btn">📅 पुरानी छुट्टी दर्ज करें ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+      <div class="step-title">Check In — शिफ्ट शुरू करना</div>
+      <p>"नहीं — Check In" दबाने के बाद बड़ा हरा बटन दिखेगा।</p>
+      <ol>
+        <li>सुनिश्चित करें कि आप <strong>अपनी शाखा पर हैं</strong>।</li>
+        <li>बड़ा <strong style="color:var(--green)">Check In</strong> बटन दबाएं।</li>
+        <li>कियोस्क आपकी लोकेशन जांचेगी। 1-2 सेकंड प्रतीक्षा करें।</li>
+        <li>पुष्टि संदेश दिखेगा — आपकी शिफ्ट शुरू हो गई।</li>
+      </ol>
+      <div class="warn">⚠️ शाखा के बाहर से Check In न करें। GPS रिकॉर्ड होता है।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-green" style="width:100%;min-height:130px;margin-bottom:10px">▶<br>Check In<br><span style="font-size:0.7rem">(काम शुरू)</span></button>
+        <button class="mock-btn mock-btn-orange">⏱ OT सबमिट करें</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+      <div class="step-title">Break Out — ब्रेक शुरू करना</div>
+      <p>Check In के बाद दो विकल्प दिखते हैं:</p>
+      <ul>
+        <li><strong style="color:var(--yellow)">Break Out</strong> — जब ब्रेक पर जाएं तो यह दबाएं।</li>
+        <li><strong>Check Out (बिना ब्रेक)</strong> — छोटा बटन, अगर सीधे शिफ्ट खत्म करनी हो।</li>
+      </ul>
+      <p>ब्रेक पर जाने से पहले कियोस्क पर <strong>Break Out</strong> जरूर दबाएं।</p>
+      <div class="note">💡 एक शिफ्ट में <strong>कई बार ब्रेक</strong> लिया जा सकता है।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-yellow" style="width:100%;min-height:110px;margin-bottom:8px">⏸<br>Break Out<br><span style="font-size:0.7rem">(ब्रेक शुरू)</span></button>
+        <button class="mock-btn mock-btn-outline" style="font-size:0.8rem">⏹ Check Out (बिना ब्रेक)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">5</div>
+      <div class="step-title">Break In — ब्रेक से वापसी</div>
+      <p>ब्रेक खत्म होने पर शाखा पर वापस आने के बाद:</p>
+      <ol>
+        <li>कियोस्क टेबलेट पर जाएं।</li>
+        <li>ID और PIN से लॉगिन करें।</li>
+        <li>बड़ा <strong style="color:var(--cyan)">Break In</strong> बटन दबाएं।</li>
+      </ol>
+      <div class="warn">⚠️ Break In भी शाखा से ही दबाएं।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-cyan" style="width:100%;min-height:130px;margin-bottom:10px">▶<br>Break In<br><span style="font-size:0.7rem">(ब्रेक खत्म)</span></button>
+        <button class="mock-btn mock-btn-orange">⏱ OT सबमिट करें</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">6</div>
+      <div class="step-title">Break In के बाद — और ब्रेक या Check Out</div>
+      <p>Break In के बाद दो बराबर बटन दिखते हैं:</p>
+      <ul>
+        <li><strong style="color:var(--yellow)">Break Out</strong> — दूसरा ब्रेक लेने के लिए।</li>
+        <li><strong style="color:var(--red)">Check Out</strong> — शिफ्ट पूरी तरह खत्म करने के लिए।</li>
+      </ul>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-row">
+          <button class="mock-btn-big mock-btn-yellow" style="flex:1;min-height:120px">⏸<br><span style="font-size:0.7rem">Break Out</span></button>
+          <button class="mock-btn-big mock-btn-red"    style="flex:1;min-height:120px">⏹<br><span style="font-size:0.7rem">Check Out</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">7</div>
+      <div class="step-title">Check Out — शिफ्ट खत्म करना</div>
+      <ol>
+        <li>शाखा की कियोस्क पर जाएं।</li>
+        <li>लॉगिन करके <strong style="color:var(--red)">Check Out</strong> दबाएं।</li>
+        <li>"आज का काम पूरा हुआ" — हरे टिक के साथ पुष्टि आएगी।</li>
+      </ol>
+      <div class="note">✅ Check Out के बाद ही OT सबमिट करें (Step 8)।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-done">
+          <i>✅</i>
+          <span>आज का काम पूरा हुआ!</span>
+          <p style="font-size:0.7rem;color:var(--mid);margin-top:6px">बाकी दिन अच्छा गुजरे!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">8</div>
+      <div class="step-title">ओवरटाइम (OT) सबमिट करना</div>
+      <p><strong>Check Out के बाद ही OT सबमिट करें।</strong></p>
+      <ol>
+        <li>Check Out के बाद लॉगिन करें।</li>
+        <li>नारंगी <strong style="color:var(--orange)">OT सबमिट करें</strong> बटन दबाएं।</li>
+        <li><strong>तारीख</strong> चुनें (आमतौर पर आज की)।</li>
+        <li><strong>OT के घंटे</strong> दर्ज करें (जैसे 2, 2.5)।</li>
+        <li><strong>Submit</strong> दबाएं।</li>
+      </ol>
+      <div class="warn">⚠️ Check Out से पहले OT सबमिट न करें — यह मान्य नहीं होगी।</div>
+      <div class="note">⏳ OT का भुगतान HR अनुमोदन के बाद होगा।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen" style="background:#1a1a2e">
+        <div style="background:#fff;border-radius:12px;padding:16px">
+          <p style="font-size:0.85rem;font-weight:700;margin-bottom:10px">⏱ OT सबमिट करें</p>
+          <div class="mock-label">तारीख</div>
+          <div class="mock-input" style="margin-bottom:8px">06-09-2026</div>
+          <div class="mock-label">OT घंटे</div>
+          <div class="mock-input" style="margin-bottom:8px">2</div>
+          <button class="mock-btn mock-btn-yellow">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">9</div>
+      <div class="step-title">पुरानी छुट्टी दर्ज करना (Backdated Day Off)</div>
+      <p>अगर किसी पिछले दिन की छुट्टी दर्ज नहीं हुई, तो <strong>7 दिन पहले तक</strong> की छुट्टी दर्ज की जा सकती है।</p>
+      <ol>
+        <li>किसी भी कियोस्क पर लॉगिन करें।</li>
+        <li><strong>"पुरानी छुट्टी दर्ज करें ↓"</strong> दबाएं।</li>
+        <li>तारीख चुनें।</li>
+        <li><strong>Submit Day Off</strong> दबाएं।</li>
+      </ol>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div style="text-align:center;margin-bottom:10px">
+          <h4 style="font-size:0.85rem">क्या आज छुट्टी है?</h4>
+        </div>
+        <div class="mock-row" style="margin-bottom:8px">
+          <button class="mock-btn-big mock-btn-gray"  style="flex:1">🌙<br><span style="font-size:0.6rem">हाँ</span></button>
+          <button class="mock-btn-big mock-btn-green" style="flex:1">▶<br><span style="font-size:0.6rem">नहीं</span></button>
+        </div>
+        <button class="mock-small-btn">📅 पुरानी छुट्टी ↑</button>
+        <div style="border-top:1px solid #dee2e6;padding-top:8px">
+          <div class="mock-input" style="margin-bottom:6px">05-09-2026</div>
+          <button class="mock-btn mock-btn-gray">✓ दर्ज करें</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="lang-divider">
+
+<!-- ══════════════════════════════════════════════════════════
+     NEPALI
+════════════════════════════════════════════════════════════ -->
+<section id="np" class="lang-section np">
+  <div class="section-header">
+    <div class="lang-flag">🇳🇵</div>
+    <div>
+      <h2>नेपाली</h2>
+      <p>HR Kiosk प्रयोग गर्ने पूर्ण निर्देशिका</p>
+    </div>
+  </div>
+
+  <div class="rules-box">
+    <h3>⚠️ महत्त्वपूर्ण नियमहरू — पहिले पढ्नुहोस्</h3>
+    <ol>
+      <li><strong>सधैं आफ्नो शाखाबाट पंच गर्नुहोस्।</strong> Check In, Break Out, Break In र Check Out — यी सबै तपाईंको कार्यस्थलमा रहेको कियोस्क ट्याबलेटबाट गर्नुपर्छ। सिस्टमले हरेक पटक GPS रेकर्ड गर्छ।</li>
+      <li><strong>Day Off मात्र अपवाद हो।</strong> Day Off जहाँबाट पनि रेकर्ड गर्न सकिन्छ — शाखामा हुनु आवश्यक छैन।</li>
+      <li><strong>OT Check Out पछि मात्र सबमिट गर्नुहोस्।</strong> सिफ्ट सकिएर Check Out गरेपछि मात्र OT सबमिट गर्नुहोस्।</li>
+      <li><strong>OT स्वचालित हुँदैन।</strong> HR ले समीक्षा गरेपछि मात्र OT भुक्तानी हुन्छ।</li>
+      <li><strong>आफ्नो PIN कसैलाई नदिनुहोस्।</strong></li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">लगइन (Login)</div>
+      <p>आफ्नो शाखाको कियोस्क ट्याबलेटमा जानुहोस्।</p>
+      <ol>
+        <li><strong>Employee ID</strong> बक्समा आफ्नो ID टाइप गर्नुहोस् (जस्तै <code>HR-EMP-00001</code>)।</li>
+        <li><strong>PIN</strong> बक्समा ४ अंकको PIN टाइप गर्नुहोस्।</li>
+        <li><strong>Clock In / Out</strong> बटन थिच्नुहोस्।</li>
+      </ol>
+      <div class="note">💡 Employee ID र PIN HR ले दिएको हो। बिर्सिएमा HR सम्पर्क गर्नुहोस्।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-header">
+          <span class="mock-icon">🏢</span>
+          <h4>HR Kiosk</h4>
+          <p>ID र PIN हाल्नुहोस्</p>
+        </div>
+        <div class="mock-label">Employee ID</div>
+        <div class="mock-input">HR-EMP-00001</div>
+        <div class="mock-label">PIN</div>
+        <div class="mock-input">••••</div>
+        <button class="mock-btn mock-btn-primary">⏩ Clock In / Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">लगइनपछि — बिदा हो कि काम?</div>
+      <p>आज कुनै पंच नभएमा स्क्रिनमा देखिन्छ:</p>
+      <p style="font-size:1.1rem;font-weight:700;margin:10px 0">"के आज तपाईंको बिदा हो?"</p>
+      <ul>
+        <li><strong>बिदा भए:</strong> <strong style="color:var(--mid)">हो — बिदा</strong> थिच्नुहोस्। बिदा रेकर्ड हुन्छ।</li>
+        <li><strong>काम गर्न आउनुभएको भए:</strong> <strong style="color:var(--green)">होइन — Check In</strong> थिच्नुहोस्।</li>
+      </ul>
+      <div class="note">📍 बिदा जहाँबाट पनि रेकर्ड गर्न सकिन्छ।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div style="text-align:center;margin-bottom:14px">
+          <h4 style="font-size:0.9rem;font-weight:700">के आज तपाईंको बिदा हो?</h4>
+        </div>
+        <div class="mock-row">
+          <button class="mock-btn-big mock-btn-gray" style="flex:1">🌙<br><span style="font-size:0.65rem">हो — बिदा</span></button>
+          <button class="mock-btn-big mock-btn-green" style="flex:1">▶<br><span style="font-size:0.65rem">होइन — काम</span></button>
+        </div>
+        <button class="mock-small-btn">📅 पुरानो बिदा दर्ता गर्नुहोस् ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+      <div class="step-title">Check In — सिफ्ट सुरु गर्नुहोस्</div>
+      <ol>
+        <li>सुनिश्चित गर्नुहोस् कि तपाईं <strong>आफ्नो शाखामा हुनुहुन्छ</strong>।</li>
+        <li>ठूलो <strong style="color:var(--green)">Check In</strong> बटन थिच्नुहोस्।</li>
+        <li>पुष्टि सन्देश आउनेछ — सिफ्ट सुरु भयो।</li>
+      </ol>
+      <div class="warn">⚠️ शाखाबाहिरबाट Check In नगर्नुहोस्। GPS रेकर्ड हुन्छ।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-green" style="width:100%;min-height:130px;margin-bottom:10px">▶<br>Check In<br><span style="font-size:0.7rem">(काम सुरु)</span></button>
+        <button class="mock-btn mock-btn-orange">⏱ OT पेश गर्नुहोस्</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+      <div class="step-title">Break Out — विश्राम सुरु गर्नुहोस्</div>
+      <p>Check In पछि दुई विकल्प देखिन्छन्:</p>
+      <ul>
+        <li><strong style="color:var(--yellow)">Break Out</strong> — ब्रेकमा जाँदा थिच्नुहोस्।</li>
+        <li><strong>Check Out (बिना ब्रेक)</strong> — ब्रेक नलिइ सिफ्ट सक्नु भए।</li>
+      </ul>
+      <div class="note">💡 एउटै सिफ्टमा <strong>धेरै पटक ब्रेक</strong> लिन सकिन्छ।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-yellow" style="width:100%;min-height:110px;margin-bottom:8px">⏸<br>Break Out<br><span style="font-size:0.7rem">(विश्राम सुरु)</span></button>
+        <button class="mock-btn mock-btn-outline" style="font-size:0.8rem">⏹ Check Out (बिना ब्रेक)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">5</div>
+      <div class="step-title">Break In — विश्राम सकियो</div>
+      <p>विश्राम सकिएर शाखामा फर्केपछि:</p>
+      <ol>
+        <li>कियोस्ट ट्याबलेटमा जानुहोस्।</li>
+        <li>लगइन गरेर ठूलो <strong style="color:var(--cyan)">Break In</strong> बटन थिच्नुहोस्।</li>
+      </ol>
+      <div class="warn">⚠️ Break In पनि शाखाबाटै गर्नुहोस्।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-cyan" style="width:100%;min-height:130px;margin-bottom:10px">▶<br>Break In<br><span style="font-size:0.7rem">(विश्राम सकियो)</span></button>
+        <button class="mock-btn mock-btn-orange">⏱ OT पेश गर्नुहोस्</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">6</div>
+      <div class="step-title">Break In पछि — अर्को ब्रेक वा Check Out</div>
+      <p>Break In पछि दुई बराबर बटन देखिन्छन्:</p>
+      <ul>
+        <li><strong style="color:var(--yellow)">Break Out</strong> — अर्को ब्रेकको लागि।</li>
+        <li><strong style="color:var(--red)">Check Out</strong> — सिफ्ट पूर्ण रूपमा सक्नको लागि।</li>
+      </ul>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-row">
+          <button class="mock-btn-big mock-btn-yellow" style="flex:1;min-height:120px">⏸<br><span style="font-size:0.7rem">Break Out</span></button>
+          <button class="mock-btn-big mock-btn-red"    style="flex:1;min-height:120px">⏹<br><span style="font-size:0.7rem">Check Out</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">7</div>
+      <div class="step-title">Check Out — सिफ्ट सक्नुहोस्</div>
+      <ol>
+        <li>शाखाको कियोस्कमा जानुहोस्।</li>
+        <li>लगइन गरेर <strong style="color:var(--red)">Check Out</strong> थिच्नुहोस्।</li>
+        <li>"आजको काम सकियो" — हरियो टिकसहित पुष्टि आउनेछ।</li>
+      </ol>
+      <div class="note">✅ Check Out पछि मात्र OT सबमिट गर्नुहोस्।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-done">
+          <i>✅</i>
+          <span>आजको काम सकियो!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">8</div>
+      <div class="step-title">OT (ओभरटाइम) पेश गर्नुहोस्</div>
+      <p><strong>Check Out गरेपछि मात्र OT पेश गर्नुहोस्।</strong></p>
+      <ol>
+        <li>Check Out पछि लगइन गर्नुहोस्।</li>
+        <li>सुन्तले रंगको <strong style="color:var(--orange)">OT पेश गर्नुहोस्</strong> बटन थिच्नुहोस्।</li>
+        <li><strong>मिति</strong> छान्नुहोस्।</li>
+        <li><strong>OT घण्टा</strong> हाल्नुहोस् (जस्तै 2, 2.5)।</li>
+        <li><strong>Submit</strong> थिच्नुहोस्।</li>
+      </ol>
+      <div class="warn">⚠️ Check Out अघि OT पेश नगर्नुहोस् — मान्य हुँदैन।</div>
+      <div class="note">⏳ OT HR ले अनुमोदन गरेपछि मात्र भुक्तानी हुन्छ।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen" style="background:#1a1a2e">
+        <div style="background:#fff;border-radius:12px;padding:14px">
+          <p style="font-size:0.85rem;font-weight:700;margin-bottom:10px">⏱ OT पेश गर्नुहोस्</p>
+          <div class="mock-label">मिति</div>
+          <div class="mock-input" style="margin-bottom:8px">06-09-2026</div>
+          <div class="mock-label">OT घण्टा</div>
+          <div class="mock-input" style="margin-bottom:8px">2</div>
+          <button class="mock-btn mock-btn-yellow">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">9</div>
+      <div class="step-title">पुरानो बिदा दर्ता गर्नुहोस् (Backdated Day Off)</div>
+      <p>कुनै पुरानो दिनको बिदा रेकर्ड गर्न छुटेमा <strong>७ दिनसम्म</strong> पछाडि जान सकिन्छ।</p>
+      <ol>
+        <li>कुनै पनि कियोस्कमा लगइन गर्नुहोस्।</li>
+        <li><strong>"पुरानो बिदा दर्ता गर्नुहोस् ↓"</strong> थिच्नुहोस्।</li>
+        <li>मिति छान्नुहोस्।</li>
+        <li><strong>Submit Day Off</strong> थिच्नुहोस्।</li>
+      </ol>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div style="text-align:center;margin-bottom:10px">
+          <h4 style="font-size:0.85rem">के आज बिदा हो?</h4>
+        </div>
+        <div class="mock-row" style="margin-bottom:8px">
+          <button class="mock-btn-big mock-btn-gray"  style="flex:1">🌙<br><span style="font-size:0.6rem">हो</span></button>
+          <button class="mock-btn-big mock-btn-green" style="flex:1">▶<br><span style="font-size:0.6rem">होइन</span></button>
+        </div>
+        <button class="mock-small-btn">📅 पुरानो बिदा ↑</button>
+        <div style="border-top:1px solid #dee2e6;padding-top:8px">
+          <div class="mock-input" style="margin-bottom:6px">05-09-2026</div>
+          <button class="mock-btn mock-btn-gray">✓ दर्ता गर्नुहोस्</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="lang-divider">
+
+<!-- ══════════════════════════════════════════════════════════
+     BANGLA
+════════════════════════════════════════════════════════════ -->
+<section id="bn" class="lang-section bn">
+  <div class="section-header">
+    <div class="lang-flag">🇧🇩</div>
+    <div>
+      <h2>বাংলা</h2>
+      <p>HR Kiosk ব্যবহারের সম্পূর্ণ নির্দেশিকা</p>
+    </div>
+  </div>
+
+  <div class="rules-box">
+    <h3>⚠️ গুরুত্বপূর্ণ নিয়ম — প্রথমে পড়ুন</h3>
+    <ol>
+      <li><strong>সবসময় আপনার শাখা থেকে পাঞ্চ করুন।</strong> Check In, Break Out, Break In এবং Check Out — এগুলো সবই আপনার কর্মস্থলের কিওস্ক ট্যাবলেট থেকে করতে হবে। প্রতিটি পাঞ্চে GPS রেকর্ড হয়।</li>
+      <li><strong>Day Off একমাত্র ব্যতিক্রম।</strong> Day Off যেকোনো জায়গা থেকে রেকর্ড করা যাবে — শাখায় থাকা জরুরি নয়।</li>
+      <li><strong>Check Out-এর পরেই OT জমা দিন।</strong> সেদিনের Check Out সম্পন্ন হওয়ার পরই OT সাবমিট করুন।</li>
+      <li><strong>OT স্বয়ংক্রিয় নয়।</strong> জমা দেওয়া OT HR অনুমোদনের পরই বেতনে যোগ হবে।</li>
+      <li><strong>আপনার PIN কাউকে দেবেন না।</strong></li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">লগইন (Login)</div>
+      <p>আপনার শাখার কিওস্ক ট্যাবলেটে যান।</p>
+      <ol>
+        <li><strong>Employee ID</strong> বক্সে আপনার আইডি লিখুন (যেমন <code>HR-EMP-00001</code>)।</li>
+        <li><strong>PIN</strong> বক্সে আপনার ৪ সংখ্যার PIN লিখুন।</li>
+        <li><strong>Clock In / Out</strong> বোতামে চাপুন।</li>
+        <li>আইডি বা PIN ভুল হলে ত্রুটি বার্তা দেখাবে — আবার চেষ্টা করুন।</li>
+      </ol>
+      <div class="note">💡 Employee ID ও PIN HR থেকে দেওয়া হয়েছে। ভুলে গেলে HR-এর সাথে যোগাযোগ করুন।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-header">
+          <span class="mock-icon">🏢</span>
+          <h4>HR Kiosk</h4>
+          <p>ID ও PIN লিখুন</p>
+        </div>
+        <div class="mock-label">Employee ID</div>
+        <div class="mock-input">HR-EMP-00001</div>
+        <div class="mock-label">PIN</div>
+        <div class="mock-input">••••</div>
+        <button class="mock-btn mock-btn-primary">⏩ Clock In / Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">লগইনের পর — ছুটি নাকি কাজ?</div>
+      <p>আজ কোনো পাঞ্চ না থাকলে স্ক্রিনে জিজ্ঞেস করবে:</p>
+      <p style="font-size:1.1rem;font-weight:700;margin:10px 0">"আজ কি আপনার ছুটির দিন?"</p>
+      <ul>
+        <li><strong>ছুটির দিন হলে:</strong> <strong style="color:var(--mid)">হ্যাঁ — ছুটি</strong> চাপুন। ছুটি রেকর্ড হবে।</li>
+        <li><strong>কাজে এসে থাকলে:</strong> <strong style="color:var(--green)">না — Check In</strong> চাপুন।</li>
+      </ul>
+      <div class="note">📍 ছুটি যেকোনো জায়গা থেকে রেকর্ড করা যায়।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div style="text-align:center;margin-bottom:14px">
+          <h4 style="font-size:0.9rem;font-weight:700">আজ কি আপনার ছুটির দিন?</h4>
+        </div>
+        <div class="mock-row">
+          <button class="mock-btn-big mock-btn-gray" style="flex:1">🌙<br><span style="font-size:0.65rem">হ্যাঁ — ছুটি</span></button>
+          <button class="mock-btn-big mock-btn-green" style="flex:1">▶<br><span style="font-size:0.65rem">না — কাজ</span></button>
+        </div>
+        <button class="mock-small-btn">📅 আগের ছুটি নথিভুক্ত করুন ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+      <div class="step-title">Check In — শিফট শুরু করুন</div>
+      <ol>
+        <li>নিশ্চিত করুন আপনি <strong>আপনার শাখায়</strong> আছেন।</li>
+        <li>বড় সবুজ <strong style="color:var(--green)">Check In</strong> বোতামে চাপুন।</li>
+        <li>কিওস্ক আপনার অবস্থান নিশ্চিত করবে। ১-২ সেকেন্ড অপেক্ষা করুন।</li>
+        <li>নিশ্চিতকরণ বার্তা আসবে — শিফট শুরু হয়ে গেছে।</li>
+      </ol>
+      <div class="warn">⚠️ শাখার বাইরে থেকে Check In করবেন না। GPS রেকর্ড হয়।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-green" style="width:100%;min-height:130px;margin-bottom:10px">▶<br>Check In<br><span style="font-size:0.7rem">(কাজ শুরু)</span></button>
+        <button class="mock-btn mock-btn-orange">⏱ OT জমা দিন</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+      <div class="step-title">Break Out — বিরতি শুরু করুন</div>
+      <p>Check In-এর পর দুটি বিকল্প দেখাবে:</p>
+      <ul>
+        <li><strong style="color:var(--yellow)">Break Out</strong> — বিরতিতে যাওয়ার সময় চাপুন।</li>
+        <li><strong>Check Out (বিরতি ছাড়া)</strong> — সরাসরি শিফট শেষ করতে চাইলে।</li>
+      </ul>
+      <div class="note">💡 একটি শিফটে <strong>একাধিকবার বিরতি</strong> নেওয়া যায়।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-yellow" style="width:100%;min-height:110px;margin-bottom:8px">⏸<br>Break Out<br><span style="font-size:0.7rem">(বিরতি শুরু)</span></button>
+        <button class="mock-btn mock-btn-outline" style="font-size:0.8rem">⏹ Check Out (বিরতি ছাড়া)</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">5</div>
+      <div class="step-title">Break In — বিরতি শেষ হয়েছে</div>
+      <p>বিরতি শেষ হলে শাখায় ফিরে এসে:</p>
+      <ol>
+        <li>কিওস্ক ট্যাবলেটে যান।</li>
+        <li>লগইন করে বড় <strong style="color:var(--cyan)">Break In</strong> বোতামে চাপুন।</li>
+      </ol>
+      <div class="warn">⚠️ Break In-ও শাখা থেকেই করুন।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <button class="mock-btn-big mock-btn-cyan" style="width:100%;min-height:130px;margin-bottom:10px">▶<br>Break In<br><span style="font-size:0.7rem">(বিরতি শেষ)</span></button>
+        <button class="mock-btn mock-btn-orange">⏱ OT জমা দিন</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">6</div>
+      <div class="step-title">Break In-এর পর — আরও বিরতি বা Check Out</div>
+      <p>Break In-এর পর দুটি সমান বোতাম দেখাবে:</p>
+      <ul>
+        <li><strong style="color:var(--yellow)">Break Out</strong> — আরেকটি বিরতির জন্য।</li>
+        <li><strong style="color:var(--red)">Check Out</strong> — শিফট পুরোপুরি শেষ করতে।</li>
+      </ul>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-row">
+          <button class="mock-btn-big mock-btn-yellow" style="flex:1;min-height:120px">⏸<br><span style="font-size:0.7rem">Break Out</span></button>
+          <button class="mock-btn-big mock-btn-red"    style="flex:1;min-height:120px">⏹<br><span style="font-size:0.7rem">Check Out</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">7</div>
+      <div class="step-title">Check Out — শিফট শেষ করুন</div>
+      <ol>
+        <li>শাখার কিওস্কে যান।</li>
+        <li>লগইন করে <strong style="color:var(--red)">Check Out</strong> চাপুন।</li>
+        <li>"আজকের কাজ শেষ!" — সবুজ টিকসহ নিশ্চিতকরণ আসবে।</li>
+      </ol>
+      <div class="note">✅ Check Out-এর পরই OT জমা দিন (ধাপ ৮)।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div class="mock-done">
+          <i>✅</i>
+          <span>আজকের কাজ শেষ!</span>
+          <p style="font-size:0.7rem;color:var(--mid);margin-top:6px">বাকি দিনটা ভালো কাটুক!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">8</div>
+      <div class="step-title">অতিরিক্ত সময় (OT) জমা দিন</div>
+      <p><strong>Check Out-এর পরেই OT জমা দিন।</strong></p>
+      <ol>
+        <li>Check Out-এর পর প্রয়োজনে আবার লগইন করুন।</li>
+        <li>কমলা রঙের <strong style="color:var(--orange)">OT জমা দিন</strong> বোতামে চাপুন।</li>
+        <li><strong>তারিখ</strong> বেছে নিন।</li>
+        <li><strong>OT ঘণ্টা</strong> লিখুন (যেমন 2, 2.5)।</li>
+        <li><strong>Submit</strong> চাপুন।</li>
+      </ol>
+      <div class="warn">⚠️ Check Out-এর আগে OT জমা দেবেন না — গ্রহণযোগ্য হবে না।</div>
+      <div class="note">⏳ OT HR অনুমোদনের পরই বেতনে যোগ হবে।</div>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen" style="background:#1a1a2e">
+        <div style="background:#fff;border-radius:12px;padding:14px">
+          <p style="font-size:0.85rem;font-weight:700;margin-bottom:10px">⏱ OT জমা দিন</p>
+          <div class="mock-label">তারিখ</div>
+          <div class="mock-input" style="margin-bottom:8px">06-09-2026</div>
+          <div class="mock-label">OT ঘণ্টা</div>
+          <div class="mock-input" style="margin-bottom:8px">2</div>
+          <button class="mock-btn mock-btn-yellow">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">9</div>
+      <div class="step-title">আগের ছুটি নথিভুক্ত করুন (Backdated Day Off)</div>
+      <p>কোনো পুরনো দিনের ছুটি রেকর্ড না হলে <strong>৭ দিন পর্যন্ত</strong> পিছনের ছুটি নথিভুক্ত করা যাবে।</p>
+      <ol>
+        <li>যেকোনো কিওস্কে লগইন করুন।</li>
+        <li><strong>"আগের ছুটি নথিভুক্ত করুন ↓"</strong> চাপুন।</li>
+        <li>তারিখ বেছে নিন।</li>
+        <li><strong>Submit Day Off</strong> চাপুন।</li>
+      </ol>
+    </div>
+    <div class="mock-device">
+      <div class="mock-screen">
+        <div style="text-align:center;margin-bottom:10px">
+          <h4 style="font-size:0.85rem">আজ কি ছুটির দিন?</h4>
+        </div>
+        <div class="mock-row" style="margin-bottom:8px">
+          <button class="mock-btn-big mock-btn-gray"  style="flex:1">🌙<br><span style="font-size:0.6rem">হ্যাঁ</span></button>
+          <button class="mock-btn-big mock-btn-green" style="flex:1">▶<br><span style="font-size:0.6rem">না</span></button>
+        </div>
+        <button class="mock-small-btn">📅 আগের ছুটি ↑</button>
+        <div style="border-top:1px solid #dee2e6;padding-top:8px">
+          <div class="mock-input" style="margin-bottom:6px">05-09-2026</div>
+          <button class="mock-btn mock-btn-gray">✓ জমা দিন</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<div style="background:var(--dark);color:#fff;text-align:center;padding:28px;font-size:0.85rem;opacity:0.8">
+  Your Company — HR Department &nbsp;|&nbsp; For queries contact HR
+</div>
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+/* ============================================================
+   agent.css — the Maya Tex agent portal, both pages.
+   ------------------------------------------------------------
+   Same palette and type as the candidate registration form
+   (maya-pre-interview-form), so an agent who has seen one
+   recognises the other.
+
+   Widths are fluid, not fixed: the shell fills the window up to
+   1180px and the candidate grid adds columns as the screen
+   allows, so a desktop shows three or four candidates side by
+   side while a phone shows one. Nothing is sized for a phone
+   and then stretched.
+   ============================================================ */
+
+:root{
+  --ink:#123128; --ink-2:#1b4a3c; --ink-soft:#3a5b4f;
+  --paper:#f3f6f2; --surface:#ffffff; --surface-2:#f7faf6;
+  --line:#e0e7dd; --line-2:#eef2ea;
+  --brass:#b0812f; --brass-2:#96691f; --brass-soft:#f5ecd8;
+  --text:#16211d; --muted:#5d6a63; --faint:#8a958e;
+  --ok:#2f7d5b; --ok-soft:#e4f1ea; --bad:#bd4630; --bad-soft:#f6e2dd;
+  --radius:16px; --radius-sm:11px;
+  --shadow:0 1px 2px rgba(18,49,40,.05),0 12px 34px -18px rgba(18,49,40,.28);
+  --f-body:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{
+  background:var(--paper); color:var(--text); font-family:var(--f-body);
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  min-height:100vh; display:flex; flex-direction:column;
+}
+
+/* ── masthead ─────────────────────────────────────────────── */
+header{
+  background:var(--ink); color:#fff; padding:14px 22px;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+}
+.mark{width:34px;height:34px;flex:none;display:grid;place-items:center;}
+.mark span{
+  width:19px;height:19px;background:var(--brass);
+  transform:rotate(45deg);border-radius:3px;display:block;
+}
+.brand{display:flex;flex-direction:column;line-height:1.2;margin-right:auto;}
+.brand b{font-size:15px;letter-spacing:.14em;font-weight:800;}
+.brand small{font-size:11.5px;color:#bcd0c6;letter-spacing:.04em;}
+.whoami{text-align:right;line-height:1.25;font-size:12.5px;color:#bcd0c6;}
+.whoami b{display:block;color:#fff;font-size:13.5px;font-weight:700;}
+/* On a phone the masthead wraps: the agency sits on the second line
+   with the sign-out button beside it, not under it. */
+@media (max-width:620px){
+  header{padding:12px 16px;gap:10px;}
+  /* A long agency name gets one line and an ellipsis rather than
+     stacking one word per line and shoving the button off. */
+  .whoami{text-align:left;flex:1 1 100%;min-width:0;font-size:11.5px;order:3;}
+  .whoami b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  header > button{order:4;flex:none;}
+  main{padding:18px 16px 36px;}
+  h1{font-size:23px;}
+}
+
+/* ── page shell ───────────────────────────────────────────── */
+main{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:22px 22px 44px;}
+.eyebrow{
+  font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--brass-2);margin-bottom:6px;
+}
+h1{font-size:26px;line-height:1.2;font-weight:800;color:var(--ink);margin:0 0 6px;letter-spacing:-.01em;}
+.lede{color:var(--muted);font-size:14.5px;margin:0 0 20px;max-width:64ch;}
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:22px;
+}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+.bar .grow{margin-right:auto;}
+
+/* ── controls ─────────────────────────────────────────────── */
+label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-soft);margin:0 0 6px;}
+label .opt{font-weight:500;color:var(--faint);}
+.req{color:var(--bad);}
+input,select,textarea{
+  width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  font-family:inherit;font-size:15px;color:var(--text);background:var(--surface);
+  transition:border-color .15s,box-shadow .15s;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft);
+}
+textarea{resize:vertical;min-height:74px;}
+.field{margin-bottom:16px;}
+.hint{font-size:12px;color:var(--faint);margin-top:5px;}
+
+/* Form grid: one column on a phone, two or three on a real screen. */
+.grid{display:grid;gap:0 18px;grid-template-columns:1fr;}
+@media (min-width:640px){ .grid{grid-template-columns:repeat(2,1fr);} }
+@media (min-width:980px){ .grid.three{grid-template-columns:repeat(3,1fr);} }
+.span-all{grid-column:1/-1;}
+
+button,.btn{
+  font-family:inherit;font-size:14.5px;font-weight:700;cursor:pointer;
+  padding:12px 20px;border-radius:var(--radius-sm);border:1.5px solid transparent;
+  background:var(--ink);color:#fff;text-decoration:none;display:inline-flex;
+  align-items:center;justify-content:center;gap:8px;transition:background .15s,border-color .15s;
+}
+button:hover,.btn:hover{background:var(--ink-2);}
+.btn.line,button.line{background:var(--surface);color:var(--ink);border-color:var(--line);}
+.btn.line:hover,button.line:hover{background:var(--surface-2);border-color:var(--brass);}
+.btn.brass,button.brass{background:var(--brass);}
+.btn.brass:hover,button.brass:hover{background:var(--brass-2);}
+button:disabled{opacity:.55;cursor:default;}
+button.wide{width:100%;}
+
+/* ── language chips ───────────────────────────────────────── */
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chiptog{
+  font-size:13.5px;font-weight:600;color:var(--ink-soft);background:var(--surface-2);
+  border:1.5px solid var(--line);border-radius:999px;padding:8px 15px;cursor:pointer;
+  font-family:inherit;
+}
+.chiptog:hover{border-color:var(--brass);}
+.chiptog.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+/* ── file drop zones ──────────────────────────────────────── */
+.drop{
+  border:1.5px dashed var(--line);border-radius:var(--radius-sm);background:var(--surface-2);
+  padding:18px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;
+}
+.drop:hover{border-color:var(--brass);background:var(--brass-soft);}
+.drop svg{color:var(--brass-2);margin-bottom:6px;}
+.drop b{display:block;font-size:13.5px;color:var(--ink);font-weight:600;}
+.drop span{font-size:12px;color:var(--muted);}
+.drop.has{
+  border-style:solid;border-color:var(--ok);background:var(--ok-soft);
+  text-align:left;display:flex;align-items:center;gap:12px;
+}
+.drop.has .thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;flex:none;background:#fff;border:1px solid var(--line);}
+.drop.has .fx{min-width:0;flex:1;}
+.drop.has .fx b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.drop.has .clear{background:none;border:0;color:var(--ink-soft);font-size:19px;cursor:pointer;padding:4px 8px;font-family:inherit;}
+.drop.has .clear:hover{background:none;color:var(--bad);}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+
+/* ── candidate grid ───────────────────────────────────────── */
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.stat{
+  background:var(--surface);border:1px solid var(--line);border-radius:999px;
+  padding:7px 15px;font-size:13px;color:var(--muted);
+}
+.stat b{color:var(--ink);font-weight:800;}
+.stat.on{background:var(--ink);border-color:var(--ink);color:#cfe0d7;}
+.stat.on b{color:#fff;}
+
+.cards{display:grid;gap:16px;grid-template-columns:1fr;align-items:start;}
+@media (min-width:660px){ .cards{grid-template-columns:repeat(2,1fr);} }
+@media (min-width:1000px){ .cards{grid-template-columns:repeat(3,1fr);} }
+
+.cand{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:18px;display:flex;flex-direction:column;gap:12px;
+}
+.cand .top{display:flex;align-items:flex-start;gap:10px;}
+.cand .nm{font-size:16.5px;font-weight:800;color:var(--ink);line-height:1.25;margin-right:auto;}
+.cand .sub{font-size:12.5px;color:var(--muted);margin-top:2px;font-weight:500;}
+.pill{
+  font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;white-space:nowrap;flex:none;
+  background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line);
+}
+.p-Submitted{background:var(--brass-soft);color:var(--brass-2);border-color:#e7d5ab;}
+.p-Selected{background:#e6ecf5;color:#2f4f7d;border-color:#cfdcec;}
+.p-VisaIssued{background:#e2f0f4;color:#1c6b7d;border-color:#c8e3ea;}
+.p-Travelling{background:#e6eaf7;color:#33459b;border-color:#d0d8f0;}
+.p-Arrived{background:var(--brass-soft);color:#8a5a12;border-color:#e7d5ab;}
+.p-Employee{background:var(--ok-soft);color:var(--ok);border-color:#c6e3d4;}
+.p-OnHold{background:#eceff0;color:#4c585c;border-color:#dde2e3;}
+.p-Cancelled{background:var(--bad-soft);color:var(--bad);border-color:#eccdc5;}
+
+/* Progress track — where the candidate has reached, at a glance.
+   align-items:center keeps the segments 4px tall; a flex row would
+   otherwise stretch them to the height of the row. */
+.track{display:flex;gap:4px;align-items:center;}
+.track i{flex:1;height:4px;border-radius:2px;background:var(--line-2);display:block;}
+.track i.done{background:var(--brass);}
+.track i.stop{background:var(--bad-soft);}
+
+.facts{display:flex;flex-direction:column;gap:5px;font-size:12.5px;}
+.facts div{display:flex;gap:8px;}
+.facts dt{color:var(--faint);min-width:74px;flex:none;}
+.facts dd{margin:0;color:var(--ink-soft);font-weight:600;}
+.cand .note{
+  font-size:12.5px;color:var(--muted);background:var(--surface-2);
+  border-left:3px solid var(--line);padding:8px 10px;border-radius:0 8px 8px 0;
+}
+.links{display:flex;gap:14px;font-size:12.5px;font-weight:700;}
+.links a{color:var(--brass-2);text-decoration:none;}
+.links a:hover{text-decoration:underline;}
+
+/* ── sign-in, messages, empty states ──────────────────────── */
+.signin{max-width:420px;margin:6vh auto 0;}
+.msg{font-size:13.5px;margin-top:12px;min-height:18px;font-weight:600;}
+.msg.bad{color:var(--bad);}
+.msg.good{color:var(--ok);}
+.empty{
+  background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius);
+  padding:44px 22px;text-align:center;color:var(--muted);
+}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px;}
+.hide{display:none !important;}
+footer{
+  text-align:center;color:var(--faint);font-size:11.5px;
+  padding:18px 22px 26px;border-top:1px solid var(--line-2);
+}
+
+/* ── the thank-you card ─────────────────────────────────────
+   Named .thanks, not .done: .done belongs to the progress track
+   above, and a card class sharing that name padded the track
+   segments into blocks. */
+.thanks{text-align:center;padding:40px 24px;}
+.thanks .tick{
+  width:56px;height:56px;border-radius:50%;background:var(--ok-soft);color:var(--ok);
+  display:grid;place-items:center;margin:0 auto 16px;font-size:28px;font-weight:800;
+}

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR — Confirm Attendance</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  body { background:#f2f4f7; font-family:'Segoe UI',Tahoma,sans-serif; padding-bottom:88px; }
+  .wrap { max-width:860px; margin:16px auto; padding:0 10px; }
+  .brand i { font-size:2rem; color:#0d6efd; }
+  .day { border:1px solid #dde1e7; border-radius:10px; background:#fff; margin-bottom:10px; }
+  .day.done   { border-color:#198754; background:#f2fbf5; }
+  .day.failed { border-color:#dc3545; background:#fdf3f4; }
+  .day-head { padding:10px 12px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+  .who  { font-weight:600; font-size:1.05rem; }
+  .when { color:#5b6472; font-size:.92rem; }
+  .why  { padding:0 12px 8px; color:#5b6472; font-size:.86rem; line-height:1.35; }
+  .body { padding:0 12px 12px; }
+  .sbtn { flex:1; min-width:84px; }
+  .sbtn.on-p { background:#198754; color:#fff; border-color:#198754; }
+  .sbtn.on-a { background:#dc3545; color:#fff; border-color:#dc3545; }
+  .sbtn.on-d { background:#0dcaf0; color:#000; border-color:#0dcaf0; }
+  .times { display:none; gap:10px; margin-top:10px; }
+  .times.show { display:flex; }
+  .times > div { flex:1; }
+  .lbl { font-size:.78rem; color:#5b6472; margin-bottom:2px; }
+  .rowmsg { font-size:.84rem; margin-top:6px; min-height:18px; }
+  .bar { position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid #dde1e7;
+         padding:10px 14px; box-shadow:0 -2px 10px rgba(0,0,0,.06); }
+  .bar .inner { max-width:860px; margin:0 auto; display:flex; gap:12px; align-items:center; }
+  .nextday { font-size:.76rem; color:#0d6efd; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand text-center mb-3">
+    <i class="bi bi-clipboard-check"></i>
+    <h4 class="mb-0">Confirm Attendance</h4>
+    <div class="text-muted small" id="windowLabel">&nbsp;</div>
+  </div>
+
+  <div class="card shadow-sm mb-3"><div class="card-body py-3">
+    <div class="row g-2 align-items-end">
+      <div class="col-12 col-sm-7">
+        <label class="form-label small mb-1">Who are you?</label>
+        <select id="supPick" class="form-select">
+          <option value="">— select your name —</option>
+        </select>
+      </div>
+      <div class="col-7 col-sm-3">
+        <label class="form-label small mb-1">Your PIN</label>
+        <input type="password" id="supPin" class="form-control" inputmode="numeric" autocomplete="off">
+      </div>
+      <div class="col-5 col-sm-2 d-grid">
+        <button id="loadBtn" class="btn btn-outline-primary" onclick="loadDays()">Show days</button>
+      </div>
+    </div>
+    <div id="intro" class="small text-muted mt-2">
+      Pick your name and enter your PIN. You will see only the days at your branch
+      that still need an answer.
+    </div>
+    <div id="authMsg" class="small mt-2"></div>
+  </div></div>
+
+  <div id="list"></div>
+  <div id="empty" class="text-center text-muted py-4" style="display:none">
+    <i class="bi bi-check2-circle" style="font-size:2rem;color:#198754"></i>
+    <div class="mt-2">Nothing to confirm for your branch. Thank you.</div>
+  </div>
+</div>
+
+<div class="bar" id="bar" style="display:none"><div class="inner">
+  <button id="saveBtn" class="btn btn-primary flex-grow-1" onclick="submitAll()">
+    <i class="bi bi-check2-all"></i> Save all
+  </button>
+  <div id="tally" class="small text-muted"></div>
+</div></div>
+
+<!-- config.js must load first: EXEC_URL below reads CONFIG.API_URL -->
+<script src="config.js"></script>
+<script>
+// ============================================================================
+// The ONLY thing to change when the web app is redeployed.
+// ============================================================================
+const EXEC_URL = CONFIG.API_URL;
+
+// ============================================================================
+// Nothing below is a list of people or of days. The supervisors come from
+// getLocationSupervisors and the days come from svGetOpenDays, both live.
+// The old version of this page baked 81 rows into a constant and so showed the
+// same days for ever, however many of them had been fixed.
+// ============================================================================
+
+// The pay period runs the 21st to the 20th. Worked out from today, not typed in.
+function currentPeriod(){
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+  const endM = (d > 20) ? m + 1 : m;
+  const to   = new Date(y, endM, 20);
+  const from = new Date(y, endM - 1, 21);
+  return { from: from, to: to };
+}
+function fmt(dt){
+  const p = n => ('0'+n).slice(-2);
+  return p(dt.getDate())+'-'+p(dt.getMonth()+1)+'-'+dt.getFullYear();
+}
+function toIso(dd){ const [d,m,y] = dd.split('-'); return y+'-'+m+'-'+d; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,
+  c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+const PERIOD = currentPeriod();
+let SUP_MAP = {}, state = [], LOADED = false;
+
+async function post(method, payload, timeoutMs){
+  const ctl = new AbortController();
+  const t = setTimeout(()=>ctl.abort(), timeoutMs || 120000);
+  try{
+    const res = await fetch(EXEC_URL + '?method=' + method, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload),
+      signal: ctl.signal
+    });
+    const d = await res.json();
+    if(!d.success) throw new Error(d.error || (method + ' failed'));
+    return d;
+  } finally { clearTimeout(t); }
+}
+
+// ── who is on the list ──────────────────────────────────────────────────────
+async function loadSupervisors(){
+  document.getElementById('windowLabel').textContent =
+    fmt(PERIOD.from) + ' to ' + fmt(PERIOD.to);
+  const sel = document.getElementById('supPick');
+  try{
+    const r = await fetch(EXEC_URL + '?method=getLocationSupervisors&_=' + Date.now(),
+                          { cache:'no-store' });
+    const d = await r.json();
+    const opts = [];
+    if(d && d.success){
+      (d.data||[]).forEach(loc=>{
+        (loc.supervisors||[]).forEach(s=>{
+          SUP_MAP[s.id] = { name:s.name, location:loc.location };
+          opts.push('<option value="'+esc(s.id)+'">'+esc(s.name)+' — '+esc(loc.location)+'</option>');
+        });
+      });
+    }
+    if(!opts.length) throw new Error('no supervisors returned');
+    sel.innerHTML = '<option value="">— select your name —</option>' + opts.join('');
+  }catch(e){
+    // No invented list. If the backend cannot be reached, say so — a stale
+    // hardcoded list is what caused the last round of trouble.
+    sel.innerHTML = '<option value="">— could not load names —</option>';
+    document.getElementById('authMsg').innerHTML =
+      '<span class="text-danger">Could not reach the server to load the supervisor list. '
+      + 'Check your connection and reload the page.</span>';
+  }
+}
+
+// ── the days that still need an answer ──────────────────────────────────────
+async function loadDays(){
+  const supId  = document.getElementById('supPick').value;
+  const supPin = document.getElementById('supPin').value.trim();
+  const msg    = document.getElementById('authMsg');
+  if(!supId){  msg.innerHTML = '<span class="text-danger">Select your name.</span>'; return; }
+  if(!supPin){ msg.innerHTML = '<span class="text-danger">Enter your PIN.</span>'; return; }
+
+  const btn = document.getElementById('loadBtn');
+  btn.disabled = true; btn.textContent = 'Loading…';
+  msg.innerHTML = '<span class="text-muted">Checking…</span>';
+
+  try{
+    const d = await post('svGetOpenDays', {
+      supId: supId, supPin: supPin, from: fmt(PERIOD.from), to: fmt(PERIOD.to)
+    });
+    state = (d.days||[]).map(r => ({ ...r, verdict:'', sent:false }));
+    LOADED = true;
+    document.getElementById('intro').style.display = 'none';
+    msg.innerHTML = '<span class="text-success">' + esc(d.supervisor)
+                  + ' — ' + esc(d.location) + '</span>';
+    render();
+  }catch(err){
+    LOADED = false;
+    state = [];
+    document.getElementById('list').innerHTML = '';
+    document.getElementById('bar').style.display = 'none';
+    document.getElementById('empty').style.display = 'none';
+    msg.innerHTML = '<span class="text-danger">' + esc(err.message) + '</span>';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Show days';
+  }
+}
+
+function render(){
+  const list = document.getElementById('list');
+  document.getElementById('empty').style.display = (LOADED && !state.length) ? '' : 'none';
+  document.getElementById('bar').style.display   = state.length ? '' : 'none';
+  list.innerHTML = state.map((r,i)=>{
+    const nd = r.co && r.ci && r.co < r.ci;
+    return '<div class="day" id="d'+i+'">'
+      + '<div class="day-head">'
+      +   '<span class="who">'+esc(r.name)+'</span>'
+      +   '<span class="when">'+esc(r.date)+(r.shift?' &middot; '+esc(r.shift):'')+'</span>'
+      +   '<span class="badge text-bg-light ms-auto">'+esc(r.status)+'</span>'
+      + '</div>'
+      + '<div class="why">'+esc(r.why)+'</div>'
+      + '<div class="body">'
+      +   '<div class="d-flex gap-2">'
+      +     '<button type="button" class="btn btn-outline-success sbtn" data-s="Present" onclick="pick('+i+',this)">Worked</button>'
+      +     '<button type="button" class="btn btn-outline-info    sbtn" data-s="Day Off" onclick="pick('+i+',this)">Day Off</button>'
+      +     '<button type="button" class="btn btn-outline-danger  sbtn" data-s="Absent"  onclick="pick('+i+',this)">Did not come</button>'
+      +   '</div>'
+      +   '<div class="times" id="t'+i+'">'
+      +     '<div><div class="lbl">Started</div>'
+      +       '<input type="time" class="form-control" id="ci'+i+'" value="'+esc(r.ci)+'" onchange="sync('+i+')"></div>'
+      +     '<div><div class="lbl">Finished '
+      +       '<span class="nextday" id="nd'+i+'">'+(nd?'(next morning)':'')+'</span></div>'
+      +       '<input type="time" class="form-control" id="co'+i+'" value="'+esc(r.co)+'" onchange="sync('+i+')"></div>'
+      +   '</div>'
+      +   '<div class="rowmsg" id="m'+i+'"></div>'
+      + '</div></div>';
+  }).join('');
+  tally();
+}
+
+function pick(i, btn){ applyPick(i, btn.getAttribute('data-s')); tally(); }
+
+function applyPick(i, s){
+  state[i].verdict = s;
+  const card = document.getElementById('d'+i);
+  card.querySelectorAll('.sbtn').forEach(b=>{
+    const v = b.getAttribute('data-s');
+    b.className = 'btn btn-outline-' +
+      (v==='Present' ? 'success' : v==='Absent' ? 'danger' : 'info') + ' sbtn';
+    if(v===s) b.classList.add(s==='Present'?'on-p':s==='Absent'?'on-a':'on-d');
+  });
+  document.getElementById('t'+i).classList.toggle('show', s==='Present');
+}
+
+function sync(i){
+  state[i].ci = document.getElementById('ci'+i).value;
+  state[i].co = document.getElementById('co'+i).value;
+  const nd = state[i].co && state[i].ci && state[i].co < state[i].ci;
+  document.getElementById('nd'+i).textContent = nd ? '(next morning)' : '';
+  tally();
+}
+
+function tally(){
+  const ready = state.filter(r=>r.verdict && !r.sent).length;
+  const done  = state.filter(r=>r.sent).length;
+  const blank = state.filter(r=>!r.verdict && !r.sent).length;
+  document.getElementById('tally').textContent =
+    done  ? done+' saved' + (ready?', '+ready+' to go':'')
+  : blank ? state.length+' days — '+blank+' still need an answer'
+          : state.length+' days filled in — check them, then save';
+}
+
+// ── save: ONE call, the server writes everything and rebuilds once ──────────
+async function submitAll(){
+  const supId  = document.getElementById('supPick').value;
+  const supPin = document.getElementById('supPin').value.trim();
+  if(!supId || !supPin){ alert('Select your name and enter your PIN.'); return; }
+
+  const pending = state.map((r,i)=>({r:r,i:i})).filter(x=>x.r.verdict && !x.r.sent);
+  if(!pending.length){ alert('Nothing to save yet — answer at least one day.'); return; }
+
+  const bad = pending.find(x => x.r.verdict==='Present' && (!x.r.ci || !x.r.co));
+  if(bad){
+    document.getElementById('m'+bad.i).innerHTML =
+      '<span class="text-danger">Enter both the start and the finish time.</span>';
+    document.getElementById('d'+bad.i).scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.innerHTML = 'Saving…';
+  pending.forEach(x => {
+    document.getElementById('m'+x.i).innerHTML = '<span class="text-muted">saving…</span>';
+  });
+
+  const answers = pending.map(x => ({
+    empId: x.r.id,
+    date:  x.r.date,
+    verdict: x.r.verdict,
+    ci: x.r.ci || '',
+    co: x.r.co || '',
+    coNextDay: !!(x.r.co && x.r.ci && x.r.co < x.r.ci),
+    shift: x.r.shift || ''
+  }));
+
+  try{
+    const d = await post('svSaveAnswers', { supId:supId, supPin:supPin, answers:answers }, 300000);
+    const byKey = {};
+    (d.results||[]).forEach(res => { byKey[res.key] = res; });
+
+    pending.forEach(x => {
+      const res  = byKey[x.r.id + '|' + x.r.date];
+      const card = document.getElementById('d'+x.i);
+      const msg  = document.getElementById('m'+x.i);
+      if(res && res.ok){
+        x.r.sent = true;
+        card.classList.remove('failed'); card.classList.add('done');
+        msg.innerHTML = '<span class="text-success"><i class="bi bi-check-circle"></i> saved — '
+                      + esc(res.msg) + '</span>';
+      }else{
+        card.classList.remove('done'); card.classList.add('failed');
+        msg.innerHTML = '<span class="text-danger">'
+                      + esc(res ? res.msg : 'no answer from the server')
+                      + ' — not saved, try again</span>';
+      }
+    });
+
+    const note = document.getElementById('tally');
+    if(d.rebuildError){
+      // The answers ARE written. Say so plainly so nobody enters them twice.
+      note.innerHTML = '<span class="text-danger"><b>Your '+d.saved+' answers are saved.</b> '
+        + 'The attendance sheet could not be refreshed just now ('+esc(d.rebuildError)+'). '
+        + 'Do not enter them again — tell HR to refresh it.</span>';
+    }else if(d.saved){
+      note.innerHTML = '<span class="text-success">'+d.saved
+        + ' saved and the attendance sheet is updated.</span>';
+    }
+    if(d.failed) note.innerHTML += ' <span class="text-danger">'+d.failed+' did not save.</span>';
+  }catch(err){
+    pending.forEach(x => {
+      document.getElementById('d'+x.i).classList.add('failed');
+      document.getElementById('m'+x.i).innerHTML =
+        '<span class="text-danger">not saved — '+esc(err.message)+'</span>';
+    });
+  } finally {
+    btn.disabled = false;
+    const left = state.filter(r=>r.verdict && !r.sent).length;
+    btn.innerHTML = left ? '<i class="bi bi-check2-all"></i> Save all'
+                         : '<i class="bi bi-check2-all"></i> All saved';
+    tally();
+  }
+}
+
+loadSupervisors();
+</script>
+</body>
+</html>

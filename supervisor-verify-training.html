@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR — Supervisor Verification Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#198754;--yellow:#e6a800;--cyan:#0dcaf0;
+  --red:#dc3545;--orange:#fd7e14;--teal:oklch(0.65 0.13 190);
+  --dark:#1a1a2e;--mid:#6c757d;--light:#f0f2f5;--border:#dee2e6;
+}
+body{font-family:'Noto Sans',sans-serif;color:#222;background:#fff;line-height:1.6}
+.hi,.hi *{font-family:'Noto Sans Devanagari','Noto Sans',sans-serif}
+.np,.np *{font-family:'Noto Sans Devanagari','Noto Sans',sans-serif}
+.bn,.bn *{font-family:'Noto Sans Bengali','Noto Sans',sans-serif}
+@media print{.no-print{display:none}.lang-section{page-break-before:always}body{font-size:11pt}.mock-device{zoom:0.75}}
+
+.cover{background:var(--dark);color:#fff;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+.cover-logo{width:80px;height:80px;border-radius:18px;background:var(--teal);display:flex;
+  align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:36px;color:var(--dark);margin-bottom:28px}
+.cover h1{font-family:'Space Grotesk',sans-serif;font-size:2.6rem;font-weight:700;margin-bottom:12px}
+.cover h2{font-size:1.25rem;font-weight:400;opacity:0.7;margin-bottom:24px}
+.cover-deadline{background:var(--red);color:#fff;border-radius:10px;padding:10px 22px;
+  font-weight:700;font-size:1rem;margin-bottom:26px}
+.cover-langs{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:34px}
+.cover-langs a{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+  border-radius:8px;padding:6px 18px;font-size:1rem;color:#fff;text-decoration:none}
+.cover-langs a:hover{background:rgba(255,255,255,0.22);border-color:rgba(255,255,255,0.5)}
+.cover-company{opacity:0.5;font-size:0.9rem;margin-top:auto}
+
+.nav-bar{position:sticky;top:0;z-index:100;background:#fff;border-bottom:2px solid var(--border);
+  display:flex;overflow-x:auto;font-family:'Space Grotesk',sans-serif}
+.nav-bar a{padding:14px 22px;color:var(--mid);text-decoration:none;font-weight:600;
+  font-size:0.95rem;white-space:nowrap;border-bottom:3px solid transparent}
+.nav-bar a:hover{color:var(--dark);border-bottom-color:var(--teal)}
+
+.lang-section{max-width:920px;margin:0 auto;padding:48px 24px}
+.section-header{display:flex;align-items:center;gap:16px;margin-bottom:26px;
+  padding-bottom:16px;border-bottom:3px solid var(--teal)}
+.lang-flag{width:54px;height:54px;border-radius:12px;background:var(--teal);display:flex;
+  align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+.section-header h2{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700}
+.section-header p{color:var(--mid);font-size:0.95rem}
+
+.deadline-box{display:flex;align-items:center;gap:16px;background:#fde8e8;border:2px solid var(--red);
+  border-radius:14px;padding:16px 20px;margin-bottom:26px}
+.deadline-clock{font-size:2rem;flex-shrink:0}
+.deadline-t{font-weight:700;color:#842029;font-size:1.05rem}
+.deadline-link{display:inline-block;margin-top:4px;font-size:0.85rem;color:#0d6efd;word-break:break-all}
+
+.rules-box{background:#fff3cd;border:2px solid #ffc107;border-radius:14px;padding:22px 26px;margin-bottom:36px}
+.rules-box h3{color:#856404;font-size:1.1rem;font-weight:700;margin-bottom:14px}
+.rules-box ol{padding-left:22px}
+.rules-box li{margin-bottom:10px;color:#5a4400}
+.rules-box li strong{color:#333}
+
+.step{display:flex;gap:28px;margin-bottom:44px;align-items:flex-start}
+.step-left{flex:1;min-width:0}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;
+  border-radius:50%;background:var(--teal);color:var(--dark);font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:1rem;margin-bottom:10px}
+.step-title{font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:10px}
+.step p{margin-bottom:8px;color:#333}
+.step ol{padding-left:20px;margin-bottom:8px}
+.step li{margin-bottom:6px}
+.step .note{background:#e8f4fd;border-left:4px solid #0d6efd;padding:10px 14px;
+  border-radius:0 8px 8px 0;font-size:0.92rem;color:#0a3d62;margin-top:10px}
+.step .warn{background:#fff3cd;border-left:4px solid #ffc107;padding:10px 14px;
+  border-radius:0 8px 8px 0;font-size:0.92rem;color:#5a4400;margin-top:10px}
+
+.mock-device{width:300px;flex-shrink:0;border:10px solid var(--dark);border-radius:26px;
+  background:var(--dark);box-shadow:0 8px 24px rgba(0,0,0,0.18)}
+.mock-screen{background:#f2f4f7;border-radius:16px;padding:12px}
+.mock-header{text-align:center;margin-bottom:12px}
+.mock-header .mock-icon{font-size:2rem;display:block;margin-bottom:4px}
+.mock-header h4{font-size:0.85rem;font-weight:700;color:var(--dark)}
+.mock-header p{font-size:0.7rem;color:var(--mid)}
+.mock-input{background:#fff;border:1.5px solid var(--border);border-radius:8px;
+  padding:7px 10px;font-size:0.78rem;margin-bottom:8px}
+.mock-label{font-size:0.66rem;color:var(--mid);margin-bottom:3px}
+.mock-btn{display:block;width:100%;border:none;border-radius:9px;padding:9px;
+  font-size:0.82rem;font-weight:700;margin-bottom:8px}
+.mock-btn-primary{background:var(--teal);color:var(--dark)}
+.mock-btn-green{background:var(--green);color:#fff}
+.mock-done{text-align:center;color:var(--green)}
+.mock-done i{font-size:1.8rem;display:block;font-style:normal}
+
+.mrow{background:#fff;border:1px solid var(--border);border-radius:9px;padding:8px 9px;margin-bottom:8px}
+.mrow-top{display:flex;justify-content:space-between;align-items:center;font-size:0.76rem}
+.mnum{font-weight:700;font-size:0.95rem}
+.mdate{font-size:0.66rem;color:var(--mid);margin-top:2px}
+.mctx{font-size:0.65rem;color:#555;margin-top:4px;line-height:1.4}
+.mbtns{display:flex;gap:4px;margin-top:6px;align-items:center;flex-wrap:wrap}
+.mb{font-size:0.62rem;font-weight:700;border-radius:6px;padding:4px 7px;border:1.5px solid}
+.mb-g{color:var(--green);border-color:var(--green)}
+.mb-y{color:#9a7400;border-color:var(--yellow)}
+.mb-r{color:var(--red);border-color:var(--red)}
+.mb-b{color:#0d6efd;border-color:#0d6efd}
+.mb-p{background:#0d6efd;color:#fff;border-color:#0d6efd}
+.mhrs{background:#fff;border:1.5px solid var(--border);border-radius:6px;padding:3px 9px;font-size:0.68rem}
+.mbadge{color:#fff;font-size:0.58rem;font-weight:700;border-radius:20px;padding:2px 7px}
+
+.end-box{background:var(--dark);color:#fff;border-radius:16px;padding:26px 28px;margin-top:10px}
+.end-box h3{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;margin-bottom:10px}
+.end-box p{opacity:0.85;margin-bottom:16px}
+.end-btn{display:inline-block;background:var(--teal);color:var(--dark);text-decoration:none;
+  font-weight:700;border-radius:10px;padding:11px 22px}
+
+@media(max-width:768px){
+  .step{flex-direction:column;gap:18px}
+  .mock-device{width:100%;max-width:300px;margin:0 auto}
+  .cover h1{font-size:2rem}
+  .section-header h2{font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-logo">M</div>
+  <h1>Supervisor Verification</h1>
+  <h2>Attendance &amp; Overtime · सुपरवाइज़र गाइड · सुपरभाइजर निर्देशिका · সুপারভাইজার গাইড</h2>
+  <div class="cover-deadline">⏰ DEADLINE — TODAY, 12 MIDNIGHT</div>
+  <div class="cover-langs">
+    <a href="#en">🇬🇧 English</a>
+    <a href="#hi">🇮🇳 हिन्दी</a>
+    <a href="#np">🇳🇵 नेपाली</a>
+    <a href="#bn">🇧🇩 বাংলা</a>
+  </div>
+  <p style="opacity:0.6;max-width:520px;font-size:0.95rem">
+    This guide shows how to confirm your team's overtime claims and attendance days.
+    Read your language section, then open the link and finish before midnight.
+  </p>
+  <div class="cover-company" style="margin-top:50px">Your Company — HR Department</div>
+</div>
+
+<nav class="nav-bar no-print">
+  <a href="#en">🇬🇧 English</a>
+  <a href="#hi">🇮🇳 हिन्दी</a>
+  <a href="#np">🇳🇵 नेपाली</a>
+  <a href="#bn">🇧🇩 বাংলা</a>
+</nav>
+
+<section id="en" class="lang-section ">
+  <div class="section-header">
+    <div class="lang-flag">🇬🇧</div>
+    <div>
+      <h2>English</h2>
+      <p>How to verify your team's attendance and overtime</p>
+    </div>
+  </div>
+
+  <div class="deadline-box">
+    <div class="deadline-clock">🕛</div>
+    <div>
+      <div class="deadline-t">TODAY · 12 MIDNIGHT</div>
+      <a class="deadline-link" href="supervisor_correct.html">supervisor_correct.html</a>
+    </div>
+  </div>
+
+  <div class="rules-box">
+    <h3>⚠️ Read this first</h3>
+    <ol>
+      <li><strong>Deadline: tonight, 12 midnight.</strong> Payroll runs after that. Once it runs, no change can be made — for anyone, for any reason.</li>
+      <li><strong>Only problems are shown.</strong> Days that were clear are not on your list. A short list is good news, not missing data.</li>
+      <li><strong>Answer truthfully.</strong> Marking a man <em>Absent</em> deducts one day's basic pay from him. Marking him <em>Worked</em> pays him. Both are your responsibility.</li>
+      <li><strong>Once you answer, it disappears.</strong> That means it is saved and done — not lost. Your list gets shorter as you work.</li>
+      <li><strong>Nothing is paid by you.</strong> Your answers go to HR. You are stating what happened, not approving money.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">Open the page and load your branch</div>
+      <p>Open the link on your phone or on the branch computer. Any browser works. There is no password.</p>
+      <ol>
+        <li>Tap <strong>Supervisor</strong> and select your own name from the list.</li>
+        <li>Your <strong>Location</strong> fills in by itself. Check it is your branch.</li>
+        <li>Tap <strong>Load</strong>.</li>
+        <li>Wait a few seconds. Your staff and their pending items will appear.</li>
+      </ol>
+      <div class="note">💡 Select only your own name. You will see only your own branch's staff.</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div class="mock-header"><span class="mock-icon">📋</span>
+    <h4>Attendance &amp; Overtime Verification</h4><p>22 August 2026 — today</p></div>
+  <div class="mock-label">Supervisor</div>
+  <div class="mock-input">Ram Bahadur — Jabriya</div>
+  <div class="mock-label">Location</div>
+  <div class="mock-input" style="background:#eef1f4;color:#666">Jabriya</div>
+  <button class="mock-btn mock-btn-primary">🔍 Load</button>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">Overtime claims — did he work it?</div>
+      <p>These are OT hours your staff submitted on the kiosk. For each one, the page shows what the punches say. You decide.</p>
+      <ol>
+        <li><strong>Yes</strong> — he worked the full hours he claimed.</li>
+        <li><strong>Partly</strong> — he worked some of it. Type the correct number in the Hours box.</li>
+        <li><strong>No</strong> — he did not work overtime that day. Hours become 0.</li>
+      </ol>
+      <div class="note">🌙 <strong>Night shift:</strong> a blue badge saying <em>night shift from 13-09-2026</em> means the shift started the previous evening and finished after midnight. The overtime belongs to that shift. This is normal — not an error.</div>
+      <div class="warn"><b>⚠️ The most common mistake: rounding up.</b><br>Overtime is paid on the <b>actual time worked</b>, not rounded up to the next whole hour. If the punches show <b>6h 7m</b>, the claim cannot be <b>7h</b> — it is 6h 7m. Where a claim is above the punches, the page shows in red exactly how much more, and gives you a button <b>Use the punch figure</b> that fills in the correct number in one tap. If the punch times themselves are wrong, fix them in the correction table before answering.</div><div class="warn">For 22–31 August there are no punch times at all. Answer from what you remember.</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">💰 Overtime claims <span class="mbadge" style="background:#6c757d">3</span></div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Suman B.</b><span class="mnum">2h</span></div>
+    <div class="mdate">14-09-2026 <span class="mbadge" style="background:#0dcaf0;color:#222">night shift from 13-09</span></div>
+    <div class="mctx">Night shift — started 13-09 at 17:30 and finished 14-09 at 03:30, 10h worked (1h over the shift).</div>
+    <div class="mbtns"><span class="mb mb-g">Yes</span><span class="mb mb-y">Partly</span><span class="mb mb-r">No</span><span class="mhrs">2</span></div>
+  </div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Bibek N.</b><span class="mnum">6h</span></div>
+    <div class="mdate">10-09-2026</div>
+    <div class="mctx">Punched in at 19:01 and never punched out.</div>
+    <div class="mbtns"><span class="mb mb-g">Yes</span><span class="mb mb-y">Partly</span><span class="mb mb-r">No</span><span class="mhrs">6</span></div>
+  </div>
+  <div class="mrow" style="background:#fff5f5;border-color:#f5c2c7">
+    <div class="mrow-top"><b>Kristal G.</b><span class="mnum">6h</span></div>
+    <div class="mdate">03-09-2026</div>
+    <div class="mctx">Punched 12:39 → 03:46, worked 14h 17m. The punches show 5h 17m of overtime.</div>
+    <div style="color:#b02a37;font-weight:700;font-size:0.64rem;margin-top:4px">▲ 43m more than the punches show — rounded up to a whole hour</div>
+    <div class="mbtns"><span class="mb mb-r" style="background:#fff">Use the punch figure: 5h 17m</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+      <div class="step-title">Attendance days — what actually happened?</div>
+      <p>These days could not be settled from the punches. For each one choose what really happened.</p>
+      <ol>
+        <li><strong>Worked</strong> — he was at work. His shift times get recorded.</li>
+        <li><strong>Day Off</strong> — it was his day off.</li>
+        <li><strong>Absent</strong> — he did not come. <strong>One day's pay is deducted.</strong></li>
+      </ol>
+      <div class="note">🔴 A red <strong>Missing</strong> row means the man is not on the attendance sheet at all that day, while the rest of your branch is. Do not skip these — he will be unpaid if nobody says what he did.</div>
+      <div class="warn">If the button says <strong>Worked…</strong> with three dots, the system cannot tell which shift that day was. Tap it and enter his real in and out times in the box at the bottom of the page.</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">📅 Attendance days <span class="mbadge" style="background:#6c757d">2</span></div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Mukti L.</b><span class="mbadge" style="background:#6c757d">Absent</span></div>
+    <div class="mdate">15-09-2026 · Jabriya First Shift</div>
+    <div class="mctx">Marked ABSENT — this deducts a day's pay unless you say otherwise.</div>
+    <div class="mbtns"><span class="mb mb-g">Worked</span><span class="mb mb-b">Day Off</span><span class="mb mb-r">Absent</span></div>
+  </div>
+  <div class="mrow" style="background:#fde8e8;border-color:#f5c2c7">
+    <div class="mrow-top"><b>Jit Bahadur T.</b><span class="mbadge" style="background:#dc3545">Missing</span></div>
+    <div class="mdate">18-09-2026</div>
+    <div class="mctx">He is not on the attendance sheet for this day at all, though the rest of the location is.</div>
+    <div class="mbtns"><span class="mb mb-g">Worked…</span><span class="mb mb-b">Day Off</span><span class="mb mb-r">Absent</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+      <div class="step-title">Submit your answers</div>
+      <p>The green bar at the bottom of the screen counts what you have answered and what is left.</p>
+      <ol>
+        <li>Answer as many as you can, then tap <strong>Submit my answers</strong>.</li>
+        <li>A message tells you what was saved.</li>
+        <li>The page reloads and the answered rows are gone.</li>
+        <li>You can come back and do the rest later — but before midnight.</li>
+      </ol>
+      <div class="note">💡 You do not have to finish in one go. Submit what you have done, then continue.</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div class="mock-done" style="padding:10px 4px"><i>✅</i><span style="font-size:0.75rem">4 answered · 6 left</span></div>
+  <button class="mock-btn mock-btn-green">✓ Submit my answers</button>
+  <div class="mctx" style="margin-top:10px;text-align:center">
+    “6 answer(s) recorded — 3 OT claim(s) marked, 3 attendance day(s) written.”
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">5</div>
+      <div class="step-title">Punches still needing correction</div>
+      <p>These are broken sessions — a wrong time, or a missing check-out. Fix the times and press Save on that row.</p>
+      <ol>
+        <li>Correct the <strong>In</strong> and <strong>Out</strong> times.</li>
+        <li>If he finished after midnight, tick <strong>+1d</strong>. The page usually ticks it for you.</li>
+        <li>Press <strong>Save</strong>. A duplicate session can be deleted with the bin icon.</li>
+      </ol>
+      <div class="warn">A session longer than about 16 hours is almost always a wrong <strong>date</strong>, not a long shift. Check the date, not just the time.</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">📝 Punches needing correction</div>
+  <div class="mrow" style="background:#fff3cd;border-color:#ffe08a">
+    <div class="mrow-top"><b>John Mensah</b><span class="mbadge" style="background:#e6a800;color:#333">No check-out</span></div>
+    <div class="mdate">01-09-2026</div>
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <div style="flex:1"><div class="mock-label">In</div><div class="mock-input" style="padding:5px 8px">12:36</div></div>
+      <div style="flex:1"><div class="mock-label">Out</div><div class="mock-input" style="padding:5px 8px;color:#bbb">--:--</div></div>
+      <div style="width:34px"><div class="mock-label">+1d</div><div style="text-align:center;font-size:1rem">☐</div></div>
+    </div>
+    <div class="mbtns" style="margin-top:6px"><span class="mb mb-p">Save</span><span class="mb mb-r">🗑</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">6</div>
+      <div class="step-title">Add missing attendance</div>
+      <p>If a man worked and nothing was recorded at all, add it here.</p>
+      <ol>
+        <li>Choose the <strong>Employee</strong> and the <strong>Date</strong>.</li>
+        <li>Enter the real <strong>In</strong> and <strong>Out</strong> times — not the shift timing, what he actually did.</li>
+        <li>Tick <strong>+1d</strong> if he finished after midnight.</li>
+        <li>Press <strong>Add</strong>.</li>
+      </ol>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">➕ Add missing attendance</div>
+  <div class="mock-label">Employee</div><div class="mock-input">Ahmed Hassan</div>
+  <div class="mock-label">Date</div><div class="mock-input">18-09-2026</div>
+  <div style="display:flex;gap:6px">
+    <div style="flex:1"><div class="mock-label">In</div><div class="mock-input" style="padding:5px 8px">17:30</div></div>
+    <div style="flex:1"><div class="mock-label">Out</div><div class="mock-input" style="padding:5px 8px">03:30</div></div>
+    <div style="width:34px"><div class="mock-label">+1d</div><div style="text-align:center;font-size:1rem">☑</div></div>
+  </div>
+  <button class="mock-btn mock-btn-green" style="margin-top:8px">Add</button>
+</div>
+    </div>
+  </div>
+
+  <div class="end-box">
+    <h3>What happens next</h3>
+    <p>Your answers go straight onto the record. HR processes the overtime and runs payroll after midnight. Anything you leave unanswered is decided without you — and a day with nothing recorded is treated as absent.</p>
+    <a class="end-btn" href="supervisor_correct.html">Open the verification page →</a>
+  </div>
+</section>
+
+<section id="hi" class="lang-section hi">
+  <div class="section-header">
+    <div class="lang-flag">🇮🇳</div>
+    <div>
+      <h2>हिन्दी</h2>
+      <p>अपनी टीम की हाज़िरी और ओवरटाइम कैसे सत्यापित करें</p>
+    </div>
+  </div>
+
+  <div class="deadline-box">
+    <div class="deadline-clock">🕛</div>
+    <div>
+      <div class="deadline-t">अंतिम समय: आज रात 12 बजे।</div>
+      <a class="deadline-link" href="supervisor_correct.html">supervisor_correct.html</a>
+    </div>
+  </div>
+
+  <div class="rules-box">
+    <h3>⚠️ पहले यह पढ़ें</h3>
+    <ol>
+      <li><strong>अंतिम समय: आज रात 12 बजे।</strong> उसके बाद पेरोल चलेगा। एक बार चलने के बाद किसी भी कारण से कोई बदलाव नहीं हो सकता।</li>
+      <li><strong>केवल समस्याएँ दिखाई गई हैं।</strong> जो दिन साफ़ थे वे सूची में नहीं हैं। छोटी सूची अच्छी ख़बर है, डेटा गायब नहीं है।</li>
+      <li><strong>सच बताएं।</strong> किसी को <em>अनुपस्थित</em> लिखने से उसका एक दिन का मूल वेतन कटता है। <em>काम किया</em> लिखने से उसे वेतन मिलता है। दोनों की ज़िम्मेदारी आपकी है।</li>
+      <li><strong>जवाब देते ही वह हट जाएगा।</strong> इसका मतलब है सुरक्षित हो गया — खोया नहीं। काम करते-करते सूची छोटी होती जाएगी।</li>
+      <li><strong>भुगतान आप नहीं करते।</strong> आपके जवाब HR के पास जाते हैं। आप बता रहे हैं कि क्या हुआ, पैसा मंज़ूर नहीं कर रहे।</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">पेज खोलें और अपनी ब्रांच लोड करें</div>
+      <p>लिंक अपने फ़ोन या ब्रांच के कंप्यूटर पर खोलें। कोई भी ब्राउज़र चलेगा। कोई पासवर्ड नहीं है।</p>
+      <ol>
+        <li><strong>Supervisor</strong> पर टैप करें और सूची से अपना नाम चुनें।</li>
+        <li>आपका <strong>Location</strong> अपने आप भर जाएगा। जाँच लें कि यह आपकी ब्रांच है।</li>
+        <li><strong>Load</strong> दबाएँ।</li>
+        <li>कुछ सेकंड रुकें। आपका स्टाफ़ और लंबित काम दिखने लगेंगे।</li>
+      </ol>
+      <div class="note">💡 केवल अपना नाम चुनें। आपको सिर्फ़ अपनी ब्रांच का स्टाफ़ दिखेगा।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div class="mock-header"><span class="mock-icon">📋</span>
+    <h4>Attendance &amp; Overtime Verification</h4><p>22 August 2026 — today</p></div>
+  <div class="mock-label">Supervisor</div>
+  <div class="mock-input">Ram Bahadur — Jabriya</div>
+  <div class="mock-label">Location</div>
+  <div class="mock-input" style="background:#eef1f4;color:#666">Jabriya</div>
+  <button class="mock-btn mock-btn-primary">🔍 Load</button>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">ओवरटाइम दावे — क्या उसने काम किया?</div>
+      <p>ये वे OT घंटे हैं जो आपके स्टाफ़ ने कियोस्क पर भेजे। हर एक के लिए पेज दिखाता है कि पंच क्या कहते हैं। फ़ैसला आपका है।</p>
+      <ol>
+        <li><strong>Yes</strong> — उसने पूरे दावे किए गए घंटे काम किए।</li>
+        <li><strong>Partly</strong> — कुछ घंटे काम किए। Hours बॉक्स में सही संख्या लिखें।</li>
+        <li><strong>No</strong> — उस दिन ओवरटाइम नहीं किया। घंटे 0 हो जाएँगे।</li>
+      </ol>
+      <div class="note">🌙 <strong>नाइट शिफ़्ट:</strong> नीला बैज <em>night shift from 13-09-2026</em> का मतलब है कि शिफ़्ट पिछली शाम शुरू होकर आधी रात के बाद ख़त्म हुई। ओवरटाइम उसी शिफ़्ट का है। यह सामान्य है — ग़लती नहीं।</div>
+      <div class="warn"><b>⚠️ सबसे आम ग़लती: ऊपर की ओर राउंड करना।</b><br>ओवरटाइम <b>वास्तव में किए गए समय</b> पर मिलता है, अगले पूरे घंटे तक बढ़ाकर नहीं। अगर पंच <b>6 घंटे 7 मिनट</b> दिखाते हैं, तो दावा <b>7 घंटे</b> नहीं हो सकता — वह 6 घंटे 7 मिनट ही है। जहाँ दावा पंच से ज़्यादा है, पेज लाल रंग में दिखाता है कि कितना ज़्यादा है, और <b>Use the punch figure</b> बटन देता है जो एक टैप में सही संख्या भर देता है। अगर पंच का समय ही ग़लत है, तो जवाब देने से पहले नीचे सुधार तालिका में उसे ठीक करें।</div><div class="warn">22–31 अगस्त के लिए कोई पंच समय मौजूद ही नहीं है। जो याद है उसके आधार पर जवाब दें।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">💰 Overtime claims <span class="mbadge" style="background:#6c757d">3</span></div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Suman B.</b><span class="mnum">2h</span></div>
+    <div class="mdate">14-09-2026 <span class="mbadge" style="background:#0dcaf0;color:#222">night shift from 13-09</span></div>
+    <div class="mctx">Night shift — started 13-09 at 17:30 and finished 14-09 at 03:30, 10h worked (1h over the shift).</div>
+    <div class="mbtns"><span class="mb mb-g">Yes</span><span class="mb mb-y">Partly</span><span class="mb mb-r">No</span><span class="mhrs">2</span></div>
+  </div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Bibek N.</b><span class="mnum">6h</span></div>
+    <div class="mdate">10-09-2026</div>
+    <div class="mctx">Punched in at 19:01 and never punched out.</div>
+    <div class="mbtns"><span class="mb mb-g">Yes</span><span class="mb mb-y">Partly</span><span class="mb mb-r">No</span><span class="mhrs">6</span></div>
+  </div>
+  <div class="mrow" style="background:#fff5f5;border-color:#f5c2c7">
+    <div class="mrow-top"><b>Kristal G.</b><span class="mnum">6h</span></div>
+    <div class="mdate">03-09-2026</div>
+    <div class="mctx">Punched 12:39 → 03:46, worked 14h 17m. The punches show 5h 17m of overtime.</div>
+    <div style="color:#b02a37;font-weight:700;font-size:0.64rem;margin-top:4px">▲ 43m more than the punches show — rounded up to a whole hour</div>
+    <div class="mbtns"><span class="mb mb-r" style="background:#fff">Use the punch figure: 5h 17m</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+      <div class="step-title">हाज़िरी के दिन — असल में क्या हुआ?</div>
+      <p>इन दिनों का फ़ैसला पंच से नहीं हो सका। हर एक के लिए चुनें कि असल में क्या हुआ।</p>
+      <ol>
+        <li><strong>Worked</strong> — वह काम पर था। उसकी शिफ़्ट का समय दर्ज हो जाएगा।</li>
+        <li><strong>Day Off</strong> — उस दिन उसकी छुट्टी थी।</li>
+        <li><strong>Absent</strong> — वह नहीं आया। <strong>एक दिन का वेतन कटेगा।</strong></li>
+      </ol>
+      <div class="note">🔴 लाल <strong>Missing</strong> पंक्ति का मतलब है कि उस दिन वह आदमी हाज़िरी शीट पर है ही नहीं, जबकि बाकी ब्रांच है। इन्हें न छोड़ें — अगर कोई नहीं बताएगा तो उसे वेतन नहीं मिलेगा।</div>
+      <div class="warn">अगर बटन <strong>Worked…</strong> (तीन बिंदु के साथ) दिखे, तो सिस्टम नहीं बता सकता कि वह दिन कौन सी शिफ़्ट थी। उस पर टैप करें और पेज के नीचे वाले बॉक्स में उसका असली इन/आउट समय भरें।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">📅 Attendance days <span class="mbadge" style="background:#6c757d">2</span></div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Mukti L.</b><span class="mbadge" style="background:#6c757d">Absent</span></div>
+    <div class="mdate">15-09-2026 · Jabriya First Shift</div>
+    <div class="mctx">Marked ABSENT — this deducts a day's pay unless you say otherwise.</div>
+    <div class="mbtns"><span class="mb mb-g">Worked</span><span class="mb mb-b">Day Off</span><span class="mb mb-r">Absent</span></div>
+  </div>
+  <div class="mrow" style="background:#fde8e8;border-color:#f5c2c7">
+    <div class="mrow-top"><b>Jit Bahadur T.</b><span class="mbadge" style="background:#dc3545">Missing</span></div>
+    <div class="mdate">18-09-2026</div>
+    <div class="mctx">He is not on the attendance sheet for this day at all, though the rest of the location is.</div>
+    <div class="mbtns"><span class="mb mb-g">Worked…</span><span class="mb mb-b">Day Off</span><span class="mb mb-r">Absent</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+      <div class="step-title">अपने जवाब जमा करें</div>
+      <p>स्क्रीन के नीचे हरी पट्टी बताती है कि कितने जवाब दिए और कितने बाकी हैं।</p>
+      <ol>
+        <li>जितने कर सकें उतने जवाब दें, फिर <strong>Submit my answers</strong> दबाएँ।</li>
+        <li>एक संदेश बताएगा कि क्या सुरक्षित हुआ।</li>
+        <li>पेज दोबारा लोड होगा और जवाब दी गई पंक्तियाँ हट जाएँगी।</li>
+        <li>आप बाद में वापस आकर बाकी कर सकते हैं — पर आधी रात से पहले।</li>
+      </ol>
+      <div class="note">💡 एक बार में पूरा करना ज़रूरी नहीं। जो किया है वह जमा करें, फिर आगे बढ़ें।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div class="mock-done" style="padding:10px 4px"><i>✅</i><span style="font-size:0.75rem">4 answered · 6 left</span></div>
+  <button class="mock-btn mock-btn-green">✓ Submit my answers</button>
+  <div class="mctx" style="margin-top:10px;text-align:center">
+    “6 answer(s) recorded — 3 OT claim(s) marked, 3 attendance day(s) written.”
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">5</div>
+      <div class="step-title">जिन पंच को अभी सुधार चाहिए</div>
+      <p>ये टूटे हुए सेशन हैं — ग़लत समय, या चेक-आउट गायब। समय ठीक करें और उस पंक्ति का Save दबाएँ।</p>
+      <ol>
+        <li><strong>In</strong> और <strong>Out</strong> का समय ठीक करें।</li>
+        <li>अगर वह आधी रात के बाद निकला तो <strong>+1d</strong> पर टिक करें। पेज आमतौर पर अपने आप टिक कर देता है।</li>
+        <li><strong>Save</strong> दबाएँ। डुप्लिकेट सेशन को बिन आइकॉन से हटाया जा सकता है।</li>
+      </ol>
+      <div class="warn">लगभग 16 घंटे से लंबा सेशन लगभग हमेशा ग़लत <strong>तारीख़</strong> होती है, लंबी शिफ़्ट नहीं। सिर्फ़ समय नहीं, तारीख़ भी जाँचें।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">📝 Punches needing correction</div>
+  <div class="mrow" style="background:#fff3cd;border-color:#ffe08a">
+    <div class="mrow-top"><b>John Mensah</b><span class="mbadge" style="background:#e6a800;color:#333">No check-out</span></div>
+    <div class="mdate">01-09-2026</div>
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <div style="flex:1"><div class="mock-label">In</div><div class="mock-input" style="padding:5px 8px">12:36</div></div>
+      <div style="flex:1"><div class="mock-label">Out</div><div class="mock-input" style="padding:5px 8px;color:#bbb">--:--</div></div>
+      <div style="width:34px"><div class="mock-label">+1d</div><div style="text-align:center;font-size:1rem">☐</div></div>
+    </div>
+    <div class="mbtns" style="margin-top:6px"><span class="mb mb-p">Save</span><span class="mb mb-r">🗑</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">6</div>
+      <div class="step-title">छूटी हुई हाज़िरी जोड़ें</div>
+      <p>अगर किसी ने काम किया और कुछ भी दर्ज नहीं हुआ, तो यहाँ जोड़ें।</p>
+      <ol>
+        <li><strong>Employee</strong> और <strong>Date</strong> चुनें।</li>
+        <li>असली <strong>In</strong> और <strong>Out</strong> समय भरें — शिफ़्ट का तय समय नहीं, जो उसने सचमुच किया।</li>
+        <li>अगर आधी रात के बाद निकला तो <strong>+1d</strong> टिक करें।</li>
+        <li><strong>Add</strong> दबाएँ।</li>
+      </ol>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">➕ Add missing attendance</div>
+  <div class="mock-label">Employee</div><div class="mock-input">Ahmed Hassan</div>
+  <div class="mock-label">Date</div><div class="mock-input">18-09-2026</div>
+  <div style="display:flex;gap:6px">
+    <div style="flex:1"><div class="mock-label">In</div><div class="mock-input" style="padding:5px 8px">17:30</div></div>
+    <div style="flex:1"><div class="mock-label">Out</div><div class="mock-input" style="padding:5px 8px">03:30</div></div>
+    <div style="width:34px"><div class="mock-label">+1d</div><div style="text-align:center;font-size:1rem">☑</div></div>
+  </div>
+  <button class="mock-btn mock-btn-green" style="margin-top:8px">Add</button>
+</div>
+    </div>
+  </div>
+
+  <div class="end-box">
+    <h3>आगे क्या होगा</h3>
+    <p>आपके जवाब सीधे रिकॉर्ड में जाते हैं। HR ओवरटाइम प्रोसेस करके आधी रात के बाद पेरोल चलाएगा। जिसका जवाब आप नहीं देंगे, उसका फ़ैसला आपके बिना होगा — और जिस दिन कुछ दर्ज नहीं, उसे अनुपस्थित माना जाएगा।</p>
+    <a class="end-btn" href="supervisor_correct.html">सत्यापन पेज खोलें →</a>
+  </div>
+</section>
+
+<section id="np" class="lang-section np">
+  <div class="section-header">
+    <div class="lang-flag">🇳🇵</div>
+    <div>
+      <h2>नेपाली</h2>
+      <p>आफ्नो टोलीको हाजिरी र ओभरटाइम कसरी प्रमाणित गर्ने</p>
+    </div>
+  </div>
+
+  <div class="deadline-box">
+    <div class="deadline-clock">🕛</div>
+    <div>
+      <div class="deadline-t">अन्तिम समय: आज राति १२ बजे।</div>
+      <a class="deadline-link" href="supervisor_correct.html">supervisor_correct.html</a>
+    </div>
+  </div>
+
+  <div class="rules-box">
+    <h3>⚠️ पहिले यो पढ्नुहोस्</h3>
+    <ol>
+      <li><strong>अन्तिम समय: आज राति १२ बजे।</strong> त्यसपछि पेरोल चल्छ। एकपटक चलेपछि कुनै पनि कारणले परिवर्तन हुँदैन।</li>
+      <li><strong>समस्या भएका मात्र देखाइएका छन्।</strong> सफा दिनहरू सूचीमा छैनन्। छोटो सूची राम्रो खबर हो, डेटा हराएको होइन।</li>
+      <li><strong>सत्य भन्नुहोस्।</strong> कसैलाई <em>Absent</em> लेख्दा उसको एक दिनको आधार तलब कट्छ। <em>Worked</em> लेख्दा तलब पाउँछ। दुवैको जिम्मेवारी तपाईंको हो।</li>
+      <li><strong>जवाफ दिनेबित्तिकै हराउँछ।</strong> यसको अर्थ सुरक्षित भयो — हराएको होइन। काम गर्दै जाँदा सूची छोटो हुँदै जान्छ।</li>
+      <li><strong>भुक्तानी तपाईंले गर्नुहुन्न।</strong> तपाईंका जवाफ HR कहाँ जान्छन्। तपाईं के भयो भन्दै हुनुहुन्छ, पैसा स्वीकृत गर्दै होइन।</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">पेज खोल्नुहोस् र आफ्नो ब्रान्च लोड गर्नुहोस्</div>
+      <p>लिङ्क आफ्नो फोन वा ब्रान्चको कम्प्युटरमा खोल्नुहोस्। जुनसुकै ब्राउजर चल्छ। पासवर्ड छैन।</p>
+      <ol>
+        <li><strong>Supervisor</strong> मा ट्याप गरी सूचीबाट आफ्नै नाम छान्नुहोस्।</li>
+        <li>तपाईंको <strong>Location</strong> आफैं भरिन्छ। आफ्नै ब्रान्च हो कि जाँच्नुहोस्।</li>
+        <li><strong>Load</strong> थिच्नुहोस्।</li>
+        <li>केही सेकेन्ड पर्खनुहोस्। तपाईंका कर्मचारी र बाँकी कामहरू देखिनेछन्।</li>
+      </ol>
+      <div class="note">💡 आफ्नै नाम मात्र छान्नुहोस्। तपाईंलाई आफ्नै ब्रान्चका कर्मचारी मात्र देखिन्छन्।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div class="mock-header"><span class="mock-icon">📋</span>
+    <h4>Attendance &amp; Overtime Verification</h4><p>22 August 2026 — today</p></div>
+  <div class="mock-label">Supervisor</div>
+  <div class="mock-input">Ram Bahadur — Jabriya</div>
+  <div class="mock-label">Location</div>
+  <div class="mock-input" style="background:#eef1f4;color:#666">Jabriya</div>
+  <button class="mock-btn mock-btn-primary">🔍 Load</button>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">ओभरटाइम दाबी — के उसले काम गर्‍यो?</div>
+      <p>यी तपाईंका कर्मचारीले किओस्कबाट पठाएका OT घण्टा हुन्। हरेकको लागि पेजले पन्चले के भन्छ देखाउँछ। निर्णय तपाईंको।</p>
+      <ol>
+        <li><strong>Yes</strong> — दाबी गरेको पूरै घण्टा काम गर्‍यो।</li>
+        <li><strong>Partly</strong> — केही घण्टा मात्र काम गर्‍यो। Hours बाकसमा सही सङ्ख्या लेख्नुहोस्।</li>
+        <li><strong>No</strong> — त्यो दिन ओभरटाइम गरेन। घण्टा ० हुन्छ।</li>
+      </ol>
+      <div class="note">🌙 <strong>नाइट शिफ्ट:</strong> निलो ब्याज <em>night shift from 13-09-2026</em> को अर्थ शिफ्ट अघिल्लो साँझ सुरु भई मध्यरातपछि सकियो। ओभरटाइम त्यही शिफ्टको हो। यो सामान्य हो — गल्ती होइन।</div>
+      <div class="warn"><b>⚠️ सबैभन्दा सामान्य गल्ती: माथि राउन्ड गर्नु।</b><br>ओभरटाइम <b>वास्तवमा गरेको समय</b> अनुसार पाइन्छ, अर्को पूरा घण्टासम्म बढाएर होइन। पन्चले <b>६ घण्टा ७ मिनेट</b> देखाए, दाबी <b>७ घण्टा</b> हुन सक्दैन — त्यो ६ घण्टा ७ मिनेट नै हो। दाबी पन्चभन्दा बढी भएको ठाउँमा पेजले रातो रङमा कति बढी हो देखाउँछ, र <b>Use the punch figure</b> बटन दिन्छ जसले एक ट्यापमा सही सङ्ख्या भर्दिन्छ। पन्चको समय नै गलत छ भने, जवाफ दिनुअघि तलको सुधार तालिकामा मिलाउनुहोस्।</div><div class="warn">२२–३१ अगस्टको लागि पन्चको समय नै छैन। सम्झनाको आधारमा जवाफ दिनुहोस्।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">💰 Overtime claims <span class="mbadge" style="background:#6c757d">3</span></div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Suman B.</b><span class="mnum">2h</span></div>
+    <div class="mdate">14-09-2026 <span class="mbadge" style="background:#0dcaf0;color:#222">night shift from 13-09</span></div>
+    <div class="mctx">Night shift — started 13-09 at 17:30 and finished 14-09 at 03:30, 10h worked (1h over the shift).</div>
+    <div class="mbtns"><span class="mb mb-g">Yes</span><span class="mb mb-y">Partly</span><span class="mb mb-r">No</span><span class="mhrs">2</span></div>
+  </div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Bibek N.</b><span class="mnum">6h</span></div>
+    <div class="mdate">10-09-2026</div>
+    <div class="mctx">Punched in at 19:01 and never punched out.</div>
+    <div class="mbtns"><span class="mb mb-g">Yes</span><span class="mb mb-y">Partly</span><span class="mb mb-r">No</span><span class="mhrs">6</span></div>
+  </div>
+  <div class="mrow" style="background:#fff5f5;border-color:#f5c2c7">
+    <div class="mrow-top"><b>Kristal G.</b><span class="mnum">6h</span></div>
+    <div class="mdate">03-09-2026</div>
+    <div class="mctx">Punched 12:39 → 03:46, worked 14h 17m. The punches show 5h 17m of overtime.</div>
+    <div style="color:#b02a37;font-weight:700;font-size:0.64rem;margin-top:4px">▲ 43m more than the punches show — rounded up to a whole hour</div>
+    <div class="mbtns"><span class="mb mb-r" style="background:#fff">Use the punch figure: 5h 17m</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+      <div class="step-title">हाजिरीका दिन — वास्तवमा के भयो?</div>
+      <p>यी दिनहरूको निर्णय पन्चबाट हुन सकेन। हरेकको लागि वास्तवमा के भयो छान्नुहोस्।</p>
+      <ol>
+        <li><strong>Worked</strong> — ऊ कामममा थियो। उसको शिफ्टको समय दर्ता हुन्छ।</li>
+        <li><strong>Day Off</strong> — त्यो दिन उसको बिदा थियो।</li>
+        <li><strong>Absent</strong> — ऊ आएन। <strong>एक दिनको तलब कट्छ।</strong></li>
+      </ol>
+      <div class="note">🔴 रातो <strong>Missing</strong> पङ्क्तिको अर्थ त्यो दिन ऊ हाजिरी सिटमा छँदै छैन, तर बाँकी ब्रान्च छ। यी नछोड्नुहोस् — कसैले नभने ऊ तलबविहीन हुन्छ।</div>
+      <div class="warn">बटनमा <strong>Worked…</strong> (तीन थोप्लासहित) देखिए, प्रणालीले त्यो दिन कुन शिफ्ट थियो भन्न सक्दैन। ट्याप गरेर पेजको तल्लो बाकसमा उसको वास्तविक इन/आउट समय हाल्नुहोस्।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">📅 Attendance days <span class="mbadge" style="background:#6c757d">2</span></div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Mukti L.</b><span class="mbadge" style="background:#6c757d">Absent</span></div>
+    <div class="mdate">15-09-2026 · Jabriya First Shift</div>
+    <div class="mctx">Marked ABSENT — this deducts a day's pay unless you say otherwise.</div>
+    <div class="mbtns"><span class="mb mb-g">Worked</span><span class="mb mb-b">Day Off</span><span class="mb mb-r">Absent</span></div>
+  </div>
+  <div class="mrow" style="background:#fde8e8;border-color:#f5c2c7">
+    <div class="mrow-top"><b>Jit Bahadur T.</b><span class="mbadge" style="background:#dc3545">Missing</span></div>
+    <div class="mdate">18-09-2026</div>
+    <div class="mctx">He is not on the attendance sheet for this day at all, though the rest of the location is.</div>
+    <div class="mbtns"><span class="mb mb-g">Worked…</span><span class="mb mb-b">Day Off</span><span class="mb mb-r">Absent</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+      <div class="step-title">आफ्ना जवाफ पेस गर्नुहोस्</div>
+      <p>स्क्रिनको तलको हरियो पट्टीले कति जवाफ दिइयो र कति बाँकी छ देखाउँछ।</p>
+      <ol>
+        <li>जति सक्नुहुन्छ जवाफ दिनुहोस्, त्यसपछि <strong>Submit my answers</strong> थिच्नुहोस्।</li>
+        <li>एउटा सन्देशले के सुरक्षित भयो भन्छ।</li>
+        <li>पेज पुनः लोड हुन्छ र जवाफ दिइएका पङ्क्ति हराउँछन्।</li>
+        <li>पछि फर्केर बाँकी गर्न सक्नुहुन्छ — तर मध्यरातअघि।</li>
+      </ol>
+      <div class="note">💡 एकैपटक सक्नुपर्दैन। गरेको जति पेस गर्नुहोस्, अनि जारी राख्नुहोस्।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div class="mock-done" style="padding:10px 4px"><i>✅</i><span style="font-size:0.75rem">4 answered · 6 left</span></div>
+  <button class="mock-btn mock-btn-green">✓ Submit my answers</button>
+  <div class="mctx" style="margin-top:10px;text-align:center">
+    “6 answer(s) recorded — 3 OT claim(s) marked, 3 attendance day(s) written.”
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">5</div>
+      <div class="step-title">अझै सुधार चाहिने पन्चहरू</div>
+      <p>यी बिग्रिएका सेसन हुन् — गलत समय, वा चेक-आउट हराएको। समय मिलाएर त्यो पङ्क्तिको Save थिच्नुहोस्।</p>
+      <ol>
+        <li><strong>In</strong> र <strong>Out</strong> समय मिलाउनुहोस्।</li>
+        <li>मध्यरातपछि सकिएको भए <strong>+1d</strong> मा टिक लगाउनुहोस्। पेजले प्रायः आफैं टिक गर्छ।</li>
+        <li><strong>Save</strong> थिच्नुहोस्। डुप्लिकेट सेसन बिन आइकनबाट हटाउन सकिन्छ।</li>
+      </ol>
+      <div class="warn">करिब १६ घण्टाभन्दा लामो सेसन प्रायः सधैं गलत <strong>मिति</strong> हो, लामो शिफ्ट होइन। समय मात्र होइन, मिति पनि जाँच्नुहोस्।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">📝 Punches needing correction</div>
+  <div class="mrow" style="background:#fff3cd;border-color:#ffe08a">
+    <div class="mrow-top"><b>John Mensah</b><span class="mbadge" style="background:#e6a800;color:#333">No check-out</span></div>
+    <div class="mdate">01-09-2026</div>
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <div style="flex:1"><div class="mock-label">In</div><div class="mock-input" style="padding:5px 8px">12:36</div></div>
+      <div style="flex:1"><div class="mock-label">Out</div><div class="mock-input" style="padding:5px 8px;color:#bbb">--:--</div></div>
+      <div style="width:34px"><div class="mock-label">+1d</div><div style="text-align:center;font-size:1rem">☐</div></div>
+    </div>
+    <div class="mbtns" style="margin-top:6px"><span class="mb mb-p">Save</span><span class="mb mb-r">🗑</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">6</div>
+      <div class="step-title">छुटेको हाजिरी थप्नुहोस्</div>
+      <p>कसैले काम गर्‍यो तर केही दर्ता भएन भने यहाँ थप्नुहोस्।</p>
+      <ol>
+        <li><strong>Employee</strong> र <strong>Date</strong> छान्नुहोस्।</li>
+        <li>वास्तविक <strong>In</strong> र <strong>Out</strong> समय हाल्नुहोस् — शिफ्टको तोकिएको समय होइन, उसले साँच्चै गरेको।</li>
+        <li>मध्यरातपछि सकिएको भए <strong>+1d</strong> टिक गर्नुहोस्।</li>
+        <li><strong>Add</strong> थिच्नुहोस्।</li>
+      </ol>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">➕ Add missing attendance</div>
+  <div class="mock-label">Employee</div><div class="mock-input">Ahmed Hassan</div>
+  <div class="mock-label">Date</div><div class="mock-input">18-09-2026</div>
+  <div style="display:flex;gap:6px">
+    <div style="flex:1"><div class="mock-label">In</div><div class="mock-input" style="padding:5px 8px">17:30</div></div>
+    <div style="flex:1"><div class="mock-label">Out</div><div class="mock-input" style="padding:5px 8px">03:30</div></div>
+    <div style="width:34px"><div class="mock-label">+1d</div><div style="text-align:center;font-size:1rem">☑</div></div>
+  </div>
+  <button class="mock-btn mock-btn-green" style="margin-top:8px">Add</button>
+</div>
+    </div>
+  </div>
+
+  <div class="end-box">
+    <h3>अब के हुन्छ</h3>
+    <p>तपाईंका जवाफ सिधै रेकर्डमा जान्छन्। HR ले ओभरटाइम प्रोसेस गरी मध्यरातपछि पेरोल चलाउँछ। जवाफ नदिएको कुराको निर्णय तपाईंबिना हुन्छ — र केही दर्ता नभएको दिनलाई अनुपस्थित मानिन्छ।</p>
+    <a class="end-btn" href="supervisor_correct.html">प्रमाणीकरण पेज खोल्नुहोस् →</a>
+  </div>
+</section>
+
+<section id="bn" class="lang-section bn">
+  <div class="section-header">
+    <div class="lang-flag">🇧🇩</div>
+    <div>
+      <h2>বাংলা</h2>
+      <p>আপনার দলের হাজিরা ও ওভারটাইম কীভাবে যাচাই করবেন</p>
+    </div>
+  </div>
+
+  <div class="deadline-box">
+    <div class="deadline-clock">🕛</div>
+    <div>
+      <div class="deadline-t">শেষ সময়: আজ রাত ১২টা।</div>
+      <a class="deadline-link" href="supervisor_correct.html">supervisor_correct.html</a>
+    </div>
+  </div>
+
+  <div class="rules-box">
+    <h3>⚠️ আগে এটি পড়ুন</h3>
+    <ol>
+      <li><strong>শেষ সময়: আজ রাত ১২টা।</strong> এরপর পেরোল চলবে। একবার চলে গেলে কোনো কারণেই কোনো পরিবর্তন সম্ভব নয়।</li>
+      <li><strong>শুধু সমস্যাগুলোই দেখানো হয়েছে।</strong> যেসব দিন পরিষ্কার ছিল সেগুলো তালিকায় নেই। ছোট তালিকা ভালো খবর, তথ্য হারায়নি।</li>
+      <li><strong>সত্য বলুন।</strong> কাউকে <em>Absent</em> লিখলে তার এক দিনের মূল বেতন কাটা যায়। <em>Worked</em> লিখলে সে বেতন পায়। দুটোরই দায়িত্ব আপনার।</li>
+      <li><strong>উত্তর দিলেই সেটি সরে যাবে।</strong> এর মানে সংরক্ষিত হয়েছে — হারায়নি। কাজ করতে করতে তালিকা ছোট হবে।</li>
+      <li><strong>টাকা আপনি দিচ্ছেন না।</strong> আপনার উত্তর HR-এর কাছে যায়। আপনি কী ঘটেছে তা বলছেন, টাকা অনুমোদন করছেন না।</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">পেজ খুলুন এবং আপনার ব্রাঞ্চ লোড করুন</div>
+      <p>লিংকটি আপনার ফোনে বা ব্রাঞ্চের কম্পিউটারে খুলুন। যেকোনো ব্রাউজার চলবে। কোনো পাসওয়ার্ড নেই।</p>
+      <ol>
+        <li><strong>Supervisor</strong>-এ ট্যাপ করে তালিকা থেকে নিজের নাম বেছে নিন।</li>
+        <li>আপনার <strong>Location</strong> নিজে থেকেই আসবে। এটি আপনার ব্রাঞ্চ কিনা দেখে নিন।</li>
+        <li><strong>Load</strong> চাপুন।</li>
+        <li>কয়েক সেকেন্ড অপেক্ষা করুন। আপনার কর্মী ও বাকি কাজ দেখা যাবে।</li>
+      </ol>
+      <div class="note">💡 শুধু নিজের নাম বাছুন। আপনি শুধু নিজের ব্রাঞ্চের কর্মী দেখতে পাবেন।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div class="mock-header"><span class="mock-icon">📋</span>
+    <h4>Attendance &amp; Overtime Verification</h4><p>22 August 2026 — today</p></div>
+  <div class="mock-label">Supervisor</div>
+  <div class="mock-input">Ram Bahadur — Jabriya</div>
+  <div class="mock-label">Location</div>
+  <div class="mock-input" style="background:#eef1f4;color:#666">Jabriya</div>
+  <button class="mock-btn mock-btn-primary">🔍 Load</button>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">ওভারটাইম দাবি — সে কি কাজ করেছে?</div>
+      <p>এগুলো আপনার কর্মীদের কিয়স্ক থেকে পাঠানো OT ঘণ্টা। প্রতিটির জন্য পেজ দেখায় পাঞ্চ কী বলছে। সিদ্ধান্ত আপনার।</p>
+      <ol>
+        <li><strong>Yes</strong> — দাবি করা পুরো ঘণ্টা সে কাজ করেছে।</li>
+        <li><strong>Partly</strong> — কিছু ঘণ্টা কাজ করেছে। Hours ঘরে সঠিক সংখ্যা লিখুন।</li>
+        <li><strong>No</strong> — সেদিন ওভারটাইম করেনি। ঘণ্টা ০ হবে।</li>
+      </ol>
+      <div class="note">🌙 <strong>নাইট শিফট:</strong> নীল ব্যাজ <em>night shift from 13-09-2026</em> মানে শিফট আগের সন্ধ্যায় শুরু হয়ে মধ্যরাতের পরে শেষ হয়েছে। ওভারটাইম সেই শিফটেরই। এটি স্বাভাবিক — ভুল নয়।</div>
+      <div class="warn"><b>⚠️ সবচেয়ে সাধারণ ভুল: উপরের দিকে রাউন্ড করা।</b><br>ওভারটাইম <b>প্রকৃত কাজের সময়</b> অনুযায়ী দেওয়া হয়, পরের পূর্ণ ঘণ্টা পর্যন্ত বাড়িয়ে নয়। পাঞ্চ যদি <b>৬ ঘণ্টা ৭ মিনিট</b> দেখায়, দাবি <b>৭ ঘণ্টা</b> হতে পারে না — সেটি ৬ ঘণ্টা ৭ মিনিটই। যেখানে দাবি পাঞ্চের চেয়ে বেশি, পেজ লাল রঙে দেখায় ঠিক কতটা বেশি, এবং <b>Use the punch figure</b> বোতাম দেয় যা এক ট্যাপে সঠিক সংখ্যা বসিয়ে দেয়। পাঞ্চের সময়ই ভুল হলে, উত্তর দেওয়ার আগে নিচের সংশোধন টেবিলে সেটি ঠিক করুন।</div><div class="warn">২২–৩১ অগাস্টের জন্য কোনো পাঞ্চ সময়ই নেই। যা মনে আছে তার ভিত্তিতে উত্তর দিন।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">💰 Overtime claims <span class="mbadge" style="background:#6c757d">3</span></div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Suman B.</b><span class="mnum">2h</span></div>
+    <div class="mdate">14-09-2026 <span class="mbadge" style="background:#0dcaf0;color:#222">night shift from 13-09</span></div>
+    <div class="mctx">Night shift — started 13-09 at 17:30 and finished 14-09 at 03:30, 10h worked (1h over the shift).</div>
+    <div class="mbtns"><span class="mb mb-g">Yes</span><span class="mb mb-y">Partly</span><span class="mb mb-r">No</span><span class="mhrs">2</span></div>
+  </div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Bibek N.</b><span class="mnum">6h</span></div>
+    <div class="mdate">10-09-2026</div>
+    <div class="mctx">Punched in at 19:01 and never punched out.</div>
+    <div class="mbtns"><span class="mb mb-g">Yes</span><span class="mb mb-y">Partly</span><span class="mb mb-r">No</span><span class="mhrs">6</span></div>
+  </div>
+  <div class="mrow" style="background:#fff5f5;border-color:#f5c2c7">
+    <div class="mrow-top"><b>Kristal G.</b><span class="mnum">6h</span></div>
+    <div class="mdate">03-09-2026</div>
+    <div class="mctx">Punched 12:39 → 03:46, worked 14h 17m. The punches show 5h 17m of overtime.</div>
+    <div style="color:#b02a37;font-weight:700;font-size:0.64rem;margin-top:4px">▲ 43m more than the punches show — rounded up to a whole hour</div>
+    <div class="mbtns"><span class="mb mb-r" style="background:#fff">Use the punch figure: 5h 17m</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+      <div class="step-title">হাজিরার দিন — আসলে কী হয়েছিল?</div>
+      <p>এই দিনগুলোর সিদ্ধান্ত পাঞ্চ থেকে হয়নি। প্রতিটির জন্য আসলে কী হয়েছিল বাছুন।</p>
+      <ol>
+        <li><strong>Worked</strong> — সে কাজে ছিল। তার শিফটের সময় রেকর্ড হবে।</li>
+        <li><strong>Day Off</strong> — সেদিন তার ছুটি ছিল।</li>
+        <li><strong>Absent</strong> — সে আসেনি। <strong>এক দিনের বেতন কাটা যাবে।</strong></li>
+      </ol>
+      <div class="note">🔴 লাল <strong>Missing</strong> সারির মানে সেদিন সে হাজিরা শিটে একেবারেই নেই, অথচ বাকি ব্রাঞ্চ আছে। এগুলো এড়াবেন না — কেউ না বললে সে বেতন পাবে না।</div>
+      <div class="warn">বোতামে <strong>Worked…</strong> (তিন ফোঁটাসহ) দেখালে, সিস্টেম বলতে পারছে না সেদিন কোন শিফট ছিল। ট্যাপ করে পেজের নিচের ঘরে তার আসল ইন/আউট সময় লিখুন।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">📅 Attendance days <span class="mbadge" style="background:#6c757d">2</span></div>
+  <div class="mrow">
+    <div class="mrow-top"><b>Mukti L.</b><span class="mbadge" style="background:#6c757d">Absent</span></div>
+    <div class="mdate">15-09-2026 · Jabriya First Shift</div>
+    <div class="mctx">Marked ABSENT — this deducts a day's pay unless you say otherwise.</div>
+    <div class="mbtns"><span class="mb mb-g">Worked</span><span class="mb mb-b">Day Off</span><span class="mb mb-r">Absent</span></div>
+  </div>
+  <div class="mrow" style="background:#fde8e8;border-color:#f5c2c7">
+    <div class="mrow-top"><b>Jit Bahadur T.</b><span class="mbadge" style="background:#dc3545">Missing</span></div>
+    <div class="mdate">18-09-2026</div>
+    <div class="mctx">He is not on the attendance sheet for this day at all, though the rest of the location is.</div>
+    <div class="mbtns"><span class="mb mb-g">Worked…</span><span class="mb mb-b">Day Off</span><span class="mb mb-r">Absent</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+      <div class="step-title">আপনার উত্তর জমা দিন</div>
+      <p>স্ক্রিনের নিচের সবুজ বার দেখায় কতগুলো উত্তর দিয়েছেন ও কত বাকি।</p>
+      <ol>
+        <li>যত পারেন উত্তর দিন, তারপর <strong>Submit my answers</strong> চাপুন।</li>
+        <li>একটি বার্তা জানাবে কী সংরক্ষিত হয়েছে।</li>
+        <li>পেজ আবার লোড হবে এবং উত্তর দেওয়া সারিগুলো সরে যাবে।</li>
+        <li>পরে ফিরে এসে বাকিটা করতে পারেন — তবে মধ্যরাতের আগে।</li>
+      </ol>
+      <div class="note">💡 একবারেই শেষ করতে হবে না। যা করেছেন জমা দিন, তারপর চালিয়ে যান।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div class="mock-done" style="padding:10px 4px"><i>✅</i><span style="font-size:0.75rem">4 answered · 6 left</span></div>
+  <button class="mock-btn mock-btn-green">✓ Submit my answers</button>
+  <div class="mctx" style="margin-top:10px;text-align:center">
+    “6 answer(s) recorded — 3 OT claim(s) marked, 3 attendance day(s) written.”
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">5</div>
+      <div class="step-title">যে পাঞ্চগুলোর এখনও সংশোধন দরকার</div>
+      <p>এগুলো ভাঙা সেশন — ভুল সময়, বা চেক-আউট নেই। সময় ঠিক করে ওই সারির Save চাপুন।</p>
+      <ol>
+        <li><strong>In</strong> ও <strong>Out</strong> সময় ঠিক করুন।</li>
+        <li>মধ্যরাতের পরে শেষ হলে <strong>+1d</strong> টিক দিন। পেজ সাধারণত নিজেই টিক দেয়।</li>
+        <li><strong>Save</strong> চাপুন। ডুপ্লিকেট সেশন বিন আইকন দিয়ে মুছে ফেলা যায়।</li>
+      </ol>
+      <div class="warn">প্রায় ১৬ ঘণ্টার বেশি সেশন প্রায় সবসময়ই ভুল <strong>তারিখ</strong>, লম্বা শিফট নয়। শুধু সময় নয়, তারিখও দেখুন।</div>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">📝 Punches needing correction</div>
+  <div class="mrow" style="background:#fff3cd;border-color:#ffe08a">
+    <div class="mrow-top"><b>John Mensah</b><span class="mbadge" style="background:#e6a800;color:#333">No check-out</span></div>
+    <div class="mdate">01-09-2026</div>
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <div style="flex:1"><div class="mock-label">In</div><div class="mock-input" style="padding:5px 8px">12:36</div></div>
+      <div style="flex:1"><div class="mock-label">Out</div><div class="mock-input" style="padding:5px 8px;color:#bbb">--:--</div></div>
+      <div style="width:34px"><div class="mock-label">+1d</div><div style="text-align:center;font-size:1rem">☐</div></div>
+    </div>
+    <div class="mbtns" style="margin-top:6px"><span class="mb mb-p">Save</span><span class="mb mb-r">🗑</span></div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">6</div>
+      <div class="step-title">বাদ পড়া হাজিরা যোগ করুন</div>
+      <p>কেউ কাজ করেছে অথচ কিছুই রেকর্ড হয়নি — এখানে যোগ করুন।</p>
+      <ol>
+        <li><strong>Employee</strong> ও <strong>Date</strong> বাছুন।</li>
+        <li>আসল <strong>In</strong> ও <strong>Out</strong> সময় লিখুন — শিফটের নির্ধারিত সময় নয়, সে যা সত্যিই করেছে।</li>
+        <li>মধ্যরাতের পরে শেষ হলে <strong>+1d</strong> টিক দিন।</li>
+        <li><strong>Add</strong> চাপুন।</li>
+      </ol>
+    </div>
+    <div class="mock-device">
+<div class="mock-screen">
+  <div style="font-size:0.72rem;font-weight:700;margin-bottom:6px">➕ Add missing attendance</div>
+  <div class="mock-label">Employee</div><div class="mock-input">Ahmed Hassan</div>
+  <div class="mock-label">Date</div><div class="mock-input">18-09-2026</div>
+  <div style="display:flex;gap:6px">
+    <div style="flex:1"><div class="mock-label">In</div><div class="mock-input" style="padding:5px 8px">17:30</div></div>
+    <div style="flex:1"><div class="mock-label">Out</div><div class="mock-input" style="padding:5px 8px">03:30</div></div>
+    <div style="width:34px"><div class="mock-label">+1d</div><div style="text-align:center;font-size:1rem">☑</div></div>
+  </div>
+  <button class="mock-btn mock-btn-green" style="margin-top:8px">Add</button>
+</div>
+    </div>
+  </div>
+
+  <div class="end-box">
+    <h3>এরপর কী হবে</h3>
+    <p>আপনার উত্তর সরাসরি রেকর্ডে যায়। HR ওভারটাইম প্রক্রিয়া করে মধ্যরাতের পরে পেরোল চালাবে। যেগুলোর উত্তর দেবেন না, সেগুলোর সিদ্ধান্ত আপনাকে ছাড়াই হবে — আর যেদিন কিছুই রেকর্ড নেই সেটি অনুপস্থিত ধরা হবে।</p>
+    <a class="end-btn" href="supervisor_correct.html">যাচাই পেজ খুলুন →</a>
+  </div>
+</section>
+
+
+<div style="background:var(--dark);color:#fff;text-align:center;padding:28px;font-size:0.85rem;opacity:0.8">
+  Your Company — HR Department &nbsp;|&nbsp; For help, message HR on the group
+</div>
+
+</body>
+</html>

@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR — Roster Planner Training Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:oklch(0.16 0.02 200);--teal:oklch(0.65 0.13 190);
+  --muted:oklch(0.52 0.01 200);--border:oklch(0.9 0.005 200);
+  --text:oklch(0.2 0.01 200);--bg:oklch(0.985 0.002 200);
+  --green:oklch(0.6 0.14 165);--amber:oklch(0.75 0.13 85);
+  --red:oklch(0.55 0.16 25);--slate:oklch(0.5 0.01 200);
+}
+body{font-family:system-ui,sans-serif;color:var(--text);background:#fff;line-height:1.6}
+@media print{
+  .no-print{display:none}
+  .section{page-break-before:always}
+  body{font-size:11pt}
+}
+
+/* Cover */
+.cover{background:var(--dark);color:#fff;min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+.cover-logo{width:70px;height:70px;border-radius:16px;background:var(--teal);
+  display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:30px;color:var(--dark);margin-bottom:24px}
+.cover h1{font-family:'Space Grotesk',sans-serif;font-size:2.2rem;font-weight:700;margin-bottom:10px}
+.cover h2{font-size:1.1rem;font-weight:400;opacity:0.7;margin-bottom:36px}
+.cover p{opacity:0.55;max-width:440px;font-size:0.9rem}
+.cover-footer{margin-top:60px;opacity:0.45;font-size:0.85rem}
+
+/* Nav */
+.nav-bar{position:sticky;top:0;z-index:100;background:#fff;border-bottom:2px solid var(--border);
+  display:flex;overflow-x:auto;font-family:'Space Grotesk',sans-serif}
+.nav-bar a{padding:14px 20px;color:var(--muted);text-decoration:none;font-weight:600;
+  font-size:0.85rem;white-space:nowrap}
+.nav-bar a:hover{color:var(--dark)}
+
+/* Section */
+.section{max-width:960px;margin:0 auto;padding:48px 24px}
+.step{display:flex;gap:28px;margin-bottom:48px;align-items:flex-start}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;
+  border-radius:50%;background:var(--teal);color:var(--dark);font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:1rem;margin-bottom:10px;flex-shrink:0}
+.step-title{font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:700;margin-bottom:10px}
+.step-left{flex:1;min-width:0}
+.step p{margin-bottom:8px;color:#333}
+.step ul,.step ol{padding-left:20px;margin-bottom:8px}
+.step li{margin-bottom:6px}
+.step .note{background:#e8f4fd;border-left:4px solid #0d6efd;padding:10px 14px;
+  border-radius:0 8px 8px 0;font-size:0.9rem;color:#0a3d62;margin-top:10px}
+.step .warn{background:#fff3cd;border-left:4px solid #ffc107;padding:10px 14px;
+  border-radius:0 8px 8px 0;font-size:0.9rem;color:#5a4400;margin-top:10px}
+
+.section-header{display:flex;align-items:center;gap:16px;margin-bottom:36px;
+  padding-bottom:16px;border-bottom:3px solid var(--teal)}
+.section-icon{width:50px;height:50px;border-radius:12px;background:var(--teal);
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.section-header h2{font-family:'Space Grotesk',sans-serif;font-size:1.7rem;font-weight:700}
+.section-header p{color:var(--muted);font-size:0.9rem}
+
+/* Browser mockup frame */
+.mock-browser{border:1px solid var(--border);border-radius:12px;overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);flex-shrink:0}
+.mock-browser-bar{background:#f1f3f5;padding:9px 14px;display:flex;align-items:center;gap:6px;
+  border-bottom:1px solid var(--border)}
+.mock-dot{width:9px;height:9px;border-radius:50%}
+.mock-browser-body{background:var(--bg);font-family:'Space Grotesk',sans-serif}
+
+/* Login mockup */
+.mock-login-wrap{background:var(--dark);padding:40px 20px;display:flex;justify-content:center}
+.mock-login-card{background:#fff;border-radius:16px;padding:26px 22px;max-width:220px;text-align:center}
+.mock-login-card .logo{width:38px;height:38px;border-radius:10px;background:var(--teal);color:var(--dark);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;margin:0 auto 10px}
+.mock-login-card h4{font-size:13px;font-weight:600;margin-bottom:3px}
+.mock-login-card p{font-size:10px;color:var(--muted);margin-bottom:14px}
+.mock-in{border:1px solid var(--border);border-radius:7px;padding:8px;font-size:10px;
+  margin-bottom:8px;color:#999;text-align:center}
+.mock-login-btn{width:100%;border:none;border-radius:7px;background:var(--teal);color:var(--dark);
+  padding:8px;font-size:10px;font-weight:700}
+
+/* Topbar mockup */
+.mock-top{background:#fff;border-bottom:1px solid var(--border);padding:12px 16px;
+  display:flex;justify-content:space-between;align-items:center}
+.mock-top h5{font-size:12px;font-weight:700}
+.mock-top .sub{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.mock-logout{border:1px solid var(--border);border-radius:6px;background:#fff;
+  padding:4px 10px;font-size:9px;color:var(--muted)}
+
+.mock-content{padding:16px}
+.mock-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.mock-card h6{font-size:11px;font-weight:700;margin-bottom:8px}
+
+/* Toolbar mockup */
+.mock-toolbar{display:flex;gap:6px;flex-wrap:wrap;align-items:end;font-size:9px}
+.mock-toolbar .grp label{display:block;color:var(--muted);font-size:8px;margin-bottom:2px;font-weight:600}
+.mock-toolbar .grp .box{border:1px solid var(--border);border-radius:5px;padding:5px 7px;font-size:9px}
+.mock-btn{border:none;border-radius:5px;padding:6px 10px;font-size:9px;font-weight:700}
+.mock-btn-primary{background:var(--teal);color:var(--dark)}
+.mock-btn-secondary{background:oklch(0.94 0.003 200);color:var(--text)}
+.mock-btn-success{background:var(--green);color:#fff}
+.mock-btn-outline{background:#fff;border:1px solid var(--border);color:var(--muted)}
+
+/* Grid table mockup */
+.mock-table{width:100%;border-collapse:collapse;font-size:8.5px}
+.mock-table th,.mock-table td{border:1px solid var(--border);padding:5px;text-align:center}
+.mock-table th{background:var(--bg);font-weight:700;text-transform:uppercase;color:var(--muted);font-size:7.5px}
+.mock-table td.name{text-align:left;font-weight:600;white-space:nowrap}
+.mock-table td.name .id{display:block;font-weight:400;color:var(--muted);font-size:7px}
+.mock-sel{width:100%;border:1px solid var(--border);border-radius:4px;padding:2px;font-size:8px;background:#fff}
+.mock-sel.off{background:var(--slate);color:#fff;font-weight:600}
+.mock-sel.working{background:oklch(0.94 0.05 165);color:oklch(0.35 0.1 165)}
+.mock-locked{background:oklch(0.94 0.05 85);color:oklch(0.45 0.12 85);font-size:7px;font-weight:600;
+  padding:4px 2px;border-radius:4px}
+.mock-pub-badge{font-size:6.5px;color:var(--green);margin-top:2px}
+.mock-amend-link{color:var(--amber);font-size:6.5px}
+
+/* Discrepancy mockup */
+.mock-disc-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);font-size:9px}
+.mock-disc-row:last-child{border-bottom:none}
+.mock-disc-meta{color:var(--muted);font-size:8px}
+
+/* Amend modal mockup */
+.mock-modal-box{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;
+  max-width:220px;margin:20px auto;box-shadow:0 8px 20px rgba(0,0,0,0.1)}
+.mock-modal-box h6{font-size:11px;font-weight:700;margin-bottom:4px}
+.mock-modal-box .who{font-size:8px;color:var(--muted);margin-bottom:10px}
+.mock-label{font-size:8px;color:var(--muted);font-weight:600;display:block;margin:8px 0 3px}
+.mock-textarea{border:1px solid var(--border);border-radius:5px;padding:6px;font-size:8px;
+  width:100%;min-height:28px;color:#999}
+
+/* Team & transfer request mockups */
+.mock-team-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);font-size:9px}
+.mock-team-row:last-child{border-bottom:none}
+.mock-team-row .id{color:var(--muted);font-size:7.5px;font-family:'JetBrains Mono',monospace;margin-left:5px}
+.mock-badge-warn{display:inline-block;background:oklch(0.94 0.05 25);color:oklch(0.5 0.14 25);
+  font-size:6.5px;font-weight:600;padding:2px 6px;border-radius:8px;margin-left:6px}
+.mock-req-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);font-size:9px}
+.mock-req-row:last-child{border-bottom:none}
+.mock-req-meta{color:var(--muted);font-size:7.5px}
+.mock-status-pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:7px;font-weight:600}
+.mock-status-pending{background:oklch(0.94 0.05 85);color:oklch(0.45 0.12 85)}
+.mock-status-approved{background:oklch(0.94 0.05 165);color:oklch(0.4 0.1 165)}
+.mock-status-rejected{background:oklch(0.94 0.03 25);color:oklch(0.5 0.14 25)}
+
+/* Quick ref table */
+.ref-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:0.9rem}
+.ref-table th{background:var(--dark);color:#fff;padding:10px 14px;text-align:left;font-size:0.85rem}
+.ref-table td{padding:10px 14px;border-bottom:1px solid var(--border)}
+.ref-table tr:nth-child(even) td{background:#f8f9fa}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600}
+.badge-teal{background:oklch(0.94 0.05 190);color:oklch(0.4 0.1 190)}
+.badge-green{background:#d1e7dd;color:#0a5233}
+.badge-amber{background:#fff3cd;color:#664d03}
+.badge-red{background:#f8d7da;color:#58151c}
+
+@media(max-width:680px){
+  .step{flex-direction:column}
+  .mock-browser{margin:0 auto;max-width:280px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     COVER
+════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-logo">M</div>
+  <h1>Roster Planner</h1>
+  <h2>Supervisor Training Guide</h2>
+  <p>This guide walks you through planning your team's weekly schedule, handling emergencies, and reviewing attendance mismatches. Read it once before your first login.</p>
+  <div class="cover-footer">Your Company — HR Department</div>
+</div>
+
+<nav class="nav-bar no-print">
+  <a href="#login">1. Login</a>
+  <a href="#discrepancies">2. Discrepancies</a>
+  <a href="#load">3. Load a Range</a>
+  <a href="#grid">4. The Grid</a>
+  <a href="#leave">5. Leave Locks</a>
+  <a href="#save">6. Save &amp; Publish</a>
+  <a href="#copy">7. Copy Previous</a>
+  <a href="#amend">8. Emergency Amend</a>
+  <a href="#transfer">9. Transferring Staff</a>
+  <a href="#reference">Quick Reference</a>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     1. LOGIN
+════════════════════════════════════════════════════════════ -->
+<section id="login" class="section">
+  <div class="section-header">
+    <div class="section-icon">🔑</div>
+    <div>
+      <h2>1. Logging In</h2>
+      <p>Every supervisor logs in with their own Employee ID and PIN</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">Open the Roster Planner</div>
+      <ol>
+        <li>Go to the Roster Planner link given to you by HR.</li>
+        <li>Enter your <strong>Employee ID</strong> (e.g. HR-EMP-00013).</li>
+        <li>Enter your <strong>4-digit PIN</strong>.</li>
+        <li>Tap <strong>Log In</strong>.</li>
+      </ol>
+      <div class="note">💡 You will automatically see only <strong>your own location's staff</strong> — you never see or manage another supervisor's team.</div>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-login-wrap">
+          <div class="mock-login-card">
+            <div class="logo">M</div>
+            <h4>Roster Planner</h4>
+            <p>Supervisor login</p>
+            <div class="mock-in">Employee ID</div>
+            <div class="mock-in">••••</div>
+            <button class="mock-login-btn">Log In</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">Your Home Screen</div>
+      <p>After logging in, the top bar shows your location's name and your team size, so you can confirm you're looking at the right place.</p>
+      <div class="warn">⚠️ If the location name at the top doesn't match your branch, stop and contact HR — do not plan a roster under the wrong location.</div>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-top">
+          <div>
+            <h5>Ardiya — Roster</h5>
+            <div class="sub">Imran Shah · 12 staff</div>
+          </div>
+          <button class="mock-logout">Logout</button>
+        </div>
+        <div class="mock-content">
+          <p style="font-size:9px;color:var(--muted);text-align:center;padding:20px 0">Pick a date range below to begin →</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     2. DISCREPANCIES
+════════════════════════════════════════════════════════════ -->
+<section id="discrepancies" class="section">
+  <div class="section-header">
+    <div class="section-icon">⚠️</div>
+    <div>
+      <h2>2. The Discrepancies Panel</h2>
+      <p>Shows up automatically when a punch doesn't match what you planned</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">When it appears</div>
+      <p>If you scheduled someone as <strong>Day Off</strong> but they actually came in and punched, or scheduled them <strong>Working</strong> but they didn't show — the system doesn't fight the real punch. The punch always wins for attendance and pay. But it flags the mismatch here so you know it happened and can follow up.</p>
+      <ul>
+        <li>This panel only appears when there's something to review.</li>
+        <li>It only shows mismatches for <strong>your own team</strong>.</li>
+        <li>Tap <strong>Mark Reviewed</strong> once you've looked into it — this doesn't undo anything, it just clears it from your list.</li>
+      </ul>
+      <div class="note">💡 This is for your awareness, not an error you need to fix. The attendance record is already correct — this just tells you the roster didn't match reality.</div>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <div class="mock-card">
+            <h6>⚠️ Needs Review</h6>
+            <div class="mock-disc-row">
+              <div>
+                <b style="font-size:9px">Ravi Kumar</b> (HR-EMP-00053) — 08-09<br>
+                <span class="mock-disc-meta">Roster said: Day Off · Actual: Present 08:10–17:20</span>
+              </div>
+              <button class="mock-btn mock-btn-outline">Mark Reviewed</button>
+            </div>
+            <div class="mock-disc-row">
+              <div>
+                <b style="font-size:9px">Foudman Limbu</b> (HR-EMP-00018) — 09-09<br>
+                <span class="mock-disc-meta">Roster said: Working · Actual: Self-reported Day Off</span>
+              </div>
+              <button class="mock-btn mock-btn-outline">Mark Reviewed</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     3. LOADING A RANGE
+════════════════════════════════════════════════════════════ -->
+<section id="load" class="section">
+  <div class="section-header">
+    <div class="section-icon">📅</div>
+    <div>
+      <h2>3. Loading a Date Range</h2>
+      <p>Pick any From–To range — a few days, a week, two weeks</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">Choose your dates</div>
+      <ol>
+        <li>Set the <strong>From</strong> date.</li>
+        <li>Set the <strong>To</strong> date.</li>
+        <li>Tap <strong>Load</strong>.</li>
+      </ol>
+      <p>The grid below fills in with every active employee on your team as rows, and every date in your range as columns.</p>
+      <div class="note">💡 There's no fixed weekly limit — plan for however many days makes sense for your location.</div>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <div class="mock-card">
+            <div class="mock-toolbar">
+              <div class="grp"><label>From</label><div class="box">14/09/2026</div></div>
+              <div class="grp"><label>To</label><div class="box">20/09/2026</div></div>
+              <button class="mock-btn mock-btn-primary">Load</button>
+              <button class="mock-btn mock-btn-outline">Copy previous range</button>
+              <div style="flex:1"></div>
+              <button class="mock-btn mock-btn-secondary">Save Draft</button>
+              <button class="mock-btn mock-btn-success">Publish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     4. THE GRID
+════════════════════════════════════════════════════════════ -->
+<section id="grid" class="section">
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <div>
+      <h2>4. Reading and Filling the Grid</h2>
+      <p>One dropdown per cell — pick a shift, or Day Off</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">Every cell is one dropdown</div>
+      <p>Each box under a date shows a dropdown with:</p>
+      <ul>
+        <li><strong>—</strong> (blank) — nothing planned yet</li>
+        <li><strong>Day Off</strong> — this employee is off that day</li>
+        <li>Your location's <strong>shift names</strong> — picking one means the employee is Working that shift</li>
+      </ul>
+      <p>You only ever see <strong>your own location's shifts</strong> in the list — nothing from another branch.</p>
+      <div class="warn">⚠️ There's no separate "Working" option — pick the actual shift name directly.</div>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <div class="mock-card" style="overflow-x:auto">
+            <table class="mock-table">
+              <thead><tr><th>Employee</th><th>14-09</th><th>15-09</th><th>16-09</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="name">Ravi Kumar<span class="id">HR-EMP-00053</span></td>
+                  <td><select class="mock-sel working"><option>Ardiya First Shift</option></select></td>
+                  <td><select class="mock-sel off"><option>Day Off</option></select></td>
+                  <td><select class="mock-sel"><option>—</option></select></td>
+                </tr>
+                <tr>
+                  <td class="name">Foudman Limbu<span class="id">HR-EMP-00018</span></td>
+                  <td><select class="mock-sel working"><option>Ardiya Second Shift</option></select></td>
+                  <td><select class="mock-sel working"><option>Ardiya Second Shift</option></select></td>
+                  <td><select class="mock-sel off"><option>Day Off</option></select></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     5. LEAVE LOCKS
+════════════════════════════════════════════════════════════ -->
+<section id="leave" class="section">
+  <div class="section-header">
+    <div class="section-icon">🌴</div>
+    <div>
+      <h2>5. Employees on Approved Leave</h2>
+      <p>Cells lock automatically — you can't accidentally schedule someone who's away</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">Locked cells</div>
+      <p>If an employee has approved leave (Annual, Sick, etc.) covering a date, that cell shows the leave type in a yellow box instead of a dropdown — it cannot be edited.</p>
+      <div class="note">💡 This is automatic and pulled directly from HR's leave records. If you think it's wrong, check with HR rather than trying to work around it here.</div>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <div class="mock-card" style="overflow-x:auto">
+            <table class="mock-table">
+              <thead><tr><th>Employee</th><th>14-09</th><th>15-09</th><th>16-09</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td class="name">Ahmed Hassan<span class="id">HR-EMP-00013</span></td>
+                  <td><div class="mock-locked">On Leave (Annual)</div></td>
+                  <td><div class="mock-locked">On Leave (Annual)</div></td>
+                  <td><select class="mock-sel"><option>—</option></select></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     6. SAVE & PUBLISH
+════════════════════════════════════════════════════════════ -->
+<section id="save" class="section">
+  <div class="section-header">
+    <div class="section-icon">✅</div>
+    <div>
+      <h2>6. Save Draft vs Publish</h2>
+      <p>These do very different things — know the difference</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">Save Draft</div>
+      <p>Saves your work-in-progress. <strong>A draft is not visible to attendance</strong> — it's just a private plan you can come back and finish later. Use this while you're still figuring things out.</p>
+    </div>
+    <div class="mock-browser" style="max-width:200px">
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <button class="mock-btn mock-btn-secondary" style="width:100%">Save Draft</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">Publish</div>
+      <p><strong>Publish makes the roster live.</strong> Once published, the attendance system reads it every night — anyone scheduled Working with no punch shows up as Absent, anyone scheduled Day Off with no punch stays Day Off. Publish only when you're confident the plan is final.</p>
+      <div class="warn">⚠️ Once published, an employee with no punch and no shown-up will be marked <strong>Absent</strong> — so don't publish half-finished plans with blank cells for people who are actually working.</div>
+    </div>
+    <div class="mock-browser" style="max-width:200px">
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <button class="mock-btn mock-btn-success" style="width:100%">Publish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     7. COPY PREVIOUS RANGE
+════════════════════════════════════════════════════════════ -->
+<section id="copy" class="section">
+  <div class="section-header">
+    <div class="section-icon">📑</div>
+    <div>
+      <h2>7. Copy Previous Range</h2>
+      <p>Fastest way to start a new plan when the schedule barely changes week to week</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">One click to pre-fill</div>
+      <ol>
+        <li>Load your new date range as normal.</li>
+        <li>Tap <strong>Copy previous range</strong>.</li>
+        <li>The grid fills in with whatever was published for the equivalent range immediately before it.</li>
+        <li>Review and adjust — someone's day off might rotate, a shift might change.</li>
+        <li>Save Draft, then Publish when ready.</li>
+      </ol>
+      <div class="note">💡 This never overwrites a locked (on-leave) cell — leave always takes priority.</div>
+    </div>
+    <div class="mock-browser" style="max-width:200px">
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <button class="mock-btn mock-btn-outline" style="width:100%">Copy previous range</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     8. AMEND
+════════════════════════════════════════════════════════════ -->
+<section id="amend" class="section">
+  <div class="section-header">
+    <div class="section-icon">🚨</div>
+    <div>
+      <h2>8. Emergency Amend</h2>
+      <p>For last-minute changes to a plan that's already published</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">When to use it</div>
+      <p>Once a range is published, cells still show a small <strong>amend</strong> link. Use it for genuine last-minute situations — a sick colleague needs cover, someone swaps shifts, a mistake needs correcting after publish.</p>
+      <ol>
+        <li>Tap <strong>amend</strong> on the cell you need to change.</li>
+        <li>Pick the new status and shift.</li>
+        <li>Write a short <strong>reason</strong> — this is required.</li>
+        <li>Tap <strong>Save Amend</strong>.</li>
+      </ol>
+      <div class="warn">⚠️ A reason is always required. Every amend is recorded with your name, the time, and why — this is a genuine audit trail, not a formality.</div>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-content" style="background:var(--dark)">
+          <div class="mock-modal-box">
+            <h6>Emergency Amend</h6>
+            <div class="who">Ravi Kumar (HR-EMP-00053) — 16-09-2026</div>
+            <span class="mock-label">Status</span>
+            <div class="mock-in" style="text-align:left">Working</div>
+            <span class="mock-label">Shift</span>
+            <div class="mock-in" style="text-align:left">Ardiya First Shift</div>
+            <span class="mock-label">Reason (required)</span>
+            <div class="mock-textarea">e.g. covering for sick colleague</div>
+            <div style="display:flex;gap:6px;margin-top:10px">
+              <button class="mock-btn mock-btn-outline" style="flex:1">Cancel</button>
+              <button class="mock-btn mock-btn-success" style="flex:1">Save Amend</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     9. TRANSFERRING STAFF
+════════════════════════════════════════════════════════════ -->
+<section id="transfer" class="section">
+  <div class="section-header">
+    <div class="section-icon">🔄</div>
+    <div>
+      <h2>9. Transferring Staff to Another Location</h2>
+      <p>Move an employee to a different branch — some transfers need approval, others don't</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">1</div>
+      <div class="step-title">My Team</div>
+      <p>Right after you log in, you'll always see a <strong>My Team</strong> card listing everyone on your team, with a <strong>Transfer</strong> button next to each name.</p>
+      <p>If someone's name has a small orange <strong>"No roster planned"</strong> tag next to it, it means they have no schedule set for today or any upcoming day — usually because they were just transferred to your team and are waiting for you to plan for them (see Step 6).</p>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <div class="mock-card">
+            <h6>👥 My Team</h6>
+            <div class="mock-team-row">
+              <div>Ravi Kumar<span class="id">HR-EMP-00053</span></div>
+              <button class="mock-btn mock-btn-outline">Transfer</button>
+            </div>
+            <div class="mock-team-row">
+              <div>Ahmed Hassan<span class="id">HR-EMP-00013</span><span class="mock-badge-warn">No roster planned</span></div>
+              <button class="mock-btn mock-btn-outline">Transfer</button>
+            </div>
+            <div class="mock-team-row">
+              <div>Foudman Limbu<span class="id">HR-EMP-00018</span></div>
+              <button class="mock-btn mock-btn-outline">Transfer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">2</div>
+      <div class="step-title">Requesting a Transfer</div>
+      <ol>
+        <li>Tap <strong>Transfer</strong> next to the employee's name.</li>
+        <li>Pick the <strong>destination location</strong>.</li>
+        <li>Pick the <strong>effective date</strong> — today, or any date going forward. It can never be in the past.</li>
+        <li>Add a short <strong>reason</strong> if you like (optional).</li>
+        <li>Read the note under the form — it tells you whether this needs approval before you submit.</li>
+      </ol>
+      <div class="note">💡 You never choose a shift here. Once the employee arrives at their new location, that supervisor assigns their shift through the normal roster grid — the same as any new team member.</div>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-content" style="background:var(--dark)">
+          <div class="mock-modal-box">
+            <h6>Transfer Employee</h6>
+            <div class="who">Ahmed Hassan (HR-EMP-00013)</div>
+            <span class="mock-label">To Location</span>
+            <div class="mock-in" style="text-align:left">Kaifan</div>
+            <span class="mock-label">Effective Date</span>
+            <div class="mock-in" style="text-align:left">16/09/2026</div>
+            <span class="mock-label">Reason (optional)</span>
+            <div class="mock-textarea">e.g. permanent reassignment</div>
+            <p style="font-size:7px;color:var(--muted);margin-top:6px">This will be sent to Kaifan's supervisor for approval.</p>
+            <div style="display:flex;gap:6px;margin-top:10px">
+              <button class="mock-btn mock-btn-outline" style="flex:1">Cancel</button>
+              <button class="mock-btn mock-btn-success" style="flex:1">Send Request</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">3</div>
+      <div class="step-title">Which transfers need approval?</div>
+      <p>Moving someone between two normal branches (e.g. Ardiya to Kaifan) needs a yes from the <strong>receiving supervisor</strong> — they're the one taking on responsibility for that person, so they get to say yes or no.</p>
+      <p>Moving someone to or from <strong>Head Office</strong> or a <strong>Driver</strong> role skips approval entirely — those don't have a team roster to protect, so there's nothing to approve into. It just happens on the date you set.</p>
+      <div class="warn">⚠️ Either way, the transfer date can never be in the past. If you need to backdate a move, contact HR directly — that's not something this tool allows.</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">4</div>
+      <div class="step-title">If You're the One Approving</div>
+      <p>When someone requests to send you a team member, you'll see an <strong>Incoming Transfer Requests</strong> card when you log in.</p>
+      <ul>
+        <li><strong>Approve</strong> — if the effective date is today, it happens immediately. If it's a future date, it's scheduled and happens automatically that day.</li>
+        <li><strong>Reject</strong> — you can add a short note explaining why; the requesting supervisor will see it.</li>
+      </ul>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <div class="mock-card">
+            <h6>📥 Incoming Transfer Requests</h6>
+            <div class="mock-req-row">
+              <div>
+                <b>Ahmed Hassan</b> (HR-EMP-00013) from <b>Ardiya</b><br>
+                <span class="mock-req-meta">Effective 16-09-2026 · requested by Imran Shah</span>
+              </div>
+              <div style="display:flex;gap:4px">
+                <button class="mock-btn mock-btn-success">Approve</button>
+                <button class="mock-btn mock-btn-outline">Reject</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">5</div>
+      <div class="step-title">Tracking Your Own Requests</div>
+      <p>A <strong>My Transfer Requests</strong> card shows anything you've sent that's still waiting, approved-but-not-yet-happened, or was rejected — with the reason, if one was given.</p>
+      <p>You can <strong>Cancel</strong> a request any time before it's actually happened, if plans change.</p>
+    </div>
+    <div class="mock-browser">
+      <div class="mock-browser-bar">
+        <div class="mock-dot" style="background:#ff5f57"></div>
+        <div class="mock-dot" style="background:#febc2e"></div>
+        <div class="mock-dot" style="background:#28c840"></div>
+      </div>
+      <div class="mock-browser-body">
+        <div class="mock-content">
+          <div class="mock-card">
+            <h6>📤 My Transfer Requests</h6>
+            <div class="mock-req-row">
+              <div>
+                <b>Ahmed Hassan</b> (HR-EMP-00013) → <b>Kaifan</b><br>
+                <span class="mock-req-meta">Effective 16-09-2026</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span class="mock-status-pill mock-status-pending">Pending Approval</span>
+                <button class="mock-btn mock-btn-outline">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-left">
+      <div class="step-num">6</div>
+      <div class="step-title">After the Transfer Happens</div>
+      <p>Once a transfer takes effect, the employee immediately shows up on the new location's <strong>My Team</strong> list — with the <strong>"No roster planned"</strong> tag, since nobody has scheduled them yet.</p>
+      <p>The receiving supervisor should plan their roster the same way as any team member — load a date range, pick their shift or Day Off for each day, and publish as usual.</p>
+      <div class="note">💡 There's no separate step to "accept" the employee once the transfer completes — they're simply on your team from that point on, same as everyone else.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     QUICK REFERENCE
+════════════════════════════════════════════════════════════ -->
+<section id="reference" class="section">
+  <div class="section-header">
+    <div class="section-icon">📖</div>
+    <div>
+      <h2>Quick Reference</h2>
+      <p>What each action does, at a glance</p>
+    </div>
+  </div>
+
+  <table class="ref-table">
+    <thead><tr><th>Action</th><th>What it does</th><th>Visible to attendance?</th></tr></thead>
+    <tbody>
+      <tr><td>Fill a cell (shift or Day Off)</td><td>Sets your plan for that employee/date</td><td><span class="badge badge-amber">Not yet</span></td></tr>
+      <tr><td><b>Save Draft</b></td><td>Saves your plan privately</td><td><span class="badge badge-amber">No</span></td></tr>
+      <tr><td><b>Publish</b></td><td>Makes the range live</td><td><span class="badge badge-green">Yes</span></td></tr>
+      <tr><td><b>Copy previous range</b></td><td>Pre-fills from the last published range</td><td><span class="badge badge-amber">Not until saved+published</span></td></tr>
+      <tr><td><b>Amend</b></td><td>Emergency edit on a published cell — reason required</td><td><span class="badge badge-green">Yes, immediately</span></td></tr>
+      <tr><td>On-leave cell</td><td>Locked automatically from HR's leave records</td><td><span class="badge badge-teal">Always correct</span></td></tr>
+      <tr><td>Discrepancy</td><td>Punch didn't match the plan — punch always wins</td><td><span class="badge badge-red">Review, not fix</span></td></tr>
+      <tr><td><b>Transfer request</b></td><td>Move an employee to another location, effective on a date you choose</td><td><span class="badge badge-amber">Needs approval (usually)</span></td></tr>
+      <tr><td>Transfer to/from Head Office or Driver</td><td>Same as above, but no approval needed</td><td><span class="badge badge-green">Automatic</span></td></tr>
+      <tr><td>"No roster planned" tag</td><td>Employee has no schedule at all — often a just-arrived transfer</td><td><span class="badge badge-red">Needs your attention</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<div style="background:var(--dark);color:#fff;text-align:center;padding:28px;font-size:0.85rem;opacity:0.8">
+  Your Company — HR Department &nbsp;|&nbsp; For questions contact HR
+</div>
+
+</body>
+</html>

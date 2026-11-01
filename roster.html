@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR — Roster Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+:root{
+  --dark:oklch(0.16 0.02 200); --teal:oklch(0.65 0.13 190);
+  --muted:oklch(0.52 0.01 200); --border:oklch(0.9 0.005 200);
+  --text:oklch(0.2 0.01 200); --bg:oklch(0.985 0.002 200);
+  --green:oklch(0.6 0.14 165); --amber:oklch(0.75 0.13 85);
+  --red:oklch(0.55 0.16 25); --slate:oklch(0.5 0.01 200);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);font-family:system-ui,sans-serif;color:var(--text);margin:0;padding:0}
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:16px 24px;
+  display:flex;justify-content:space-between;align-items:center}
+.topbar h1{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin:0}
+.topbar .sub{font-size:0.8rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.container{max-width:1400px;margin:0 auto;padding:24px}
+
+/* Login card */
+.login-wrap{min-height:100vh;background:var(--dark);display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:#fff;border-radius:22px;padding:40px 30px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35)}
+.login-card .logo{width:56px;height:56px;border-radius:14px;background:var(--teal);color:var(--dark);
+  display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;margin:0 auto 18px}
+.login-card h2{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;margin-bottom:6px}
+.login-card p.sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+.login-input{width:100%;border:1px solid var(--border);border-radius:10px;padding:13px;font-size:15px;margin-bottom:12px;text-align:center}
+#loginErr{min-height:20px;color:var(--red);font-size:13px}
+.btn-login{width:100%;border:none;border-radius:10px;background:var(--teal);color:var(--dark);
+  padding:14px;font-size:15px;font-weight:700;margin-top:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif}
+
+/* Card */
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:20px}
+.card h5{font-family:'Space Grotesk',sans-serif;font-weight:600;margin-bottom:14px}
+
+/* Grid */
+.roster-table{width:100%;border-collapse:collapse;font-size:13px}
+.roster-table th,.roster-table td{border:1px solid var(--border);padding:6px;text-align:center;vertical-align:middle}
+.roster-table th{background:var(--bg);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11px;text-transform:uppercase;color:var(--muted)}
+.roster-table td.emp-name{text-align:left;font-weight:600;white-space:nowrap;background:#fff;position:sticky;left:0;z-index:2}
+.roster-table th.emp-name-h{text-align:left;position:sticky;left:0;z-index:3;background:var(--bg)}
+.cell-select{width:100%;border:1px solid var(--border);border-radius:6px;padding:5px 3px;font-size:12px;background:#fff}
+.cell-select.off{background:var(--slate);color:#fff;font-weight:600}
+.cell-select.working{background:oklch(0.94 0.05 165);color:oklch(0.35 0.1 165)}
+.cell-locked{background:oklch(0.94 0.05 85);color:oklch(0.45 0.12 85);font-size:11px;font-weight:600;padding:6px 2px;border-radius:6px}
+.cell-published{border:2px solid var(--green)!important}
+.cell-empty{background:oklch(0.97 0.01 25)}
+
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:16px}
+.toolbar label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:4px}
+.toolbar input[type=date]{border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:14px}
+.btn{border:none;border-radius:8px;padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif}
+.btn-primary{background:var(--teal);color:var(--dark)}
+.btn-secondary{background:oklch(0.94 0.003 200);color:var(--text)}
+.btn-success{background:var(--green);color:#fff}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--muted)}
+.btn:disabled{opacity:0.5;cursor:default}
+
+#statusMsg{min-height:24px;font-size:13px;margin-top:10px}
+.status-ok{color:oklch(0.4 0.1 165)}
+.status-err{color:var(--red)}
+
+/* Team list */
+.team-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.team-row:last-child{border-bottom:none}
+.team-row .id{color:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace;margin-left:6px}
+.needs-roster-badge{display:inline-block;background:oklch(0.94 0.05 25);color:oklch(0.5 0.14 25);
+  font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin-left:8px}
+
+/* Transfer request rows */
+.req-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.req-row:last-child{border-bottom:none}
+.req-meta{color:var(--muted);font-size:12px}
+.req-status{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.req-status.pending{background:oklch(0.94 0.05 85);color:oklch(0.45 0.12 85)}
+.req-status.approved{background:oklch(0.94 0.05 165);color:oklch(0.4 0.1 165)}
+.req-status.rejected{background:oklch(0.94 0.03 25);color:oklch(0.5 0.14 25)}
+.req-status.expired{background:oklch(0.94 0.003 200);color:oklch(0.4 0.01 200)}
+
+/* Discrepancies */
+.disc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.disc-row:last-child{border-bottom:none}
+.disc-meta{color:var(--muted);font-size:12px}
+
+/* Amend modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:20px}
+.modal-box{background:#fff;border-radius:16px;padding:24px;max-width:400px;width:100%}
+.modal-box h5{font-family:'Space Grotesk',sans-serif;margin-bottom:14px}
+.modal-box label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin:10px 0 4px}
+.modal-box select,.modal-box textarea,.modal-box input{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ─────────────────────────────────────────── -->
+<div id="loginScreen" class="login-wrap">
+  <div class="login-card">
+    <div class="logo">M</div>
+    <h2>Roster Planner</h2>
+    <p class="sub">Supervisor login</p>
+    <input class="login-input" id="supId" placeholder="Employee ID">
+    <input class="login-input" id="supPin" type="password" maxlength="4" placeholder="PIN" inputmode="numeric">
+    <div id="loginErr"></div>
+    <button class="btn-login" onclick="doLogin()">Log In</button>
+  </div>
+</div>
+
+<!-- ── MAIN APP ──────────────────────────────────────── -->
+<div id="mainApp" style="display:none">
+  <div class="topbar">
+    <div>
+      <h1 id="locName">Roster Planner</h1>
+      <div class="sub" id="supName">—</div>
+    </div>
+    <button class="btn btn-outline" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="container">
+
+    <!-- My Team (always shown — includes Transfer, even for exempt locations) -->
+    <div class="card" id="teamCard" style="display:none">
+      <h5><i class="bi bi-people"></i> My Team</h5>
+      <div id="teamExemptNote" style="display:none;color:var(--muted);font-size:13px;margin-bottom:12px"></div>
+      <div id="teamList"></div>
+    </div>
+
+    <!-- Discrepancies -->
+    <div class="card" id="discCard" style="display:none">
+      <h5><i class="bi bi-exclamation-triangle" style="color:var(--amber)"></i> Needs Review</h5>
+      <div id="discList"></div>
+    </div>
+
+    <!-- Incoming Transfer Requests (I'm the destination — needs my approval) -->
+    <div class="card" id="incomingCard" style="display:none">
+      <h5><i class="bi bi-box-arrow-in-down"></i> Incoming Transfer Requests</h5>
+      <div id="incomingList"></div>
+    </div>
+
+    <!-- Outgoing Transfer Requests (I requested these — status only) -->
+    <div class="card" id="outgoingCard" style="display:none">
+      <h5><i class="bi bi-box-arrow-up"></i> My Transfer Requests</h5>
+      <div id="outgoingList"></div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="card" id="toolbarCard">
+      <div class="toolbar">
+        <div>
+          <label>From</label>
+          <input type="date" id="fromDate">
+        </div>
+        <div>
+          <label>To</label>
+          <input type="date" id="toDate">
+        </div>
+        <button class="btn btn-primary" onclick="loadRoster()">Load</button>
+        <button class="btn btn-outline" onclick="copyPrevious()">Copy previous range</button>
+        <div style="flex:1"></div>
+        <button class="btn btn-secondary" onclick="saveDraft()">Save Draft</button>
+        <button class="btn btn-success" onclick="publish()">Publish</button>
+      </div>
+      <div id="statusMsg"></div>
+    </div>
+
+    <!-- Grid -->
+    <div class="card" id="gridCard" style="overflow-x:auto">
+      <div id="gridWrap"><p style="color:var(--muted)">Pick a date range and click Load.</p></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── TRANSFER REQUEST MODAL ────────────────────────── -->
+<div id="transferModal" class="modal-overlay">
+  <div class="modal-box">
+    <h5>Transfer Employee</h5>
+    <div class="sub" id="transferWho" style="color:var(--muted);font-size:13px"></div>
+    <label>To Location</label>
+    <select id="transferLocation" onchange="onTransferLocationChange()"></select>
+    <label>Effective Date</label>
+    <input type="date" id="transferDate">
+    <label>Reason (optional)</label>
+    <textarea id="transferReason" rows="2" placeholder="e.g. permanent reassignment"></textarea>
+    <div id="transferApprovalNote" style="font-size:12px;color:var(--muted);margin-top:8px"></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" style="flex:1" onclick="closeTransfer()">Cancel</button>
+      <button class="btn btn-success" style="flex:1" id="transferConfirmBtn" onclick="submitTransfer()">Send Request</button>
+    </div>
+    <div id="transferMsg" style="font-size:12px;margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- ── REJECT MODAL (small note prompt) ──────────────── -->
+<div id="rejectModal" class="modal-overlay">
+  <div class="modal-box" style="max-width:340px">
+    <h5>Reject Transfer Request</h5>
+    <div class="sub" id="rejectWho" style="color:var(--muted);font-size:13px"></div>
+    <label>Note (optional)</label>
+    <textarea id="rejectNote" rows="2" placeholder="e.g. we already have full coverage"></textarea>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" style="flex:1" onclick="closeReject()">Cancel</button>
+      <button class="btn btn-outline" style="flex:1;color:var(--red);border-color:var(--red)" onclick="submitReject()">Reject</button>
+    </div>
+    <div id="rejectMsg" style="font-size:12px;margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- ── AMEND MODAL ───────────────────────────────────── -->
+<div id="amendModal" class="modal-overlay">
+  <div class="modal-box">
+    <h5>Emergency Amend</h5>
+    <div class="sub" id="amendWho" style="color:var(--muted);font-size:13px"></div>
+    <label>Status</label>
+    <select id="amendStatus">
+      <option value="Working">Working</option>
+      <option value="Day Off">Day Off</option>
+    </select>
+    <label>Shift</label>
+    <select id="amendShift"></select>
+    <label>Reason (required)</label>
+    <textarea id="amendReason" rows="2" placeholder="e.g. covering for sick colleague"></textarea>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-outline" style="flex:1" onclick="closeAmend()">Cancel</button>
+      <button class="btn btn-success" style="flex:1" onclick="submitAmend()">Save Amend</button>
+    </div>
+    <div id="amendMsg" style="font-size:12px;margin-top:10px"></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="roster.js"></script>
+</body>
+</html>

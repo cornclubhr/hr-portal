@@ -1,0 +1,11 @@
+# Never commit staff data. These files carry Civil ID numbers, salaries and
+# IBANs for real people, and this repository is public.
+import/
+*_import_staging.csv
+*_master.csv
+*_conflicts.csv
+*.xlsx
+
+# Google credentials
+.clasprc.json
+node_modules/

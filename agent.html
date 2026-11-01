@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Your Company — Agent Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="agent.css" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="mark"><span></span></div>
+  <div class="brand"><b>HR TEX</b><small>Restaurants Co · Agent Portal</small></div>
+  <div class="whoami hide" id="whoami"></div>
+  <button class="line hide" id="outBtn" onclick="signOut()" style="padding:8px 14px;font-size:13px">Sign out</button>
+</header>
+
+<main>
+
+  <!-- ── SIGN IN ──────────────────────────────────────────────
+       Shown until the Agency ID and PIN are accepted. -->
+  <section id="signinView" class="hide">
+    <div class="card signin">
+      <div class="eyebrow">Recruitment partners</div>
+      <h1>Sign in</h1>
+      <p class="lede">Use the Agency ID and 6-digit PIN given to you by Your Company HR.</p>
+      <div class="field">
+        <label for="agId">Agency ID</label>
+        <input id="agId" placeholder="AG-01" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="agPin">PIN</label>
+        <input id="agPin" type="password" inputmode="numeric" maxlength="6" placeholder="6 digits" autocomplete="off">
+      </div>
+      <button class="wide" id="loginBtn" onclick="doLogin()">Sign in</button>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+  </section>
+
+  <!-- ── MY CANDIDATES ───────────────────────────────────────
+       The list only. Submitting a candidate is its own page. -->
+  <section id="listView" class="hide">
+    <div class="bar">
+      <div class="grow">
+        <div class="eyebrow">Your submissions</div>
+        <h1 style="margin-bottom:2px">My candidates</h1>
+        <p class="lede" style="margin:0">Your Company HR updates each stage as it happens. Refresh to see the latest.</p>
+      </div>
+      <button class="line" onclick="loadMine()">Refresh</button>
+      <a class="btn brass" href="agent-add.html">Add a candidate</a>
+    </div>
+
+    <div class="stats" id="stats"></div>
+    <div class="cards" id="cards"></div>
+    <div id="listMsg"></div>
+  </section>
+
+</main>
+
+<footer>Your Company · Human Resources · Kuwait</footer>
+
+<script src="config.js"></script>
+<script src="agent-portal.js"></script>
+<script>
+// ============================================================
+// The candidate list. Stages run Selected → Visa Issued →
+// Travelling → Arrived → Employee; a submission waits at
+// "Submitted" until HR selects it. On Hold and Cancelled sit
+// outside that run, so they show a stopped track rather than
+// progress.
+// ============================================================
+const STAGES = ['Selected', 'Visa Issued', 'Travelling', 'Arrived', 'Employee'];
+let ROWS = [], FILTER = '';
+
+// agent.html carries the sign-in form, so signing out means showing it
+// again — never navigating back to this same page.
+window.onSignedOut = function () {
+  $('#agPin').value = ''; $('#whoami').classList.add('hide');
+  say('#loginMsg', ''); show('signin');
+};
+
+function show(view) {
+  $('#signinView').classList.toggle('hide', view !== 'signin');
+  $('#listView').classList.toggle('hide', view !== 'list');
+  $('#outBtn').classList.toggle('hide', view !== 'list');
+}
+
+async function doLogin() {
+  const agencyId = $('#agId').value.trim().toUpperCase();
+  const pin = $('#agPin').value.trim();
+  if (!agencyId || !pin) { say('#loginMsg', 'Enter your Agency ID and PIN.', true); return; }
+  const btn = $('#loginBtn'); btn.disabled = true; btn.textContent = 'Checking…';
+  try {
+    const d = await post('agentCandidates', { agencyId: agencyId, pin: pin });
+    setCred({ agencyId: agencyId, pin: pin });
+    say('#loginMsg', '');
+    render(d);
+  } catch (err) { say('#loginMsg', err.message, true); }
+  finally { btn.disabled = false; btn.textContent = 'Sign in'; }
+}
+
+async function loadMine() {
+  const cred = getCred();
+  if (!cred) { show('signin'); return; }
+  $('#cards').innerHTML = '<div class="empty">Loading…</div>';
+  try { render(await post('agentCandidates', cred)); }
+  catch (err) {
+    // A revoked PIN is not an error to sit on — send them back to sign in.
+    if (/pin|agency|access/i.test(err.message)) { signOut(); return; }
+    $('#cards').innerHTML = '<div class="empty"><b>Could not load your candidates</b>' + esc(err.message) + '</div>';
+  }
+}
+
+function render(d) {
+  ROWS = d.data || [];
+  fillWho(d.name, d.agencyId);
+  show('list');
+  drawStats();
+  drawCards();
+}
+
+// Counts double as filters: tap a stage to see only those.
+function drawStats() {
+  const counts = {};
+  ROWS.forEach(c => { const s = String(c.status || '').trim(); counts[s] = (counts[s] || 0) + 1; });
+  const order = ['Submitted'].concat(STAGES, ['On Hold', 'Cancelled']).filter(s => counts[s]);
+  let html = '<button class="stat' + (FILTER ? '' : ' on') + '" onclick="setFilter(\'\')">All <b>' + ROWS.length + '</b></button>';
+  html += order.map(s =>
+    '<button class="stat' + (FILTER === s ? ' on' : '') + '" onclick="setFilter(\'' + esc(s) + '\')">' +
+    esc(s) + ' <b>' + counts[s] + '</b></button>').join('');
+  $('#stats').innerHTML = html;
+}
+function setFilter(s) { FILTER = (FILTER === s) ? '' : s; drawStats(); drawCards(); }
+
+function drawCards() {
+  const rows = FILTER ? ROWS.filter(c => String(c.status).trim() === FILTER) : ROWS;
+  if (!rows.length) {
+    $('#cards').innerHTML = ROWS.length
+      ? '<div class="empty"><b>Nobody at this stage</b>Choose “All” to see every candidate.</div>'
+      : '<div class="empty"><b>No candidates yet</b>Submit your first candidate and HR will review it.<div style="height:16px"></div>' +
+        '<a class="btn brass" href="agent-add.html">Add a candidate</a></div>';
+    return;
+  }
+  $('#cards').innerHTML = rows.map(cardHtml).join('');
+}
+
+function cardHtml(c) {
+  const status = String(c.status || '').trim();
+  const reached = STAGES.indexOf(status);      // -1 for Submitted / On Hold / Cancelled
+  const stopped = (status === 'On Hold' || status === 'Cancelled');
+  const track = STAGES.map((s, i) =>
+    '<i class="' + (stopped ? 'stop' : (i <= reached ? 'done' : '')) + '" title="' + esc(s) + '"></i>').join('');
+
+  const facts = [
+    ['Passport', c.passport], ['Nationality', c.nationality], ['Mobile', c.mobile],
+    ['Visa', c.visaStatus], ['Experience', c.experience ? c.experience + ' yrs' : ''],
+    ['Languages', c.languages],
+    ['Selected', c.selectedOn], ['Visa issued', c.visaOn], ['Travel', c.travelDate],
+    ['Arrived', c.arrivedOn], ['Joined', c.joinedOn]
+  ].filter(f => f[1]).map(f =>
+    '<div><dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd></div>').join('');
+
+  const links = [c.photo ? '<a href="' + esc(c.photo) + '" target="_blank" rel="noopener">Photo</a>' : '',
+                 c.cv ? '<a href="' + esc(c.cv) + '" target="_blank" rel="noopener">CV</a>' : '']
+                .filter(Boolean).join('');
+
+  return '<article class="cand">' +
+    '<div class="top"><div><div class="nm">' + esc(c.name) + '</div>' +
+      (c.position ? '<div class="sub">' + esc(c.position) + '</div>' : '') + '</div>' +
+      '<span class="pill p-' + esc(status.replace(/\s/g, '')) + '">' + esc(status) + '</span></div>' +
+    '<div class="track">' + track + '</div>' +
+    '<dl class="facts">' + facts + '</dl>' +
+    (c.remark ? '<div class="note">' + esc(c.remark) + '</div>' : '') +
+    (links ? '<div class="links">' + links + '</div>' : '') +
+  '</article>';
+}
+
+// ── start ────────────────────────────────────────────────────
+if (getCred()) { show('list'); loadMine(); } else { show('signin'); }
+['agId', 'agPin'].forEach(id => {
+  $('#' + id).addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+});
+</script>
+</body>
+</html>

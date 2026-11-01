@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HR Kiosk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+    /* ── Design tokens ─────────────── */
+    :root {
+        --dark        : oklch(0.16 0.02 200);
+        --teal        : oklch(0.65 0.13 190);
+        --muted       : oklch(0.52 0.01 200);
+        --border      : oklch(0.85 0.005 200);
+        --text        : oklch(0.20 0.01 200);
+
+        /* Stage button colours */
+        --ci-bg : oklch(0.60 0.14 165);  /* Check In  — green  */
+        --ci-fg : #fff;
+        --bo-bg : oklch(0.75 0.13 85);   /* Break Out — amber  */
+        --bo-fg : oklch(0.25 0.05 85);
+        --bi-bg : oklch(0.70 0.10 190);  /* Break In  — teal   */
+        --bi-fg : #fff;
+        --co-bg : oklch(0.55 0.16 25);   /* Check Out — red    */
+        --co-fg : #fff;
+        --do-bg : oklch(0.50 0.01 200);  /* Day Off   — slate  */
+        --do-fg : #fff;
+        --ot-bg : oklch(0.75 0.13 85);   /* OT button — amber  */
+        --ot-fg : oklch(0.25 0.05 85);
+    }
+
+    /* ── Reset ───────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        min-height: 100vh;
+        background: var(--dark);
+        font-family: system-ui, -apple-system, sans-serif;
+        display: flex; align-items: center; justify-content: center;
+        padding: 24px;
+    }
+    .wrap { width: 100%; max-width: 420px; }
+
+    /* ── Cards ───────────────────────────────────────────────────── */
+    .card {
+        background: #fff;
+        border-radius: 22px;
+        padding: 44px 30px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    .header-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 22px;
+        text-align: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        margin-bottom: 14px;
+    }
+    .dayoff-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 30px 22px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    /* ── Logo ────────────────────────────────────────────────────── */
+    .logo {
+        width: 56px; height: 56px;
+        border-radius: 14px;
+        background: var(--teal); color: var(--dark);
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700; font-size: 24px;
+        margin: 0 auto 18px;
+    }
+    .card h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 22px; font-weight: 600;
+        color: var(--text); margin-bottom: 6px;
+    }
+    .card .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 26px; }
+    .card .footer-note { color: oklch(0.6 0.01 200); font-size: 12px; margin-top: 18px; }
+
+    /* ── Employee header ─────────────────────────────────────────── */
+    .header-card h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 19px; font-weight: 600;
+        color: var(--text); margin-bottom: 4px;
+    }
+    .header-card .emp-id {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px; color: var(--muted);
+    }
+
+    /* ── Inputs ──────────────────────────────────────────────────── */
+    .kiosk-input {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px;
+        font-size: 16px;
+        text-align: center;
+        outline: none;
+        transition: border-color .15s;
+        margin-bottom: 12px;
+        font-family: system-ui, sans-serif;
+    }
+    .kiosk-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px oklch(0.65 0.13 190 / .12); }
+    .pin-input {
+        letter-spacing: 6px;
+        font-family: 'JetBrains Mono', monospace;
+        margin-bottom: 0;
+    }
+    #kioskError { min-height: 20px; color: oklch(0.55 0.16 25); font-size: 13px; margin: 8px 0; }
+
+    /* ── Buttons ─────────────────────────────────────────────────── */
+    .btn-primary {
+        width: 100%; border: none; border-radius: 10px;
+        background: var(--teal); color: var(--dark);
+        padding: 16px; font-size: 16px; font-weight: 700;
+        margin-top: 14px; cursor: pointer;
+        font-family: 'Space Grotesk', sans-serif;
+        transition: opacity .12s;
+    }
+    .btn-primary:active { opacity: .85; }
+    .btn-primary:disabled { opacity: .6; cursor: default; }
+
+    /* Big stage buttons */
+    .stage-btn {
+        width: 100%; min-height: 190px; border: none;
+        border-radius: 20px; cursor: pointer;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700; font-size: 22px;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 10px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+        transition: transform .12s;
+    }
+    .stage-btn:active { transform: scale(0.97); }
+    .stage-btn:disabled { opacity: .6; cursor: default; }
+    .stage-btn i { font-size: 48px; }
+    .btn-ci  { background: var(--ci-bg); color: var(--ci-fg); }
+    .btn-bo  { background: var(--bo-bg); color: var(--bo-fg); }
+    .btn-bi  { background: var(--bi-bg); color: var(--bi-fg); }
+    .btn-co  { background: var(--co-bg); color: var(--co-fg); }
+
+    /* Half-width pair for after-break state */
+    .two-col { display: flex; gap: 12px; }
+    .two-col .stage-btn { min-height: 140px; font-size: 17px; flex: 1; }
+    .two-col .stage-btn i { font-size: 34px; }
+
+    /* Skip-break secondary */
+    .btn-skip {
+        width: 100%; margin-top: 10px;
+        border: 1px solid var(--border); border-radius: 10px;
+        background: #fff; color: var(--muted);
+        padding: 13px; font-size: 14px; font-weight: 600;
+        cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+        transition: background .12s;
+    }
+    .btn-skip:hover { background: oklch(0.97 0.002 200); }
+    .btn-skip:active { transform: scale(0.98); }
+
+    /* OT button */
+    .btn-ot {
+        width: 100%; border: none; border-radius: 14px;
+        background: var(--ot-bg); color: var(--ot-fg);
+        padding: 16px; font-size: 15px; font-weight: 700;
+        margin-top: 14px; cursor: pointer;
+        font-family: 'Space Grotesk', sans-serif;
+        transition: opacity .12s;
+    }
+    .btn-ot:active { opacity: .85; }
+
+    /* Logout */
+    .btn-logout {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.3);
+        color: oklch(0.85 0.01 200);
+        border-radius: 20px; padding: 8px 18px;
+        font-size: 13px; cursor: pointer;
+        font-family: 'Space Grotesk', sans-serif;
+        transition: border-color .12s;
+    }
+    .btn-logout:hover { border-color: rgba(255,255,255,0.55); }
+    .logout-row { text-align: right; margin-top: 16px; }
+
+    /* ── Day Off screen ──────────────────────────────────────────── */
+    .dayoff-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20px; font-weight: 700;
+        color: var(--text); margin-bottom: 22px;
+    }
+    .dayoff-row { display: flex; gap: 12px; margin-bottom: 18px; }
+    .btn-do {
+        flex: 1; border: none; border-radius: 16px;
+        background: var(--do-bg); color: var(--do-fg);
+        padding: 18px 10px; font-size: 15px; font-weight: 700;
+        cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12); transition: opacity .12s;
+    }
+    .btn-do:active { opacity: .85; }
+    .btn-do.green { background: var(--ci-bg); color: var(--ci-fg); }
+    .btn-do i { font-size: 26px; }
+    .btn-backdated {
+        background: none; border: none;
+        color: var(--muted); font-size: 13px;
+        text-decoration: underline; cursor: pointer;
+        font-family: system-ui, sans-serif; padding: 0;
+        width: 100%; text-align: center; margin-bottom: 0;
+    }
+    .field-label {
+        font-size: 12px; color: var(--muted);
+        font-weight: 600; margin-bottom: 6px; display: block;
+        text-align: left;
+    }
+    #backdatedDate {
+        width: 100%; border: 1px solid var(--border);
+        border-radius: 10px; padding: 12px; font-size: 15px;
+        margin-bottom: 10px; outline: none;
+        transition: border-color .15s;
+    }
+    #backdatedDate:focus { border-color: var(--teal); }
+    .btn-submit-backdated, .btn-submit-back {
+        width: 100%; border: none; border-radius: 10px;
+        background: var(--do-bg); color: var(--do-fg);
+        padding: 13px; font-size: 14px; font-weight: 700;
+        cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+        transition: opacity .12s;
+    }
+    .btn-submit-backdated:disabled, .btn-submit-back:disabled { opacity: .6; cursor: default; }
+    #backdatedMsg { font-size: 13px; min-height: 20px; margin-top: 8px; text-align: center; }
+
+    /* ── Done screen ─────────────────────────────────────────────── */
+    .done-card {
+        background: #fff; border-radius: 20px;
+        padding: 44px 20px; text-align: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .done-icon {
+        width: 70px; height: 70px; border-radius: 50%;
+        background: oklch(0.94 0.05 165);
+        color: oklch(0.40 0.10 165);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 32px; font-weight: 700; margin: 0 auto 14px;
+    }
+    .done-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700; font-size: 19px;
+        color: oklch(0.40 0.10 165); margin-bottom: 6px;
+    }
+    .done-sub { color: var(--muted); font-size: 14px; }
+
+    /* ── Aliases matching kiosk.js injected class names ────────────── */
+
+    /* Day Off screen */
+    .dayoff-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20px; font-weight: 700;
+        color: var(--text); margin-bottom: 22px; text-align: center;
+    }
+    .dayoff-btn-row { display: flex; gap: 12px; margin-bottom: 18px; }
+
+    .btn-dayoff-yes {
+        flex: 1; border: none; border-radius: 16px;
+        background: var(--do-bg); color: var(--do-fg);
+        padding: 18px 10px; font-size: 15px; font-weight: 700;
+        cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12); transition: opacity .12s;
+    }
+    .btn-dayoff-yes:active { opacity: .85; }
+    .btn-dayoff-yes i { font-size: 26px; }
+
+    .btn-checkin-go {
+        flex: 1; border: none; border-radius: 16px;
+        background: var(--ci-bg); color: var(--ci-fg);
+        padding: 18px 10px; font-size: 15px; font-weight: 700;
+        cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12); transition: opacity .12s;
+    }
+    .btn-checkin-go:active { opacity: .85; }
+    .btn-checkin-go i { font-size: 26px; }
+
+    .btn-backdated-toggle {
+        background: none; border: none;
+        color: var(--muted); font-size: 13px;
+        text-decoration: underline; cursor: pointer;
+        font-family: system-ui, sans-serif; padding: 0;
+        width: 100%; text-align: center;
+    }
+
+    /* Stage buttons — single full-width */
+    .stage-btn-single {
+        width: 100%; min-height: 190px; border: none;
+        border-radius: 20px; cursor: pointer;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700; font-size: 22px;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 10px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+        transition: transform .12s;
+    }
+    .stage-btn-single:active { transform: scale(0.97); }
+    .stage-btn-single:disabled { opacity: .6; cursor: default; }
+    .stage-btn-single i { font-size: 48px; }
+
+    /* Stage colours */
+    .btn-check-in  { background: var(--ci-bg); color: var(--ci-fg); }
+    .btn-break-out { background: var(--bo-bg); color: var(--bo-fg); }
+    .btn-break-in  { background: var(--bi-bg); color: var(--bi-fg); }
+    .btn-check-out { background: var(--co-bg); color: var(--co-fg); }
+
+    /* Half-width pair for after-break (two-column) */
+    .btn-half {
+        flex: 1; min-height: 140px; border: none;
+        border-radius: 18px; cursor: pointer;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700; font-size: 17px;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 8px;
+        box-shadow: 0 5px 12px rgba(0,0,0,0.14);
+        transition: transform .12s;
+    }
+    .btn-half:active { transform: scale(0.97); }
+    .btn-half:disabled { opacity: .6; }
+    .btn-half i { font-size: 34px; }
+    .btn-half.btn-break-out { background: var(--bo-bg); color: var(--bo-fg); }
+    .btn-half.btn-check-out { background: var(--co-bg); color: var(--co-fg); }
+
+    /* Two-button row wrapper */
+    .two-btn-row { display: flex; gap: 12px; }
+    .two-btn-wrap { display: flex; flex-direction: column; gap: 12px; }
+
+    /* Stage done screen */
+    .stage-done {
+        background: #fff; border-radius: 20px;
+        padding: 44px 20px; text-align: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        color: var(--ci-bg);
+    }
+    .stage-done i { font-size: 64px; display: block; margin-bottom: 10px; }
+    .done-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 19px; }
+    .done-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .ot-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.55); z-index: 999;
+        align-items: center; justify-content: center; padding: 20px;
+    }
+    .ot-box {
+        background: #fff; border-radius: 16px;
+        padding: 26px; max-width: 360px; width: 100%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    .ot-box h3 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 17px; font-weight: 600;
+        margin-bottom: 16px; color: var(--text);
+    }
+    .modal-date-input, .modal-hours-input {
+        width: 100%; border: 1px solid var(--border);
+        border-radius: 10px; padding: 14px;
+        font-size: 15px; margin-bottom: 14px;
+        outline: none; font-family: system-ui, sans-serif;
+        transition: border-color .15s;
+    }
+    .modal-date-input:focus, .modal-hours-input:focus { border-color: var(--teal); }
+    .modal-hours-input { margin-bottom: 16px; }
+    .modal-row { display: flex; gap: 10px; }
+    .btn-cancel {
+        flex: 1; border: 1px solid var(--border);
+        border-radius: 10px; background: transparent;
+        color: oklch(0.4 0.01 200); padding: 14px;
+        font-size: 15px; font-weight: 600; cursor: pointer;
+        font-family: 'Space Grotesk', sans-serif;
+    }
+    .btn-submit-ot {
+        flex: 1; border: none; border-radius: 10px;
+        background: var(--ot-bg); color: var(--ot-fg);
+        padding: 14px; font-size: 15px; font-weight: 700;
+        cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+    }
+    .btn-submit-ot:disabled { opacity: .6; }
+    #otMsg { font-size: 12px; color: var(--muted); margin-top: 12px; min-height: 18px; }
+    .ot-note { font-size: 12px; color: oklch(0.6 0.01 200); margin-top: 12px; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <!-- ── LOGIN ──────────────────────────────────────────────────── -->
+    <div id="loginScreen" class="card">
+        <div class="logo">M</div>
+        <h1>HR Kiosk</h1>
+        <p class="subtitle">Enter your ID and PIN to clock in/out</p>
+        <input type="text"     class="kiosk-input"            id="kioskEmpId" placeholder="Employee ID" autocomplete="off">
+        <input type="password" class="kiosk-input pin-input"  id="kioskPin"   placeholder="PIN" maxlength="4" inputmode="numeric">
+        <div id="kioskError"></div>
+        <button class="btn-primary" id="kioskLoginBtn" onclick="kioskLogin()">Log In</button>
+        <p class="footer-note">For authorized staff use only</p>
+    </div>
+
+    <!-- ── DASHBOARD ──────────────────────────────────────────────── -->
+    <div id="kioskDashboard" style="display:none">
+
+        <div class="header-card">
+            <h2 id="kioskEmpName">Welcome</h2>
+            <div class="emp-id" id="kioskEmpIdDisplay">ID: —</div>
+        </div>
+
+        <!-- Stage area injected here -->
+        <div id="stageHost"></div>
+
+        <button class="btn-ot" id="otBtn" onclick="openOtSubmit()">Submit Overtime</button>
+
+        <!-- Always available, regardless of today's stage — this is about
+             a PAST date, unrelated to today's check-in status. -->
+        <button class="btn-backdated-toggle" style="margin-top:14px" onclick="openBackdatedModal()">
+            <i class="bi bi-calendar-x"></i> Log a previous Day Off
+        </button>
+
+        <!-- Documents: opens the staff document form with this person
+             already chosen, so a renewed Civil ID or health card reaches
+             HR HR without anyone typing it for them. -->
+        <button class="btn-backdated-toggle" style="margin-top:10px" onclick="openDocsUpdate()">
+            <i class="bi bi-person-vcard"></i> Update my documents
+        </button>
+
+        <div class="logout-row">
+            <button class="btn-logout" onclick="kioskLogout()">Logout</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── PERSISTENT BACKDATED DAY OFF MODAL ────────────────────────── -->
+<div id="backdatedModal" class="ot-overlay">
+    <div class="ot-box">
+        <h3>Log a Previous Day Off</h3>
+        <label class="field-label">Which day was your Day Off?</label>
+        <input type="date" id="backdatedDateModal" class="modal-date-input">
+        <div id="backdatedMsgModal" style="min-height:20px;font-size:13px;margin:8px 0"></div>
+        <div style="display:flex;gap:10px;margin-top:10px">
+            <button class="btn-cancel" onclick="closeBackdatedModal()">Cancel</button>
+            <button class="btn-submit-backdated" id="backdatedBtnModal" style="flex:1" onclick="doBackdatedDayOffModal()">
+                <i class="bi bi-check2"></i> Submit Day Off
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ── OT MODAL ───────────────────────────────────────────────────── -->
+<div id="otModal" class="ot-overlay">
+    <div class="ot-box">
+        <h3>Submit Overtime</h3>
+        <span class="field-label">Date</span>
+        <input type="date" id="otDate" class="modal-date-input">
+        <span class="field-label">OT Hours (e.g. 2.5)</span>
+        <input type="number" step="0.25" min="0" id="otHours" class="modal-hours-input" placeholder="Hours">
+        <div class="modal-row">
+            <button class="btn-cancel" onclick="closeOtSubmit()">Cancel</button>
+            <button class="btn-submit-ot" id="otSubmitBtn" onclick="submitOt()">Submit</button>
+        </div>
+        <p id="otMsg"></p>
+        <p class="ot-note">Submit right after Check Out, at your location. HR reviews before payment.</p>
+    </div>
+</div>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script src="kiosk.js"></script>
+</body>
+</html>

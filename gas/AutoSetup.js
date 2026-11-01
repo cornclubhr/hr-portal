@@ -16,7 +16,7 @@
  */
 
 /** Raise this when SETUP_TABS or SETUP_SETTINGS changes. */
-const SCHEMA_VERSION = '3';
+const SCHEMA_VERSION = '4';
 const SCHEMA_KEY = 'WORKBOOK_SCHEMA_VERSION';
 
 /**

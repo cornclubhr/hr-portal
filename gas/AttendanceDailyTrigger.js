@@ -158,7 +158,7 @@ function setupDailyTrigger() {
     .create();
 
   Logger.log('Daily trigger installed: dailyAttendanceTrigger runs at 4 AM every day.');
-  SpreadsheetApp.getActiveSpreadsheet().toast(
+  openMain_().toast(
     'Daily 4 AM trigger installed.', 'Trigger set up', 8
   );
 }
@@ -197,7 +197,7 @@ function dailyAttendanceTrigger() {
 // Depends on RosterBackend.gs's rbApplyTransfer_ being in the same
 // project (same global scope — Apps Script shares all .gs files).
 function applyPendingTransfers_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = openMain_();
   const sheet = ss.getSheetByName('Pending_Transfers');
   if (!sheet || sheet.getLastRow() < 2) return;
 
@@ -1055,8 +1055,9 @@ function adCommitRows_(ctx, rebuiltDates, newRows) {
 
 // The spreadsheet to work on.
 //
-// The compile has always used getActiveSpreadsheet(), which is correct for
-// a container-bound script — including from a trigger or a web app. But the
+// Everything opens MAIN_SPREADSHEET_ID through openMain_(). getActiveSpreadsheet()
+// is only correct for a CONTAINER-BOUND script; this project is deployed
+// standalone, where it returns null. The
 // rest of the project opens MAIN_SPREADSHEET_ID by hand, and a rebuild is
 // now called from BOTH worlds: the 4 AM trigger, the editor, grantLeave,
 // and the supervisor page's doGet. If the active spreadsheet is ever
@@ -1064,7 +1065,7 @@ function adCommitRows_(ctx, rebuiltDates, newRows) {
 // in another — a rebuild that silently does nothing is worse than a slow one.
 function adSpreadsheet_() {
   let ss = null;
-  try { ss = SpreadsheetApp.getActiveSpreadsheet(); } catch (e) { ss = null; }
+  try { ss = openMain_(); } catch (e) { ss = null; }
   if (!ss && typeof MAIN_SPREADSHEET_ID === 'string' && MAIN_SPREADSHEET_ID) {
     ss = SpreadsheetApp.openById(MAIN_SPREADSHEET_ID);
   }

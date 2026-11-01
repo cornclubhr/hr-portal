@@ -27,7 +27,10 @@ const SETUP_TABS = {
   ],
   'Companies': ['Name', 'Short Code', 'CR Number', 'Bank Account', 'Status', 'Notes'],
   'Payroll_Cycles': ['Cycle', 'Name', 'Period Start Day', 'Period End Day', 'Pay Day', 'Status', 'Notes'],
-  'Branch_Locations': ['Name', 'Geofenced', 'Latitude', 'Longitude', 'Radius (m)', 'Active'],
+  // Header names are what the READERS resolve by: Code.js geofencing looks for
+  // 'branch' and 'radius', and rbGetShiftsForLocation_ needs 'Shifts'. Matches
+  // setupBranchLocations() in Code.js, plus Shifts.
+  'Branch_Locations': ['Branch', 'Latitude', 'Longitude', 'Radius', 'Geofenced', 'Active', 'Shifts'],
   'Admin_Settings': ['Key', 'Value', 'Notes'],
   'Attendance_Daily': ['Employee ID', 'Name', 'Date', 'Location', 'Shift', 'Check In',
                        'Break Out', 'Break In', 'Check Out', 'Presence (hrs)', 'Late In',
@@ -48,7 +51,9 @@ const SETUP_TABS = {
   'Leave_Grants': ['ID', 'Employee ID', 'Name', 'Type', 'Start', 'End', 'Days',
                    'Status', 'Approved By', 'Remark'],
   'Leave_Balances': ['Employee ID', 'Name', 'Type', 'Entitled', 'Taken', 'Balance'],
-  'Shifts': ['Name', 'Start', 'End', 'Break (min)', 'Hours', 'Active'],
+  // Exactly what ensureShiftsTab_() in Shifts.js creates, which is also what
+  // acShifts_ and BackfillCheckouts resolve by. 'Hours' matched nothing.
+  'Shifts': ['Shift Name', 'Start', 'End', 'Normal Hours', 'Break Minutes', 'Grace Minutes', 'Auto Present', 'Weekly Off', 'Active'],
   'Roster': ['Date', 'Employee ID', 'Name', 'Company', 'Location', 'Shift', 'Remark'],
   'Bank_Other_Payees': ['Name', 'Civil ID', 'IBAN', 'Amount (KD)', 'Location', 'Status', 'Remark'],
   'Doc_Expiry_Log': ['Date', 'Employee ID', 'Name', 'Document', 'Expiry', 'Days Left', 'Notified'],

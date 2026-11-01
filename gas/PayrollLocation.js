@@ -28,7 +28,7 @@ function addLocationToPayrollTab() {
   const res = addLocationToTab_(tabName);
   Logger.log(res.message || res.error);
   try {
-    SpreadsheetApp.getActiveSpreadsheet().toast(res.message || res.error, 'Location column', 8);
+    openMain_().toast(res.message || res.error, 'Location column', 8);
   } catch (e) { /* not bound to a sheet UI — log only */ }
   return res;
 }

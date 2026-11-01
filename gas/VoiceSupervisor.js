@@ -158,7 +158,7 @@ function voiceTeamStatus(p) {
 
     const dateStr = vsResolveDate_(date);
     const team    = vsGetTeam_(profile.location);
-    const ss      = SpreadsheetApp.getActiveSpreadsheet();
+    const ss      = openMain_();
 
     const adSheet = ss.getSheetByName('Attendance_Daily');
     if (!adSheet) return { success: false, error: 'Attendance_Daily sheet not found.' };
@@ -254,7 +254,7 @@ function voiceAddPunch(p) {
       return { success: false, error: 'Time required in HH:MM format.' };
 
     const dateStr  = vsResolveDate_(date);
-    const ss       = SpreadsheetApp.getActiveSpreadsheet();
+    const ss       = openMain_();
     const logSheet = ss.getSheetByName('Attendance_Log');
     if (!logSheet) return { success: false, error: 'Attendance_Log sheet not found.' };
     const empName  = vsEmpName_(empId);
@@ -291,7 +291,7 @@ function voiceDeletePunch(p) {
       return { success: false, error: 'Employee is not in your team.' };
 
     const dateStr  = vsResolveDate_(date);
-    const ss       = SpreadsheetApp.getActiveSpreadsheet();
+    const ss       = openMain_();
     const logSheet = ss.getSheetByName('Attendance_Log');
     if (!logSheet) return { success: false, error: 'Attendance_Log sheet not found.' };
 
@@ -355,7 +355,7 @@ function voiceMarkDayOff(p) {
 
     const dateStr  = vsResolveDate_(date);
     const empName  = vsEmpName_(empId);
-    const ss       = SpreadsheetApp.getActiveSpreadsheet();
+    const ss       = openMain_();
     const logSheet = ss.getSheetByName('Attendance_Log');
     if (!logSheet) return { success: false, error: 'Attendance_Log sheet not found.' };
 
@@ -380,7 +380,7 @@ function voiceUndoLastAction(p) {
     if (!vsTeamContains_(profile.location, empId))
       return { success: false, error: 'Employee is not in your team.' };
 
-    const ss       = SpreadsheetApp.getActiveSpreadsheet();
+    const ss       = openMain_();
     const logSheet = ss.getSheetByName('Attendance_Log');
     if (!logSheet) return { success: false, error: 'Attendance_Log sheet not found.' };
 
@@ -414,7 +414,7 @@ function voiceUndoLastAction(p) {
 // Authenticate supervisor — returns { ok, name, location, error }
 function vsAuthSupervisor_(supId, supPin) {
   try {
-    const ss      = SpreadsheetApp.getActiveSpreadsheet();
+    const ss      = openMain_();
     const hrSheet = ss.getSheetByName(HR_TAB);
     if (!hrSheet) return { ok: false, error: HR_TAB + ' sheet not found.' };
 
@@ -456,7 +456,7 @@ function vsAuthSupervisor_(supId, supPin) {
 // as supervisor (existing behaviour, unchanged).
 function vsIsSupervisorOfLocation_(supId, location) {
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const adminSheet = ss.getSheetByName('Admin_Settings');
     if (adminSheet && adminSheet.getLastRow() > 0) {
       const adminData = adminSheet.getRange(1, 1, adminSheet.getLastRow(), 2).getValues();
@@ -478,7 +478,7 @@ function vsGetTeam_(location) {
   const key = 'team_' + vsNormVal_(location);
   if (VS_CACHE_[key]) return VS_CACHE_[key];
 
-  const ss      = SpreadsheetApp.getActiveSpreadsheet();
+  const ss      = openMain_();
   const hrSheet = ss.getSheetByName(HR_TAB);
   if (!hrSheet) { Logger.log('vsGetTeam_: ' + HR_TAB + ' sheet not found.'); return []; }
 
@@ -516,7 +516,7 @@ function vsTeamContains_(location, empId) {
 }
 
 function vsEmpName_(empId) {
-  const ss      = SpreadsheetApp.getActiveSpreadsheet();
+  const ss      = openMain_();
   const hrSheet = ss.getSheetByName(HR_TAB);
   if (!hrSheet) return empId;
   const C    = vsHrCols_(hrSheet);
@@ -528,7 +528,7 @@ function vsEmpName_(empId) {
 }
 
 function vsWriteManualStatus_(empId, empName, location, dateStr, status, supervisorName) {
-  const ss       = SpreadsheetApp.getActiveSpreadsheet();
+  const ss       = openMain_();
   const logSheet = ss.getSheetByName('Attendance_Log');
   if (!logSheet) throw new Error('Attendance_Log sheet not found.');
   const parts = dateStr.split('-');
@@ -539,7 +539,7 @@ function vsWriteManualStatus_(empId, empName, location, dateStr, status, supervi
 }
 
 function vsAudit_(empId, empName, date, action, supervisorName) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = openMain_();
   let auditSheet = ss.getSheetByName('Attendance_Amendments');
   if (!auditSheet) {
     auditSheet = ss.insertSheet('Attendance_Amendments');
@@ -556,7 +556,7 @@ function vsAudit_(empId, empName, date, action, supervisorName) {
 // Select vsDiagnoseTeams from the function dropdown → Run → View logs.
 // ============================================================
 function vsDiagnoseTeams() {
-  const ss      = SpreadsheetApp.getActiveSpreadsheet();
+  const ss      = openMain_();
   const hrSheet = ss.getSheetByName(HR_TAB);
   if (!hrSheet) { Logger.log(HR_TAB + ' sheet NOT FOUND'); return; }
 

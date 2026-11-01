@@ -125,7 +125,7 @@ function rbEnsureDiscrepancySheet_(ss) {
 // ── Leave lock — approved Leave_Grants covering a date ───────────────
 // Returns { empId+'|'+date: leaveType } for employees on this team.
 function rbGetLeaveMap_(team, fromStr, toStr) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = openMain_();
   const lvSheet = ss.getSheetByName('Leave_Grants');
   const map = {};
   if (!lvSheet || lvSheet.getLastRow() < 2) return map;
@@ -159,7 +159,7 @@ function rbGetLeaveMap_(team, fromStr, toStr) {
 // ── Shifts available for a location — reads Branch_Locations "Shifts" col,
 // falls back to any Shifts-tab row whose name contains the location. ─────
 function rbGetShiftsForLocation_(location) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = openMain_();
   const locSheet = ss.getSheetByName('Branch_Locations');
   if (locSheet && locSheet.getLastRow() > 1) {
     const lc = rbColMap_(locSheet);
@@ -196,7 +196,7 @@ function rbGetShiftsForLocation_(location) {
 // Returns { empId+'|'+date: rowObj } plus the raw sheet row number (1-based)
 // so callers can update in place.
 function rbReadRosterRows_(location, fromStr, toStr) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = openMain_();
   const sheet = rbEnsureRosterSheet_(ss);
   const map = {};
   if (sheet.getLastRow() < 2) return { map, sheet };
@@ -399,7 +399,7 @@ function amendRosterEntry(params) {
       return { success:false, error:'Employee is on approved leave (' + leaveMap[empId+'|'+date] + ') for this date — cannot schedule.' };
     }
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const sheet = rbEnsureRosterSheet_(ss);
     const rc = rbColMap_(sheet);
     const empName = vsEmpName_(empId);
@@ -515,7 +515,7 @@ function getDiscrepancies(params) {
     const auth = vsAuthSupervisor_(supId, supPin);
     if (!auth.ok) return { success:false, error: auth.error };
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const sheet = rbEnsureDiscrepancySheet_(ss);
     if (sheet.getLastRow() < 2) return { success:true, rows: [] };
 
@@ -554,7 +554,7 @@ function markDiscrepancyReviewed(params) {
     const auth = vsAuthSupervisor_(supId, supPin);
     if (!auth.ok) return { success:false, error: auth.error };
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const sheet = rbEnsureDiscrepancySheet_(ss);
     const rc = rbColMap_(sheet);
     const r = parseInt(rowNum);
@@ -578,7 +578,7 @@ function markDiscrepancyReviewed(params) {
 // locations for a single date: { empId: { status, shift } }
 // ══════════════════════════════════════════════════════════════════
 function rbGetPublishedRosterForDate_(dateStr) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = openMain_();
   const sheet = ss.getSheetByName(ROSTER_TAB);
   const out = {};
   if (!sheet || sheet.getLastRow() < 2) return out;
@@ -601,7 +601,7 @@ function rbGetPublishedRosterForDate_(dateStr) {
 // Called by AttendanceDailyTrigger.gs whenever a punch contradicts
 // the published roster for that date.
 function rbLogDiscrepancy_(empId, name, location, dateStr, rosterSaid, actual) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = openMain_();
   const sheet = rbEnsureDiscrepancySheet_(ss);
   const now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm:ss');
   sheet.appendRow([empId, name, location, dateStr, rosterSaid, actual, now, 'No', '']);
@@ -691,7 +691,7 @@ function getMyTeam(params) {
     let employees = team;
 
     if (!isExempt) {
-      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      const ss = openMain_();
       const rosterSheet = ss.getSheetByName(ROSTER_TAB);
       const hasFutureRoster = new Set();
       if (rosterSheet && rosterSheet.getLastRow() > 1) {
@@ -729,7 +729,7 @@ function getActiveLocations(params) {
     const auth = vsAuthSupervisor_(supId, supPin);
     if (!auth.ok) return { success:false, error: auth.error };
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const locSheet = ss.getSheetByName('Branch_Locations');
     const out = [];
     if (locSheet && locSheet.getLastRow() > 1) {
@@ -772,7 +772,7 @@ function getShiftsForLocation(params) {
 // callers handle status updates there themselves. ───────────────────
 function rbApplyTransfer_(empId, empName, fromLocation, toLocation, effectiveDate, actorName, reason) {
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
 
     const hrSheet = ss.getSheetByName(HR_TAB);
     const hc = rbColMap_(hrSheet);
@@ -832,7 +832,7 @@ function requestTransfer(params) {
     if (!effDateObj) return { success:false, error:'Invalid effective date.' };
     if (effDateObj < todayObj) return { success:false, error:'Effective date cannot be in the past.' };
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const locSheet = ss.getSheetByName('Branch_Locations');
     let validLoc = false;
     if (locSheet && locSheet.getLastRow() > 1) {
@@ -886,7 +886,7 @@ function getIncomingTransferRequests(params) {
     const auth = vsAuthSupervisor_(supId, supPin);
     if (!auth.ok) return { success:false, error: auth.error };
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const sheet = rbEnsurePendingTransferSheet_(ss);
     if (sheet.getLastRow() < 2) return { success:true, rows: [] };
 
@@ -922,7 +922,7 @@ function getOutgoingTransferRequests(params) {
     const auth = vsAuthSupervisor_(supId, supPin);
     if (!auth.ok) return { success:false, error: auth.error };
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const sheet = rbEnsurePendingTransferSheet_(ss);
     if (sheet.getLastRow() < 2) return { success:true, rows: [] };
 
@@ -961,7 +961,7 @@ function approveTransfer(params) {
     const auth = vsAuthSupervisor_(supId, supPin);
     if (!auth.ok) return { success:false, error: auth.error };
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const sheet = rbEnsurePendingTransferSheet_(ss);
     const rc = rbColMap_(sheet);
     const r = parseInt(rowNum);
@@ -1006,7 +1006,7 @@ function rejectTransfer(params) {
     const auth = vsAuthSupervisor_(supId, supPin);
     if (!auth.ok) return { success:false, error: auth.error };
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const sheet = rbEnsurePendingTransferSheet_(ss);
     const rc = rbColMap_(sheet);
     const r = parseInt(rowNum);
@@ -1037,7 +1037,7 @@ function cancelTransferRequest(params) {
     const auth = vsAuthSupervisor_(supId, supPin);
     if (!auth.ok) return { success:false, error: auth.error };
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = openMain_();
     const sheet = rbEnsurePendingTransferSheet_(ss);
     const rc = rbColMap_(sheet);
     const r = parseInt(rowNum);

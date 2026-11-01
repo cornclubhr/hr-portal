@@ -127,6 +127,22 @@ for root, label in ((GAS, 'gas'), (WEB, 'web')):
         if hits:
             bad('foreign employee ids', '%s/%s has %d (e.g. %s)' % (label, f, len(hits), hits[0]))
 
+# ---------- 4c. no getActiveSpreadsheet outside the resolver ----------
+# This deployment is STANDALONE: the script is not bound to the sheet, so
+# SpreadsheetApp.getActiveSpreadsheet() returns null and every caller breaks --
+# including KioskBackend. Only Config.js (which resolves the id) and
+# AutoSetup.js (which caches it on first run) may call it; everything else goes
+# through openMain_(). This shipped broken once, in 34 places.
+ALLOWED_ACTIVE = {'Config.js', 'AutoSetup.js'}
+for f in sorted(os.listdir(GAS)) if os.path.isdir(GAS) else []:
+    if not f.endswith('.js') or f in ALLOWED_ACTIVE:
+        continue
+    for i, line in enumerate(open(os.path.join(GAS, f), encoding='utf-8',
+                                  errors='replace').read().split('\n'), 1):
+        if 'getActiveSpreadsheet()' in line and not line.lstrip().startswith(('//', '*')):
+            bad('getActiveSpreadsheet outside resolver',
+                'gas/%s:%d -- use openMain_()' % (f, i))
+
 # ---------- 5. kiosk intact ----------
 # the four methods the kiosk puts on the wire, plus the backdated-day-off
 # handler which the frontend reaches through markKioskAttendance with a date

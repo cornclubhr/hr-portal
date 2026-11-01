@@ -50,7 +50,7 @@ function markBackdatedDayOff(params) {
     }
 
     // Validate employee PIN using the existing validation logic
-    const ss     = SpreadsheetApp.getActiveSpreadsheet();
+    const ss     = openMain_();
     const hrSheet = ss.getSheetByName(HR_TAB);
     if (!hrSheet) return { success: false, error: HR_TAB + ' sheet not found.' };
 

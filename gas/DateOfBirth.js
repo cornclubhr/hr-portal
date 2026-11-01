@@ -29,7 +29,15 @@
 // reason is reported.
 // ============================================================
 
-const DOB_STAFF_TAB    = HR_TAB;
+// Resolved lazily, not assigned. HR_TAB is declared in Employees.js, which
+// Apps Script evaluates AFTER this file — load order is alphabetical, and
+// D comes before E. Reading it here at load time throws a ReferenceError and
+// takes down every request, not just this module's. A getter defers the read
+// until a function actually runs, by which point every file is evaluated.
+// Same pattern as MAIN_SPREADSHEET_ID in Config.js.
+Object.defineProperty(this, 'DOB_STAFF_TAB', {
+  get: function () { return HR_TAB; }, configurable: true
+});
 const DOB_HEADER       = 'Date of Birth';
 const DOB_CIVIL_HEADER = 'Civil ID';
 const DOB_ID_HEADER    = 'Employee ID';

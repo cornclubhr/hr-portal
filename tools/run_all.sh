@@ -17,7 +17,9 @@ else
   echo "   (see: python3 -I tools/audit.py for detail)"
 fi
 
-for t in test_auth test_cycles test_payroll_scope test_ot test_session test_autosetup; do
+# test_loadorder runs FIRST of the node tests: if the project does not even
+# evaluate in Apps Script's own file order, nothing else is worth reading.
+for t in test_loadorder test_auth test_cycles test_payroll_scope test_ot test_session test_autosetup; do
   echo; echo "### $t ###"
   if out=$(node "tools/$t.js" 2>&1); then
     echo "$out" | tail -2

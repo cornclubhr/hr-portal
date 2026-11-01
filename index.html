@@ -1,2181 +1,492 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HR Management System</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Maya Petty Cash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f1f4f7; --ink:#0f2436; --card:#ffffff; --line:#e2e8f0; --muted:#64748b;
+    --green:#1f9d55; --green-soft:#e7f6ee; --red:#dc2626; --red-soft:#fdeaea;
+    --shadow:0 10px 30px rgba(15,36,54,.10); --radius:20px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Inter','Noto Sans Bengali',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:var(--bg);color:var(--ink);font-size:17px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:460px;margin:0 auto;padding:18px 16px 40px}
+  .tnum{font-variant-numeric:tabular-nums}
+  button{font-family:inherit;cursor:pointer;border:none}
+  .hidden{display:none!important}
+  .bn{font-family:'Noto Sans Bengali',sans-serif}
 
-    <!-- Fonts -->
-    <script>
-    // Applied before first paint: a flash of the wrong theme looks broken.
-    (function () {
-        try {
-            var saved = localStorage.getItem('hr_theme');
-            var want = saved || (window.matchMedia &&
-                        window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-            document.documentElement.setAttribute('data-bs-theme', want);
-        } catch (e) { /* private mode - stay on the default */ }
-    })();
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  .topbar{display:flex;align-items:center;gap:12px;margin:6px 2px 18px}
+  .brand{font-weight:800;letter-spacing:-.02em;font-size:20px}
+  .brand span{color:var(--muted);font-weight:600}
+  .logout{margin-left:auto;background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:9px 14px;font-weight:600;font-size:14px;color:var(--ink)}
 
-    <!-- Bootstrap 5 + Icons (structural / modals / forms) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  /* Login */
+  .login-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:30px 22px;box-shadow:var(--shadow);text-align:center;margin-top:8vh}
+  .login-card .coin{width:66px;height:66px;border-radius:50%;background:var(--green-soft);
+    display:grid;place-items:center;font-size:32px;margin:0 auto 18px}
+  .login-card h1{font-size:22px;margin:0 0 2px}
+  .login-card h1 .bn{display:block;font-size:20px;color:var(--ink);margin-bottom:4px}
+  .login-card p{color:var(--muted);font-size:14px;margin:2px 0 22px}
+  .pin-input{width:100%;text-align:center;letter-spacing:.5em;font-size:30px;font-weight:700;
+    border:1.5px solid var(--line);border-radius:16px;padding:18px;background:#fff;outline:none}
+  .pin-input:focus{border-color:var(--ink)}
 
-    <!-- DataTables -->
-    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  .balance{background:var(--ink);color:#fff;border-radius:24px;padding:26px 24px 22px;
+    box-shadow:var(--shadow);position:relative;overflow:hidden;margin-bottom:18px}
+  .balance:before{content:"";position:absolute;left:0;right:0;top:70px;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)}
+  .balance .lbl{font-size:14px;color:#9fb3c6;font-weight:600}
+  .balance .lbl .bn{display:block;font-size:15px;color:#cfe0ee;margin-bottom:1px}
+  .balance .refresh{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.1);
+    color:#cfe0ee;border-radius:10px;width:38px;height:38px;font-size:18px;display:grid;place-items:center}
+  .balance .amt{font-size:52px;font-weight:800;letter-spacing:-.03em;margin-top:10px;line-height:1}
+  .balance .amt .kd{font-size:22px;font-weight:600;color:#9fb3c6;margin-right:8px;vertical-align:middle}
+  .balance .amt.pos{color:#5ee29a}
+  .balance .amt.neg{color:#ff8a8a}
+  .balance .stats{display:flex;gap:10px;margin-top:20px}
+  .balance .stat{flex:1;background:rgba(255,255,255,.06);border-radius:14px;padding:12px 14px}
+  .balance .stat .k{font-size:12px;color:#9fb3c6;font-weight:600}
+  .balance .stat .k .bn{display:block;font-size:12px;color:#cfe0ee}
+  .balance .stat .v{font-size:17px;font-weight:700;margin-top:3px}
+  .balance .stat .v.in{color:#5ee29a}
+  .balance .stat .v.out{color:#ff8a8a}
+  .balance.loading .amt{color:#3a5266}
 
-    <style>
-    /* ============================================================
-       DESIGN TOKENS
-       One palette, two themes. Bootstrap 5.3 reads data-bs-theme on
-       <html>, so its own components follow without being restyled.
-       ============================================================ */
-    :root {
-        /* surfaces, coolest to warmest */
-        --hr-bg          : oklch(0.975 0.004 200);
-        --hr-surface     : #ffffff;
-        --hr-surface-2   : oklch(0.962 0.005 200);
-        --hr-surface-3   : oklch(0.935 0.007 200);
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 18px;box-shadow:var(--shadow);margin-bottom:18px}
+  .card h2{margin:0 0 4px;font-size:19px;font-weight:700}
+  .card h2 .bn{display:block;font-size:18px;margin-bottom:1px}
+  .card .hint{color:var(--muted);font-size:14px;margin:0 0 16px}
+  .card .hint .bn{display:block;font-size:14px;margin-bottom:1px;color:#475569}
 
-        /* ink */
-        --hr-text        : oklch(0.22 0.015 215);
-        --hr-text-2      : oklch(0.44 0.013 215);
-        --hr-muted       : oklch(0.58 0.011 215);
+  label.fld{display:block;margin:0 0 16px}
+  label.fld .cap{font-size:14px;font-weight:600;color:#334155;margin-bottom:8px;display:block}
+  label.fld .cap .bn{display:block;font-size:15px;color:var(--ink)}
+  .money{position:relative}
+  .money .pre{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--muted);font-size:19px}
+  input[type=number],input[type=text],input[type=date]{
+    width:100%;border:1.5px solid var(--line);border-radius:14px;padding:16px 16px;
+    font-size:18px;font-family:inherit;color:var(--ink);background:#fff;outline:none;transition:border-color .15s}
+  .money input{padding-left:46px;font-weight:700;font-size:22px}
+  input:focus{border-color:var(--ink)}
+  input:disabled{background:#f1f4f7;color:#94a3b8}
 
-        /* lines */
-        --hr-border      : oklch(0.905 0.006 210);
-        --hr-border-soft : oklch(0.945 0.004 210);
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{background:#f3f6f9;border:1.5px solid var(--line);border-radius:14px;padding:10px 14px;
+    font-size:14px;font-weight:600;color:#334155;text-align:center;line-height:1.25}
+  .chip .bn{display:block;font-size:15px}
+  .chip .en{display:block;font-size:12px;color:var(--muted);font-weight:500}
+  .chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+  .chip.on .en{color:#9fb3c6}
 
-        /* brand */
-        --hr-accent      : oklch(0.56 0.094 195);
-        --hr-accent-hi   : oklch(0.50 0.098 195);
-        --hr-accent-soft : oklch(0.955 0.018 195);
-        --hr-accent-ring : oklch(0.56 0.094 195 / 0.30);
-        --hr-on-accent   : #ffffff;
+  .receipt{display:flex;align-items:center;gap:12px}
+  .receipt .pick{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+    background:#f3f6f9;border:1.5px dashed #cbd5e1;border-radius:14px;padding:14px;font-weight:600;color:#475569;font-size:14px;text-align:center}
+  .receipt img{width:54px;height:54px;border-radius:12px;object-fit:cover;border:1px solid var(--line)}
+  .receipt .clr{background:none;color:var(--red);font-weight:600;font-size:14px;padding:6px}
 
-        /* the navigation rail */
-        --hr-rail        : oklch(0.235 0.022 215);
-        --hr-rail-2      : oklch(0.285 0.024 215);
-        --hr-rail-ink    : oklch(0.74 0.012 215);
-        --hr-rail-ink-hi : oklch(0.97 0.004 215);
+  .toggle{display:flex;align-items:flex-start;gap:12px;background:#f3f6f9;border:1px solid var(--line);
+    border-radius:14px;padding:14px;margin-bottom:16px;cursor:pointer}
+  .toggle input{width:22px;height:22px;margin-top:2px;flex:0 0 auto}
+  .toggle .t{font-weight:700;font-size:15px;display:block}
+  .toggle .s{color:var(--muted);font-size:13px;display:block;margin-top:2px}
 
-        /* state */
-        --hr-good        : oklch(0.56 0.12 155);
-        --hr-good-soft   : oklch(0.955 0.03 155);
-        --hr-warn        : oklch(0.62 0.13 75);
-        --hr-warn-soft   : oklch(0.962 0.038 80);
-        --hr-bad         : oklch(0.56 0.17 25);
-        --hr-bad-soft    : oklch(0.962 0.028 25);
-        --hr-info        : oklch(0.56 0.11 240);
+  .submit{width:100%;border-radius:16px;padding:18px;font-size:19px;font-weight:700;color:#fff;
+    display:flex;align-items:center;justify-content:center;gap:10px;margin-top:4px;line-height:1.2;text-align:center}
+  .submit .bn{font-size:19px}
+  .submit.spend{background:var(--red)}
+  .submit.give{background:var(--green)}
+  .submit:disabled{opacity:.55}
+  .spinner{width:20px;height:20px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
-        /* elevation — three steps, used by role rather than everywhere */
-        --hr-sh-1 : 0 1px 2px oklch(0.2 0.02 215 / .05);
-        --hr-sh-2 : 0 1px 3px oklch(0.2 0.02 215 / .07), 0 6px 16px -6px oklch(0.2 0.02 215 / .10);
-        --hr-sh-3 : 0 2px 6px oklch(0.2 0.02 215 / .08), 0 18px 40px -12px oklch(0.2 0.02 215 / .18);
+  .act h3{font-size:15px;color:var(--muted);font-weight:600;margin:6px 2px 10px}
+  .act h3 .bn{color:#475569}
+  .row{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:9px}
+  .row .dot{width:38px;height:38px;border-radius:11px;flex:0 0 auto;display:grid;place-items:center;font-size:18px;font-weight:800}
+  .row .dot.in{background:var(--green-soft);color:var(--green)}
+  .row .dot.out{background:var(--red-soft);color:var(--red)}
+  .row .info{min-width:0;flex:1}
+  .row .info .l{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .info .d{color:var(--muted);font-size:13px;margin-top:1px}
+  .row .val{font-weight:700;font-size:16px;white-space:nowrap}
+  .row .val.in{color:var(--green)}
+  .row .val.out{color:var(--red)}
+  .empty{color:var(--muted);text-align:center;padding:18px;font-size:14px}
 
-        --hr-r-sm : 7px;
-        --hr-r    : 11px;
-        --hr-r-lg : 15px;
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120px);
+    background:var(--ink);color:#fff;padding:14px 20px;border-radius:14px;font-weight:600;
+    box-shadow:var(--shadow);transition:transform .25s ease;z-index:50;max-width:90%;text-align:center;line-height:1.35}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .toast.ok{background:#12805c}
+  .toast.err{background:#b91c1c}
 
-        --font-ui   : "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
-        --font-num  : "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-
-        --sidebar-width : 72px;
-        color-scheme: light;
-    }
-
-    [data-bs-theme="dark"] {
-        --hr-bg          : oklch(0.185 0.014 215);
-        --hr-surface     : oklch(0.228 0.016 215);
-        --hr-surface-2   : oklch(0.262 0.017 215);
-        --hr-surface-3   : oklch(0.305 0.018 215);
-
-        --hr-text        : oklch(0.945 0.006 215);
-        --hr-text-2      : oklch(0.80 0.010 215);
-        --hr-muted       : oklch(0.655 0.012 215);
-
-        --hr-border      : oklch(0.335 0.018 215);
-        --hr-border-soft : oklch(0.285 0.016 215);
-
-        --hr-accent      : oklch(0.76 0.105 190);
-        --hr-accent-hi   : oklch(0.83 0.105 190);
-        --hr-accent-soft : oklch(0.30 0.045 195);
-        --hr-accent-ring : oklch(0.76 0.105 190 / 0.34);
-        --hr-on-accent   : oklch(0.17 0.03 200);
-
-        --hr-rail        : oklch(0.158 0.014 215);
-        --hr-rail-2      : oklch(0.225 0.017 215);
-        --hr-rail-ink    : oklch(0.665 0.012 215);
-        --hr-rail-ink-hi : oklch(0.975 0.004 215);
-
-        --hr-good        : oklch(0.74 0.14 155);
-        --hr-good-soft   : oklch(0.30 0.05 155);
-        --hr-warn        : oklch(0.80 0.13 80);
-        --hr-warn-soft   : oklch(0.32 0.05 80);
-        --hr-bad         : oklch(0.70 0.16 25);
-        --hr-bad-soft    : oklch(0.31 0.06 25);
-        --hr-info        : oklch(0.74 0.11 240);
-
-        --hr-sh-1 : 0 1px 2px oklch(0 0 0 / .30);
-        --hr-sh-2 : 0 1px 3px oklch(0 0 0 / .34), 0 6px 16px -6px oklch(0 0 0 / .44);
-        --hr-sh-3 : 0 2px 6px oklch(0 0 0 / .38), 0 18px 40px -12px oklch(0 0 0 / .55);
-
-        color-scheme: dark;
-    }
-
-    /* keep Bootstrap's own components on our palette */
-    [data-bs-theme] {
-        --bs-body-bg        : var(--hr-bg);
-        --bs-body-color     : var(--hr-text);
-        --bs-border-color   : var(--hr-border);
-        --bs-primary        : var(--hr-accent);
-        --bs-link-color     : var(--hr-accent);
-        --bs-link-hover-color: var(--hr-accent-hi);
-        --bs-emphasis-color : var(--hr-text);
-        --bs-secondary-color: var(--hr-muted);
-    }
-
-    /* ============================================================
-       BASE
-       ============================================================ */
-    *, *::before, *::after { box-sizing: border-box; }
-
-    body {
-        font-family: var(--font-ui);
-        font-size: 14.5px;
-        line-height: 1.55;
-        background: var(--hr-bg);
-        color: var(--hr-text);
-        min-height: 100vh;
-        margin: 0;
-        -webkit-font-smoothing: antialiased;
-        font-feature-settings: "cv05" 1;
-    }
-    a { color: var(--hr-accent); text-decoration: none; transition: color .14s ease; }
-    a:hover { color: var(--hr-accent-hi); }
-
-    /* figures line up in columns wherever they appear */
-    .table td, .table th, .hr-stat-value, .profile-stat-number,
-    input[type=number], .mono { font-variant-numeric: tabular-nums; }
-
-    ::selection { background: var(--hr-accent-ring); }
-
-    :focus-visible {
-        outline: 2px solid var(--hr-accent);
-        outline-offset: 2px;
-        border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar { width: 11px; height: 11px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb {
-        background: var(--hr-border);
-        border-radius: 99px;
-        border: 3px solid var(--hr-bg);
-    }
-    ::-webkit-scrollbar-thumb:hover { background: var(--hr-muted); }
-
-    @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after { transition: none !important; animation: none !important; }
-    }
-
-    /* ============================================================
-       LAYOUT
-       ============================================================ */
-    .wrapper { display: flex; min-height: 100vh; }
-
-    #content {
-        flex: 1;
-        min-width: 0;
-        padding: 26px clamp(18px, 3vw, 40px) 64px;
-        background: var(--hr-bg);
-    }
-
-    /* ---------- navigation rail ---------- */
-    #sidebar {
-        width: var(--sidebar-width);
-        flex: none;
-        background: var(--hr-rail);
-        color: var(--hr-rail-ink);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 14px 0 22px;
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-        z-index: 20;
-    }
-    #sidebar::-webkit-scrollbar { width: 0; }
-
-    .sidebar-logo {
-        width: 40px; height: 40px;
-        border-radius: var(--hr-r-sm);
-        background: linear-gradient(145deg, var(--hr-accent), var(--hr-accent-hi));
-        color: var(--hr-on-accent);
-        display: grid; place-items: center;
-        font-size: 19px; font-weight: 700;
-        margin-bottom: 18px;
-        box-shadow: 0 3px 10px oklch(0 0 0 / .30);
-        flex: none;
-    }
-
-    #sidebar ul.nav {
-        flex-direction: column;
-        align-items: center;
-        gap: 3px;
-        width: 100%;
-        padding: 0;
-        margin: 0;
-        list-style: none;
-    }
-    #sidebar .nav-item { width: 100%; display: flex; justify-content: center; }
-
-    #sidebar .nav-link {
-        position: relative;
-        width: 46px; height: 42px;
-        display: grid; place-items: center;
-        border-radius: var(--hr-r-sm);
-        color: var(--hr-rail-ink);
-        transition: background .15s ease, color .15s ease;
-        cursor: pointer;
-    }
-    #sidebar .nav-link i { font-size: 18px; line-height: 1; }
-    /* The rail is icons only. Labels stay in the markup for screen readers
-       and arrive with module-added links, but are never drawn here — the
-       title attribute gives everyone else the tooltip. */
-    #sidebar .nav-link .nav-text {
-        position: absolute;
-        width: 1px; height: 1px;
-        overflow: hidden;
-        clip-path: inset(50%);
-        white-space: nowrap;
-    }
-    #sidebar .nav-link { font-size: 0; }
-
-    #sidebar .nav-link:hover {
-        background: var(--hr-rail-2);
-        color: var(--hr-rail-ink-hi);
-    }
-    #sidebar .nav-link.active {
-        background: var(--hr-rail-2);
-        color: var(--hr-rail-ink-hi);
-    }
-    /* the active marker reads as position, not decoration */
-    #sidebar .nav-link.active::before {
-        content: "";
-        position: absolute;
-        left: -13px; top: 50%;
-        transform: translateY(-50%);
-        width: 3px; height: 20px;
-        border-radius: 0 3px 3px 0;
-        background: var(--hr-accent);
-    }
-    #sidebar .nav-divider {
-        width: 28px; height: 1px;
-        background: var(--hr-rail-2);
-        margin: 9px 0;
-        flex: none;
-    }
-
-    /* ---------- page header ---------- */
-    #pageHeader {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 18px;
-        flex-wrap: wrap;
-        padding-bottom: 18px;
-        margin-bottom: 24px;
-        border-bottom: 1px solid var(--hr-border);
-    }
-    #pageGroup {
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: .085em;
-        text-transform: uppercase;
-        color: var(--hr-accent);
-        margin-bottom: 3px;
-    }
-    #pageTitle {
-        font-size: clamp(21px, 2.6vw, 27px);
-        font-weight: 700;
-        letter-spacing: -.021em;
-        margin: 0;
-        color: var(--hr-text);
-    }
-
-    .user-chip {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        padding: 6px 7px 6px 12px;
-        background: var(--hr-surface);
-        border: 1px solid var(--hr-border);
-        border-radius: 99px;
-        box-shadow: var(--hr-sh-1);
-    }
-    #userAvatar, #userAvatarPlaceholder {
-        width: 29px; height: 29px;
-        border-radius: 50%;
-        object-fit: cover;
-        flex: none;
-    }
-    #userAvatarPlaceholder {
-        display: grid; place-items: center;
-        background: var(--hr-accent-soft);
-        color: var(--hr-accent-hi);
-        font-weight: 700;
-        font-size: 12.5px;
-    }
-    #userEmail {
-        font-size: 13px;
-        color: var(--hr-text-2);
-        max-width: 190px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    .user-chip .btn-outline-danger {
-        border: 1px solid var(--hr-border) !important;
-        background: transparent !important;
-        color: var(--hr-muted) !important;
-        border-radius: 99px !important;
-        padding: 3px 12px !important;
-        font-size: 12.5px !important;
-        font-weight: 500 !important;
-    }
-    .user-chip .btn-outline-danger:hover {
-        border-color: var(--hr-bad) !important;
-        color: var(--hr-bad) !important;
-        background: var(--hr-bad-soft) !important;
-    }
-
-    /* company scope picker — what you are looking at, not who you are */
-    .company-picker-label {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: .09em;
-        text-transform: uppercase;
-        color: var(--hr-muted);
-        margin: 0 7px 0 0;
-        white-space: nowrap;
-    }
-    .company-picker {
-        width: auto;
-        min-width: 158px;
-        max-width: 230px;
-        margin-right: 12px;
-        font-weight: 600 !important;
-        font-size: 13px !important;
-        border-radius: 99px !important;
-        padding: 5px 30px 5px 13px !important;
-        background-color: var(--hr-surface) !important;
-        border-color: var(--hr-border) !important;
-        color: var(--hr-text) !important;
-        box-shadow: var(--hr-sh-1);
-    }
-    .company-picker:disabled { opacity: .68; }
-
-    /* ---------- theme toggle ---------- */
-    .theme-toggle {
-        width: 34px; height: 34px;
-        display: grid; place-items: center;
-        border-radius: 50%;
-        border: 1px solid var(--hr-border);
-        background: var(--hr-surface);
-        color: var(--hr-muted);
-        cursor: pointer;
-        margin-right: 10px;
-        transition: color .15s ease, border-color .15s ease;
-        box-shadow: var(--hr-sh-1);
-    }
-    .theme-toggle:hover { color: var(--hr-accent); border-color: var(--hr-accent); }
-    .theme-toggle i { font-size: 15px; }
-
-    /* ============================================================
-       SURFACES
-       ============================================================ */
-    .table-container, .page-toolbar, .profile-header, .profile-info-item {
-        background: var(--hr-surface);
-        border: 1px solid var(--hr-border);
-        border-radius: var(--hr-r);
-        box-shadow: var(--hr-sh-1);
-    }
-    .table-container { padding: 18px; margin-bottom: 22px; }
-    .page-toolbar {
-        padding: 14px 18px;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-    .page-toolbar h5 {
-        margin: 0;
-        font-size: 15px;
-        font-weight: 650;
-        letter-spacing: -.012em;
-        color: var(--hr-text);
-    }
-
-    /* ---------- stat tiles ---------- */
-    .stat-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(188px, 1fr));
-        gap: 14px;
-        margin-bottom: 24px;
-    }
-    .hr-stat-card {
-        background: var(--hr-surface);
-        border: 1px solid var(--hr-border);
-        border-radius: var(--hr-r);
-        padding: 16px 18px;
-        box-shadow: var(--hr-sh-1);
-        position: relative;
-        overflow: hidden;
-        transition: box-shadow .18s ease, transform .18s ease;
-    }
-    .hr-stat-card:hover { box-shadow: var(--hr-sh-2); transform: translateY(-1px); }
-    .hr-stat-card::after {
-        content: "";
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: 3px;
-        background: var(--hr-accent);
-        opacity: .9;
-    }
-    .hr-stat-label {
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: .07em;
-        text-transform: uppercase;
-        color: var(--hr-muted);
-        margin-bottom: 5px;
-    }
-    .hr-stat-value {
-        font-size: 27px;
-        font-weight: 700;
-        letter-spacing: -.028em;
-        color: var(--hr-text);
-        line-height: 1.1;
-    }
-
-    /* ============================================================
-       TABLES
-       ============================================================ */
-    .table {
-        --bs-table-bg: transparent;
-        margin: 0;
-        color: var(--hr-text);
-        border-color: var(--hr-border-soft);
-    }
-    .table thead tr { background: transparent; }
-    .table thead th {
-        font-size: 10.5px;
-        font-weight: 700;
-        letter-spacing: .075em;
-        text-transform: uppercase;
-        color: var(--hr-muted);
-        background: var(--hr-surface-2);
-        border-bottom: 1px solid var(--hr-border);
-        padding: 9px 12px;
-        white-space: nowrap;
-        position: sticky;
-        top: 0;
-        z-index: 2;
-    }
-    .table thead th:first-child { border-top-left-radius: var(--hr-r-sm); }
-    .table thead th:last-child  { border-top-right-radius: var(--hr-r-sm); }
-    .table tbody td {
-        padding: 10px 12px;
-        border-bottom: 1px solid var(--hr-border-soft);
-        vertical-align: middle;
-        color: var(--hr-text-2);
-    }
-    .table tbody tr:hover td { background: var(--hr-surface-2); }
-    .table tbody tr:last-child td { border-bottom: 0; }
-
-    /* ============================================================
-       CONTROLS
-       ============================================================ */
-    .form-label {
-        font-size: 12.5px;
-        font-weight: 600;
-        color: var(--hr-text-2);
-        margin-bottom: 5px;
-    }
-    .form-label.small, .form-label small {
-        font-size: 11px;
-        letter-spacing: .05em;
-        text-transform: uppercase;
-        color: var(--hr-muted);
-        font-weight: 600;
-    }
-
-    .form-control, .form-select, .form-control-sm, .form-select-sm {
-        background-color: var(--hr-surface);
-        border: 1px solid var(--hr-border);
-        border-radius: var(--hr-r-sm);
-        color: var(--hr-text);
-        font-size: 14px;
-        padding: 8px 12px;
-        transition: border-color .14s ease, box-shadow .14s ease;
-        box-shadow: none;
-    }
-    .form-control-sm, .form-select-sm { font-size: 13px; padding: 6px 10px; }
-    .form-control::placeholder { color: var(--hr-muted); opacity: .7; }
-    .form-control:focus, .form-select:focus,
-    .form-control-sm:focus, .form-select-sm:focus {
-        border-color: var(--hr-accent);
-        box-shadow: 0 0 0 3px var(--hr-accent-ring);
-        background-color: var(--hr-surface);
-        color: var(--hr-text);
-        outline: none;
-    }
-    .form-control:disabled, .form-select:disabled {
-        background-color: var(--hr-surface-2);
-        color: var(--hr-muted);
-    }
-
-    .btn {
-        border-radius: var(--hr-r-sm);
-        font-weight: 600;
-        font-size: 13.5px;
-        padding: 8px 15px;
-        letter-spacing: -.005em;
-        transition: background .14s ease, border-color .14s ease,
-                    color .14s ease, box-shadow .14s ease, transform .1s ease;
-        border-width: 1px;
-    }
-    .btn:active { transform: translateY(.5px); }
-    .btn-sm { font-size: 12.5px; padding: 5px 11px; }
-
-    .btn-primary {
-        background: var(--hr-accent);
-        border-color: var(--hr-accent);
-        color: var(--hr-on-accent);
-        box-shadow: var(--hr-sh-1);
-    }
-    .btn-primary:hover, .btn-primary:focus {
-        background: var(--hr-accent-hi);
-        border-color: var(--hr-accent-hi);
-        color: var(--hr-on-accent);
-        box-shadow: var(--hr-sh-2);
-    }
-    .btn-primary:disabled { background: var(--hr-muted); border-color: var(--hr-muted); opacity: .55; }
-
-    .btn-secondary {
-        background: var(--hr-surface-2);
-        border-color: var(--hr-border);
-        color: var(--hr-text-2);
-    }
-    .btn-secondary:hover { background: var(--hr-surface-3); color: var(--hr-text); }
-
-    .btn-success { background: var(--hr-good); border-color: var(--hr-good); color: #fff; }
-    .btn-warning { background: var(--hr-warn); border-color: var(--hr-warn); color: oklch(0.2 0.03 80); }
-    .btn-danger  { background: var(--hr-bad);  border-color: var(--hr-bad);  color: #fff; }
-
-    .btn-outline-primary   { border-color: var(--hr-border); color: var(--hr-accent); background: transparent; }
-    .btn-outline-primary:hover { background: var(--hr-accent); border-color: var(--hr-accent); color: var(--hr-on-accent); }
-    .btn-outline-secondary { border-color: var(--hr-border); color: var(--hr-text-2); background: transparent; }
-    .btn-outline-secondary:hover { background: var(--hr-surface-2); border-color: var(--hr-muted); color: var(--hr-text); }
-    .btn-outline-danger    { border-color: var(--hr-border); color: var(--hr-bad); background: transparent; }
-    .btn-outline-danger:hover { background: var(--hr-bad); border-color: var(--hr-bad); color: #fff; }
-
-    /* ============================================================
-       STATE
-       ============================================================ */
-    .badge.bg-success, .badge.bg-primary {
-        background: var(--hr-good-soft) !important;
-        color: var(--hr-good) !important;
-    }
-    .badge.bg-warning   { background: var(--hr-warn-soft) !important; color: var(--hr-warn) !important; }
-    .badge.bg-danger    { background: var(--hr-bad-soft)  !important; color: var(--hr-bad)  !important; }
-    .badge.bg-secondary { background: var(--hr-surface-3) !important; color: var(--hr-muted) !important; }
-    .badge {
-        font-weight: 600;
-        font-size: 11px;
-        letter-spacing: .02em;
-        padding: 4px 9px;
-        border-radius: 99px;
-    }
-
-    .status-badge.active, .status-badge.inactive, .status-badge.on-leave {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 11.5px;
-        font-weight: 600;
-        padding: 3px 10px 3px 8px;
-        border-radius: 99px;
-    }
-    .status-badge.active::before, .status-badge.inactive::before, .status-badge.on-leave::before {
-        content: "";
-        width: 6px; height: 6px;
-        border-radius: 50%;
-        background: currentColor;
-    }
-    .status-badge.active   { background: var(--hr-good-soft); color: var(--hr-good); }
-    .status-badge.on-leave { background: var(--hr-warn-soft); color: var(--hr-warn); }
-    .status-badge.inactive { background: var(--hr-surface-3); color: var(--hr-muted); }
-
-    .alert {
-        border: 1px solid var(--hr-border);
-        border-radius: var(--hr-r-sm);
-        padding: 12px 15px;
-        font-size: 13.5px;
-    }
-    .alert-success { background: var(--hr-good-soft); border-color: transparent; color: var(--hr-good); }
-    .alert-warning { background: var(--hr-warn-soft); border-color: transparent; color: var(--hr-warn); }
-    .alert-danger  { background: var(--hr-bad-soft);  border-color: transparent; color: var(--hr-bad); }
-
-    .text-muted   { color: var(--hr-muted) !important; }
-    .text-primary, .text-info { color: var(--hr-accent) !important; }
-    .text-success { color: var(--hr-good) !important; }
-    .text-warning { color: var(--hr-warn) !important; }
-    .text-danger  { color: var(--hr-bad) !important; }
-    .bg-light, .bg-secondary { background: var(--hr-surface-2) !important; }
-
-    /* ============================================================
-       PROFILE
-       ============================================================ */
-    .profile-header {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-        padding: 22px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-    }
-    .profile-avatar {
-        width: 62px; height: 62px;
-        border-radius: var(--hr-r);
-        background: linear-gradient(145deg, var(--hr-accent), var(--hr-accent-hi));
-        color: var(--hr-on-accent);
-        display: grid; place-items: center;
-        font-size: 24px; font-weight: 700;
-        flex: none;
-        box-shadow: var(--hr-sh-2);
-    }
-    .profile-stat { text-align: left; }
-    .profile-stat-number {
-        font-size: 21px; font-weight: 700;
-        color: var(--hr-text);
-        letter-spacing: -.022em;
-        line-height: 1.15;
-    }
-    .profile-stat-label {
-        font-size: 10.5px; font-weight: 600;
-        letter-spacing: .075em; text-transform: uppercase;
-        color: var(--hr-muted);
-    }
-    .profile-info-item {
-        display: flex;
-        justify-content: space-between;
-        gap: 14px;
-        padding: 11px 15px;
-        margin-bottom: 7px;
-        box-shadow: none;
-    }
-    .profile-info-item:last-child { margin-bottom: 0; }
-    .profile-info-label { font-size: 12.5px; color: var(--hr-muted); font-weight: 500; }
-    .profile-info-value { font-size: 13.5px; color: var(--hr-text); font-weight: 600; text-align: right; }
-
-    /* ============================================================
-       LOGIN
-       ============================================================ */
-    #loginScreen {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-        background:
-            radial-gradient(900px 560px at 15% -5%, var(--hr-accent-soft), transparent 62%),
-            radial-gradient(760px 480px at 108% 108%, var(--hr-surface-3), transparent 58%),
-            var(--hr-bg);
-    }
-    .login-card {
-        width: 100%;
-        max-width: 386px;
-        background: var(--hr-surface);
-        border: 1px solid var(--hr-border);
-        border-radius: var(--hr-r-lg);
-        padding: 36px 32px 28px;
-        box-shadow: var(--hr-sh-3);
-        text-align: center;
-    }
-    .login-card .logo-icon {
-        width: 54px; height: 54px;
-        border-radius: var(--hr-r);
-        background: linear-gradient(145deg, var(--hr-accent), var(--hr-accent-hi));
-        color: var(--hr-on-accent);
-        display: grid; place-items: center;
-        font-size: 25px;
-        margin: 0 auto 18px;
-        box-shadow: var(--hr-sh-2);
-    }
-    .login-card h4 {
-        font-size: 20px; font-weight: 700;
-        letter-spacing: -.021em;
-        margin-bottom: 5px;
-        color: var(--hr-text);
-    }
-    .login-card .google-btn-wrapper {
-        display: flex;
-        justify-content: center;
-        margin: 22px 0 16px;
-        min-height: 44px;
-    }
-    .login-card .footer-text {
-        font-size: 11.5px;
-        color: var(--hr-muted);
-        border-top: 1px solid var(--hr-border-soft);
-        padding-top: 15px;
-        margin: 0;
-    }
-
-    /* ============================================================
-       DATATABLES
-       ============================================================ */
-    .dataTables_wrapper .dataTables_info,
-    .dataTables_wrapper .dataTables_filter label,
-    .dataTables_wrapper .dataTables_length label {
-        font-size: 12.5px;
-        color: var(--hr-muted);
-    }
-    .dataTables_wrapper .dataTables_length select,
-    .dataTables_wrapper .dataTables_filter input {
-        background: var(--hr-surface);
-        border: 1px solid var(--hr-border);
-        border-radius: var(--hr-r-sm);
-        color: var(--hr-text);
-        padding: 4px 9px;
-        font-size: 13px;
-    }
-    .dataTables_wrapper .dataTables_length select:focus,
-    .dataTables_wrapper .dataTables_filter input:focus {
-        border-color: var(--hr-accent);
-        box-shadow: 0 0 0 3px var(--hr-accent-ring);
-        outline: none;
-    }
-    .dataTables_wrapper .page-link {
-        background: var(--hr-surface);
-        border: 1px solid var(--hr-border);
-        color: var(--hr-text-2);
-        font-size: 13px;
-        border-radius: var(--hr-r-sm);
-        margin: 0 2px;
-        padding: 5px 10px;
-    }
-    .dataTables_wrapper .page-link:hover { background: var(--hr-surface-2); color: var(--hr-text); }
-    .dataTables_wrapper .page-item.active .page-link {
-        background: var(--hr-accent);
-        border-color: var(--hr-accent);
-        color: var(--hr-on-accent);
-    }
-
-    /* ============================================================
-       MODALS
-       ============================================================ */
-    .modal-content {
-        background: var(--hr-surface);
-        border: 1px solid var(--hr-border);
-        border-radius: var(--hr-r-lg);
-        box-shadow: var(--hr-sh-3);
-        color: var(--hr-text);
-    }
-    .modal-header, .modal-footer { border-color: var(--hr-border-soft); padding: 16px 20px; }
-    .modal-body { padding: 20px; }
-    .modal-title { font-size: 16.5px; font-weight: 650; letter-spacing: -.014em; }
-
-    .page-section { display: none; }
-    .page-section.active { display: block; animation: hrFade .22s ease both; }
-    @keyframes hrFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-
-    /* ============================================================
-       NARROW SCREENS
-       ============================================================ */
-    @media (max-width: 820px) {
-        :root { --sidebar-width: 58px; }
-        #content { padding: 20px 16px 56px; }
-        #pageHeader { align-items: flex-start; }
-        #userEmail { display: none; }
-        .company-picker { min-width: 128px; }
-        .hr-stat-value { font-size: 23px; }
-    }
-    @media (max-width: 560px) {
-        .stat-grid { grid-template-columns: repeat(auto-fit, minmax(142px, 1fr)); }
-        .company-picker-label { display: none; }
-        .table-container { padding: 13px; }
-    }
-    </style>
+  .cfgwarn{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:14px 16px;font-size:14px;margin-bottom:16px}
+</style>
 </head>
 <body>
+<div class="wrap">
 
-<!-- ============================================================
-     LOGIN SCREEN
-     ============================================================ -->
-<div id="loginScreen">
+  <div class="topbar">
+    <div class="brand">Maya <span>Petty Cash</span></div>
+    <button class="logout hidden" id="logoutBtn">Log out</button>
+  </div>
+
+  <div id="cfgWarn" class="cfgwarn hidden">
+    Not connected yet. Open <b>index.html</b> and paste your Web App URL into <b>API_URL</b>.
+  </div>
+
+  <!-- Login -->
+  <section id="login">
     <div class="login-card">
-        <div class="logo-icon">
-            <i class="bi bi-building"></i><!-- icon hidden via CSS; "M" shown below -->
-            M
-        </div>
-        <h2>HR</h2>
-        <p class="subtitle">Human Resources Management System</p>
-        <hr>
-        <div id="googleLoginButton" class="google-btn-wrapper"></div>
-        <p class="footer-text">
-            Only authorized company email addresses can access this system.
-        </p>
+      <div class="coin">&#128176;</div>
+      <h1><span class="bn">আপনার পিন দিন</span>Enter your PIN</h1>
+      <p>Maya Petty Cash</p>
+      <input id="pinInput" class="pin-input" type="password" inputmode="numeric" maxlength="8" placeholder="••••">
+      <button class="submit give" id="pinBtn" style="margin-top:18px">
+        <span class="bn">প্রবেশ করুন</span><span>&nbsp;/ Login</span>
+      </button>
     </div>
+  </section>
+
+  <!-- Bahar (bilingual) -->
+  <section id="bahar" class="hidden">
+    <div class="balance loading" id="balBahar">
+      <button class="refresh" data-refresh title="Refresh">&#8635;</button>
+      <div class="lbl"><span class="bn">আপনার কাছে থাকা টাকা</span>Money left with you</div>
+      <div class="amt tnum" id="amtBahar"><span class="kd">KD</span>&mdash;</div>
+      <div class="stats">
+        <div class="stat"><div class="k"><span class="bn">পেয়েছেন</span>Received</div><div class="v in tnum" id="inBahar">&mdash;</div></div>
+        <div class="stat"><div class="k"><span class="bn">খরচ হয়েছে</span>Spent</div><div class="v out tnum" id="outBahar">&mdash;</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="bn">খরচ যোগ করুন</span>Add an expense</h2>
+      <p class="hint"><span class="bn">আপনি যা খরচ করেছেন লিখুন। এটি আপনার টাকা থেকে কমে যাবে।</span>Enter what you spent. It comes off your balance.</p>
+
+      <label class="fld">
+        <span class="cap"><span class="bn">আপনি কত খরচ করেছেন? (KD)</span>How much did you spend? (KD)</span>
+        <span class="money"><span class="pre">KD</span>
+          <input id="expAmount" type="number" inputmode="decimal" step="0.001" min="0" placeholder="0.000">
+        </span>
+      </label>
+
+      <label class="fld">
+        <span class="cap"><span class="bn">কিসের জন্য?</span>What was it for?</span>
+        <div class="chips" id="expChips"></div>
+      </label>
+
+      <label class="fld">
+        <span class="cap"><span class="bn">বিস্তারিত (ঐচ্ছিক)</span>Details (optional)</span>
+        <input id="expDesc" type="text" placeholder="e.g. petrol for delivery van">
+      </label>
+
+      <label class="fld">
+        <span class="cap"><span class="bn">তারিখ</span>Date</span>
+        <input id="expDate" type="date">
+      </label>
+
+      <label class="fld">
+        <span class="cap"><span class="bn">রসিদের ছবি (ঐচ্ছিক)</span>Receipt photo (optional)</span>
+        <div class="receipt">
+          <label class="pick" for="expReceipt">&#128247; <span class="bn">ছবি তুলুন / বাছুন</span>&nbsp;/ Photo</label>
+          <input id="expReceipt" type="file" accept="image/*" capture="environment" class="hidden">
+          <img id="expThumb" class="hidden" alt="receipt">
+          <button type="button" class="clr hidden" id="expClear"><span class="bn">সরান</span></button>
+        </div>
+      </label>
+
+      <button class="submit spend" id="expSubmit"><span class="bn">খরচ জমা দিন</span><span>&nbsp;/ Save</span></button>
+    </div>
+
+    <div class="act"><h3><span class="bn">সাম্প্রতিক লেনদেন</span> / Recent activity</h3><div id="feedBahar"></div></div>
+  </section>
+
+  <!-- Mustafa (English) -->
+  <section id="mustafa" class="hidden">
+    <div class="balance loading" id="balMustafa">
+      <button class="refresh" data-refresh title="Refresh">&#8635;</button>
+      <div class="lbl">CURRENT BALANCE WITH BAHAR</div>
+      <div class="amt tnum" id="amtMustafa"><span class="kd">KD</span>&mdash;</div>
+      <div class="stats">
+        <div class="stat"><div class="k">Total given</div><div class="v in tnum" id="inMustafa">&mdash;</div></div>
+        <div class="stat"><div class="k">Total spent</div><div class="v out tnum" id="outMustafa">&mdash;</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Record cash given to Bahar</h2>
+      <p class="hint">This adds to Bahar's balance.</p>
+
+      <label class="toggle" for="cashOpening">
+        <input type="checkbox" id="cashOpening">
+        <span><span class="t">This is the opening balance</span>
+        <span class="s">Starting cash Bahar already holds. Use once, at the start.</span></span>
+      </label>
+
+      <label class="fld">
+        <span class="cap">Amount handed over (KD)</span>
+        <span class="money"><span class="pre">KD</span>
+          <input id="cashAmount" type="number" inputmode="decimal" step="0.001" min="0" placeholder="0.000">
+        </span>
+      </label>
+
+      <label class="fld">
+        <span class="cap">Note (optional)</span>
+        <input id="cashNote" type="text" placeholder="e.g. weekly float">
+      </label>
+
+      <label class="fld">
+        <span class="cap">Date</span>
+        <input id="cashDate" type="date">
+      </label>
+
+      <button class="submit give" id="cashSubmit"><span>Record cash given</span></button>
+    </div>
+
+    <div class="act"><h3>Recent activity</h3><div id="feedMustafa"></div></div>
+  </section>
+
 </div>
 
+<div class="toast" id="toast"></div>
 
-<!-- ============================================================
-     MAIN APP
-     ============================================================ -->
-<div id="mainApp">
-    <div class="wrapper">
-
-        <!-- =====================================================
-             SIDEBAR — 68px icon strip
-             All nav items pre-baked so *-ui.js files skip injection
-             ===================================================== -->
-        <nav id="sidebar">
-            <div class="sidebar-logo" id="sidebarLogo" title="HR System"></div>
-            <ul class="nav flex-column">
-
-                <!-- Dashboard -->
-                <li class="nav-item">
-                    <a class="nav-link active" data-page="dashboard" title="Dashboard"><i class="bi bi-speedometer2"></i><span class="nav-text">Dashboard</span></a>
-                </li>
-
-                <!-- People group divider -->
-                <li class="nav-divider" aria-hidden="true"></li>
-
-                <!-- Employees -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="employees" title="Employees"><i class="bi bi-people"></i><span class="nav-text">Employees</span></a>
-                </li>
-                <!-- Performance Reviews -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="reviews" title="Performance Reviews"><i class="bi bi-star"></i><span class="nav-text">Performance Reviews</span></a>
-                </li>
-
-                <!-- Time group divider -->
-                <li class="nav-divider" aria-hidden="true"></li>
-
-                <!-- Attendance -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="attendance" title="Attendance"><i class="bi bi-calendar2-check"></i><span class="nav-text">Attendance</span></a>
-                </li>
-                <!-- Shifts -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="shifts" title="Shifts"><i class="bi bi-clock-history"></i><span class="nav-text">Shifts</span></a>
-                </li>
-                <!-- Locations -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="locations" title="Locations"><i class="bi bi-geo-alt"></i><span class="nav-text">Locations</span></a>
-                </li>
-                <!-- Overtime -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="ot" title="Overtime"><i class="bi bi-hourglass-split"></i><span class="nav-text">Overtime</span></a>
-                </li>
-                <!-- OT Review -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="otreview" title="OT Review"><i class="bi bi-clipboard2-check"></i><span class="nav-text">OT Review</span></a>
-                </li>
-
-                <!-- Pay group divider -->
-                <li class="nav-divider" aria-hidden="true"></li>
-
-                <!-- Payroll -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="payroll" title="Payroll"><i class="bi bi-cash-stack"></i><span class="nav-text">Payroll</span></a>
-                </li>
-                <!-- Payroll Review -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="payrollreview" title="Payroll Review"><i class="bi bi-receipt"></i><span class="nav-text">Payroll Review</span></a>
-                </li>
-                <!-- Scheduled Deductions -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="scheddeduct" title="Scheduled Deductions"><i class="bi bi-dash-circle"></i><span class="nav-text">Scheduled Deductions</span></a>
-                </li>
-
-                <!-- Admin group divider -->
-                <li class="nav-divider" aria-hidden="true"></li>
-
-                <!-- Leave Balances -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="leavebal" title="Leave Balances"><i class="bi bi-pie-chart"></i><span class="nav-text">Leave Balances</span></a>
-                </li>
-                <!-- Leave Types -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="leavetypes" title="Leave Types"><i class="bi bi-tags"></i><span class="nav-text">Leave Types</span></a>
-                </li>
-                <!-- Leave Allocation -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="leavealloc" title="Leave Allocation"><i class="bi bi-calendar-range"></i><span class="nav-text">Leave Allocation</span></a>
-                </li>
-                <!-- Grant Leave -->
-                <li class="nav-item">
-                    <a class="nav-link" data-page="grantleave" title="Grant Leave"><i class="bi bi-calendar-plus"></i><span class="nav-text">Grant Leave</span></a>
-                </li>
-
-            </ul>
-        </nav><!-- /#sidebar -->
-
-
-        <!-- =====================================================
-             CONTENT AREA
-             ===================================================== -->
-        <div id="content">
-
-            <!-- Page Header -->
-            <div id="pageHeader">
-                <div>
-                    <div id="pageGroup">Overview</div>
-                    <h1 id="pageTitle">Dashboard</h1>
-                </div>
-                <div class="user-chip">
-                    <!-- Company scope. Built at runtime from the Companies tab,
-                         never listed here. Filters every screen below. -->
-                    <button id="themeToggle" class="theme-toggle" type="button"
-                            title="Switch between light and dark" aria-label="Switch theme">
-                        <i class="bi bi-moon-stars"></i>
-                    </button>
-                    <label for="companyPicker" class="company-picker-label">Company</label>
-                    <select id="companyPicker" class="form-select form-select-sm company-picker"
-                            title="Which company you are looking at"></select>
-                    <img id="userAvatar" style="display:none;" alt="">
-                    <div id="userAvatarPlaceholder">?</div>
-                    <span id="userEmail">Loading…</span>
-                    <button class="btn btn-outline-danger btn-sm" onclick="handleSignOut()">Sign Out</button>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 DASHBOARD
-                 ================================================ -->
-            <div class="page-section active" id="page-dashboard">
-                <div class="stat-grid">
-                    <div class="hr-stat-card">
-                        <div class="hr-stat-label">Total Employees</div>
-                        <div class="hr-stat-value" id="totalEmployees">0</div>
-                    </div>
-                    <div class="hr-stat-card">
-                        <div class="hr-stat-label">Active Employees</div>
-                        <div class="hr-stat-value" id="activeEmployees">0</div>
-                    </div>
-                    <div class="hr-stat-card">
-                        <div class="hr-stat-label">Pending Leaves</div>
-                        <div class="hr-stat-value" id="pendingLeaves">0</div>
-                    </div>
-                    <div class="hr-stat-card">
-                        <div class="hr-stat-label">Avg Rating</div>
-                        <div class="hr-stat-value" id="avgRating">0</div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 EMPLOYEES
-                 ================================================ -->
-            <div class="page-section" id="page-employees">
-                <div class="table-container">
-                    <div class="page-toolbar">
-                        <h5>Employee Management</h5>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-primary btn-sm" onclick="app.showAddEmployeeModal()">
-                                + Add Employee
-                            </button>
-                            <button class="btn btn-outline-secondary btn-sm" onclick="app.loadAllData()">
-                                ↺ Refresh
-                            </button>
-                        </div>
-                    </div>
-                    <table id="employeesTable" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Employee ID</th>
-                                <th>Name (English)</th>
-                                <th>Name (Arabic)</th>
-                                <th>Civil ID</th>
-                                <th>Designation</th>
-                                <th>Salary</th>
-                                <th>Vacation Left</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="employeesTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 PROFILE (employee-ui.js populates profileContent)
-                 ================================================ -->
-            <div class="page-section" id="page-profile">
-                <div id="profileContent"></div>
-            </div>
-
-
-            <!-- ================================================
-                 ATTENDANCE (attendance-ui.js rewrites via sec.innerHTML)
-                 ================================================ -->
-            <div class="page-section" id="page-attendance"></div>
-
-
-            <!-- ================================================
-                 PERFORMANCE REVIEWS
-                 ================================================ -->
-            <div class="page-section" id="page-reviews">
-                <div class="table-container">
-                    <div class="page-toolbar">
-                        <h5>Performance Reviews</h5>
-                        <button class="btn btn-primary btn-sm" onclick="app.showReviewModal()">+ Add Review</button>
-                    </div>
-                    <table id="reviewsTable" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Review ID</th>
-                                <th>Employee ID</th>
-                                <th>Employee Name</th>
-                                <th>Date</th>
-                                <th>Reviewer</th>
-                                <th>Rating</th>
-                                <th>Comments</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reviewsTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 SHIFTS — pre-baked so shifts-ui.js skips creation.
-                 All IDs match exactly what shifts-ui.js expects.
-                 ================================================ -->
-            <div class="page-section" id="page-shifts">
-                <div class="table-container mb-4">
-                    <div class="page-toolbar">
-                        <h5>Shifts</h5>
-                        <button class="btn btn-primary btn-sm" onclick="app.openShift()">+ New Shift</button>
-                    </div>
-                    <div id="shTableWrap" class="table-responsive">
-                        <div class="text-muted small">Loading…</div>
-                    </div>
-                    <div class="text-muted small mt-2">
-                        Normal Hours is the <b>total</b> shift length incl. break.
-                        OT = presence − Normal Hours. Grace applies to check-in only.
-                    </div>
-                </div>
-                <div class="table-container">
-                    <h6 class="mb-3">Assign Shift to Staff</h6>
-                    <div class="row g-2 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label small mb-1">Shift</label>
-                            <select id="asShift" class="form-select form-select-sm"></select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label small mb-1">Apply to</label>
-                            <select id="asScope" class="form-select form-select-sm" onchange="app.shiftScopeChange()">
-                                <option value="all">All employees</option>
-                                <option value="branch">A location</option>
-                                <option value="ids">Specific IDs</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4" id="asExtraWrap" style="display:none">
-                            <label class="form-label small mb-1" id="asExtraLabel"></label>
-                            <select id="asExtraLoc" class="form-select form-select-sm" style="display:none"></select>
-                            <input id="asExtra" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-primary btn-sm w-100" onclick="app.doAssignShift()">Assign</button>
-                        </div>
-                    </div>
-                    <div id="asStatus" class="mt-2"></div>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 LOCATIONS — pre-baked; locTableWrap required.
-                 ================================================ -->
-            <div class="page-section" id="page-locations">
-                <div class="table-container">
-                    <div class="page-toolbar">
-                        <h5>Locations</h5>
-                        <button class="btn btn-primary btn-sm" onclick="app.openLocation()">+ New Location</button>
-                    </div>
-                    <div id="locTableWrap" class="table-responsive">
-                        <div class="text-muted small">Loading…</div>
-                    </div>
-                    <div class="text-muted small mt-2">
-                        Tick <b>Geofenced</b> for locations where the kiosk should check GPS (needs lat/long/radius).
-                        Leave it off for office locations like Head Office.
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 OVERTIME — pre-baked. All IDs match ot-ui.js.
-                 ================================================ -->
-            <div class="page-section" id="page-ot">
-                <div id="otGate"></div>
-                <div id="otBody">
-                    <!-- Add OT -->
-                    <div class="table-container mb-4">
-                        <h5 class="mb-3">Add Overtime</h5>
-                        <div class="row g-2 align-items-end">
-                            <div class="col-auto">
-                                <label class="form-label small mb-1">Date</label>
-                                <input type="date" id="otDate" class="form-control form-control-sm">
-                            </div>
-                            <div class="col-auto position-relative">
-                                <label class="form-label small mb-1">Employee (name / ID / Civil ID)</label>
-                                <input type="text" id="otEmpSearch" class="form-control form-control-sm"
-                                    style="min-width:240px" placeholder="Type name, MT-ID or Civil ID" autocomplete="off">
-                                <input type="hidden" id="otEmp">
-                                <select id="otEmpResults" class="form-select form-select-sm mt-1"
-                                    size="5" style="display:none;position:absolute;z-index:30;min-width:240px"
-                                    onchange="app.otPickEmployee(this.value)"></select>
-                                <div id="otEmpPicked" class="small text-success mt-1"></div>
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label small mb-1">OT Hours</label>
-                                <input type="number" id="otHours" class="form-control form-control-sm"
-                                    step="0.25" min="0" style="width:110px">
-                            </div>
-                            <div class="col-auto">
-                                <label class="form-label small mb-1">Remark</label>
-                                <input type="text" id="otRemark" class="form-control form-control-sm"
-                                    placeholder="optional">
-                            </div>
-                            <div class="col-auto">
-                                <button id="otAddBtn" class="btn btn-primary btn-sm" onclick="app.addOt()">Add</button>
-                            </div>
-                        </div>
-                        <div id="otAddStatus" class="mt-2"></div>
-                        <div class="text-muted small mt-1">
-                            One OT figure per employee per day — re-adding the same date overwrites it.
-                        </div>
-                    </div>
-                    <!-- OT Summary -->
-                    <div class="table-container">
-                        <div class="page-toolbar mb-3">
-                            <h5>OT Summary</h5>
-                            <div class="d-flex gap-2 align-items-end">
-                                <div>
-                                    <label class="form-label small mb-1">From</label>
-                                    <input type="date" id="otFrom" class="form-control form-control-sm">
-                                </div>
-                                <div>
-                                    <label class="form-label small mb-1">To</label>
-                                    <input type="date" id="otTo" class="form-control form-control-sm">
-                                </div>
-                                <button class="btn btn-outline-secondary btn-sm" onclick="app.otSummary()">View</button>
-                                <button class="btn btn-primary btn-sm" onclick="app.otReport()">Save Report</button>
-                            </div>
-                        </div>
-                        <div id="otSummaryWrap">
-                            <div class="text-muted small">Pick a From–To range and click View. Leave blank for all-time.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 OT REVIEW — pre-baked. All IDs match ot-review-ui.js.
-                 ================================================ -->
-            <div class="page-section" id="page-otreview">
-                <!-- OT VERIFICATION — claims submitted by staff on the kiosk.
-                     The claim is what is being verified; punch figures are
-                     context only. Populated by ot-review-ui.js. -->
-                <div class="table-container mb-3">
-                    <h5 class="mb-1"><i class="bi bi-patch-check"></i> OT Verification</h5>
-                    <p class="text-muted small mb-2">
-                        Claims submitted by staff on the kiosk. The claim is what you are
-                        verifying — punch figures are shown for context only and do not
-                        decide anything. Nothing is paid until you submit.
-                    </p>
-                    <div class="row g-2 align-items-end mb-2">
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">From</label>
-                            <input type="date" id="otvFrom" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">To</label>
-                            <input type="date" id="otvTo" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-primary btn-sm" onclick="app.loadOtVerify()">
-                                <i class="bi bi-search"></i> Load claims
-                            </button>
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-outline-success btn-sm" onclick="app.otvBulk('approve')">
-                                Approve all shown
-                            </button>
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-outline-secondary btn-sm" onclick="app.otvClear()">
-                                Clear
-                            </button>
-                        </div>
-                    </div>
-                    <div id="otvSummary" class="mb-2"></div>
-                    <div id="otvWrap" class="table-responsive">
-                        <div class="text-muted small">Pick a range and click Load claims.</div>
-                    </div>
-                    <div id="otvBar" class="mt-2"></div>
-                </div>
-                <div class="table-container mb-3">
-                    <h5 class="mb-3">OT Review &amp; Post</h5>
-                    <div class="row g-2 align-items-end">
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">From</label>
-                            <input type="date" id="orFrom" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">To</label>
-                            <input type="date" id="orTo" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-primary btn-sm" onclick="app.loadOtDraft()">Compute</button>
-                        </div>
-                        <div class="col-auto">
-                            <input type="text" id="orSearch" class="form-control form-control-sm"
-                                placeholder="Filter name/ID" style="width:170px">
-                        </div>
-                        <div class="col-auto form-check ms-2">
-                            <input type="checkbox" class="form-check-input" id="orFlagsOnly">
-                            <label class="form-check-label small" for="orFlagsOnly">Flagged only</label>
-                        </div>
-                    </div>
-                    <div class="text-muted small mt-2">
-                        OT = presence − shift Normal Hours (computed per day from attendance).
-                        Edit any OT before posting. Posting writes to OT_Entries.
-                    </div>
-                </div>
-                <div id="orTableWrap" class="table-container table-responsive">
-                    <div class="text-muted small">Pick a range and click Compute.</div>
-                </div>
-                <div id="orPostBar"></div>
-            </div>
-
-
-            <!-- ================================================
-                 PAYROLL — pre-baked. All IDs match payroll-ui.js.
-                 ================================================ -->
-            <div class="page-section" id="page-payroll">
-                <!-- Run Payroll -->
-                <div class="table-container mb-4">
-                    <h5 class="mb-3">Run Payroll</h5>
-                    <div class="row g-2 align-items-end mb-2">
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Period End</label>
-                            <input type="date" id="payrollPeriodEnd" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Mode</label>
-                            <select id="payrollMode" class="form-select form-select-sm">
-                                <option value="attendance">With attendance (OT from log)</option>
-                                <option value="manual">Without attendance (manual OT)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row g-2 align-items-end mb-2">
-                        <div class="col-md-8">
-                            <label class="form-label small mb-1">Exclude Employee IDs (optional, comma-separated)</label>
-                            <input type="text" id="payrollExclude" class="form-control form-control-sm"
-                                placeholder="e.g. HR-EMP-00023 — staff already paid via advance/vacation">
-                        </div>
-                    </div>
-                    <div class="mb-2">
-                        <a href="#" id="payrollFirstRunToggle" class="small text-muted">
-                            First payroll run ever? Click to set a start date
-                        </a>
-                        <div id="payrollFirstRunRow" class="row g-2 align-items-end mt-1" style="display:none;">
-                            <div class="col-auto">
-                                <label class="form-label small mb-1">Period Start (first run only)</label>
-                                <input type="date" id="payrollPeriodStart" class="form-control form-control-sm">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-2 mb-2">
-                        <button id="payrollPrepBtn" class="btn btn-outline-secondary btn-sm" onclick="app.preparePayrollInputs()">
-                            Prepare Inputs
-                        </button>
-                        <button id="payrollRunBtn" class="btn btn-primary btn-sm" onclick="app.runPayroll()">
-                            Run Payroll
-                        </button>
-                        <button id="payrollCancelBtn" class="btn btn-outline-danger btn-sm" onclick="app.cancelPayroll()">
-                            Cancel Last Run
-                        </button>
-                    </div>
-                    <div id="payrollStatus" class="mb-2"></div>
-                    <div id="payrollFlags"></div>
-                    <div class="text-muted small">
-                        Manual mode uses <b>Manual OT Hours</b> from the Payroll_Inputs tab; both modes apply
-                        <b>Deductions</b> from that tab. "Prepare Inputs" seeds a row per employee for the chosen Period End.
-                        Runs auto-continue from the last period (Payroll_Control).
-                    </div>
-                </div>
-                <!-- Payslips & Report -->
-                <div class="table-container mb-4">
-                    <h5 class="mb-3">Payslips &amp; Report (A5 PDF)</h5>
-                    <div class="row g-2 align-items-end mb-2">
-                        <div class="col-md-6">
-                            <label class="form-label small mb-1">Period tab (blank = most recent run)</label>
-                            <input type="text" id="docsTab" class="form-control form-control-sm"
-                                placeholder="e.g. Payroll 21Jul-20Aug">
-                        </div>
-                        <div class="col-auto">
-                            <button id="docsBtn" class="btn btn-primary btn-sm" onclick="app.generatePayrollDocs()">
-                                Generate
-                            </button>
-                        </div>
-                    </div>
-                    <div id="docsStatus"></div>
-                    <div class="text-muted small">
-                        One combined PDF: an A5 summary page plus one A5 payslip per employee on the tab. Saved to Drive.
-                    </div>
-                </div>
-                <!-- Bank Transfer -->
-                <div class="table-container mb-4">
-                    <h5 class="mb-3">Bank Transfer (Warba)</h5>
-                    <div class="row g-2 align-items-end mb-2">
-                        <div class="col-md-5">
-                            <label class="form-label small mb-1">Period tab to transfer from</label>
-                            <input type="text" id="bankTab" class="form-control form-control-sm"
-                                placeholder="e.g. Payroll 01Aug-21Aug">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small mb-1">Paid in cash — exclude IDs (optional)</label>
-                            <input type="text" id="bankExclude" class="form-control form-control-sm"
-                                placeholder="e.g. HR-EMP-00036">
-                        </div>
-                        <div class="col-auto">
-                            <button id="bankBtn" class="btn btn-primary btn-sm" onclick="app.populateBankTransfer()">
-                                Populate Bank Sheet
-                            </button>
-                        </div>
-                    </div>
-                    <div id="bankStatus"></div>
-                    <div class="text-muted small">
-                        Writes each employee's Total Payable into the <b>Bank Transfer Details</b> tab, matched by Civil ID.
-                        Flags anyone paid but missing a bank row or IBAN.
-                    </div>
-                </div>
-                <!-- Amend Attendance -->
-                <div class="table-container">
-                    <h5 class="mb-3">Amend Attendance (Admin)</h5>
-                    <div class="row g-2 align-items-end mb-2">
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Employee ID</label>
-                            <input type="text" id="amendEmpId" class="form-control form-control-sm"
-                                placeholder="HR-EMP-00001">
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Date</label>
-                            <input type="date" id="amendDate" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Stage</label>
-                            <select id="amendStage" class="form-select form-select-sm">
-                                <option>Check In</option>
-                                <option>Break Out</option>
-                                <option>Break In</option>
-                                <option>Check Out</option>
-                            </select>
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Time</label>
-                            <input type="time" id="amendTime" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Action</label>
-                            <select id="amendAction" class="form-select form-select-sm">
-                                <option value="set">Set / Add</option>
-                                <option value="delete">Delete</option>
-                            </select>
-                        </div>
-                        <div class="col-auto">
-                            <button id="amendBtn" class="btn btn-primary btn-sm" onclick="app.amendAttendance()">Save</button>
-                        </div>
-                    </div>
-                    <div id="amendStatus"></div>
-                    <div class="text-muted small">
-                        Every change is logged to Attendance_Amendments. If the date falls in a period already run,
-                        that run is flagged NEEDS RE-RUN in Payroll_Control — re-run it to apply the correction.
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 PAYROLL REVIEW — pre-baked. All IDs match payroll-review-ui.js.
-                 ================================================ -->
-            <div class="page-section" id="page-payrollreview">
-                <div class="table-container mb-3">
-                    <h5 class="mb-3">Payroll Review &amp; Run</h5>
-                    <div class="row g-2 align-items-end">
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Period end (cutoff)</label>
-                            <input type="date" id="prEnd" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Period start (optional)</label>
-                            <input type="date" id="prStart" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small mb-1">Exclude IDs (cash/advance)</label>
-                            <input type="text" id="prExclude" class="form-control form-control-sm"
-                                placeholder="HR-EMP-00036">
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-primary btn-sm" onclick="app.loadPayrollReview()">Load</button>
-                        </div>
-                    </div>
-                    <div class="text-muted small mt-2">
-                        OT is taken from the <b>entire</b> OT_Entries tab. Unpaid-leave deductions auto-fill
-                        from granted Unpaid leave in the period. Running archives OT_Entries and starts fresh.
-                    </div>
-                </div>
-                <div id="prTableWrap" class="table-container table-responsive">
-                    <div class="text-muted small">Pick a period end and click Load.</div>
-                </div>
-                <div id="prRunBar"></div>
-            </div>
-
-
-            <!-- ================================================
-                 SCHEDULED DEDUCTIONS — pre-baked. All IDs match scheduled-deductions-ui.js.
-                 ================================================ -->
-            <div class="page-section" id="page-scheddeduct">
-                <div class="table-container mb-3">
-                    <h5 class="mb-3">Schedule a Deduction</h5>
-                    <div class="row g-2 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label small mb-1">Employee</label>
-                            <input id="sdEmpSearch" class="form-control form-control-sm mb-1"
-                                placeholder="filter…" oninput="app.sdFilterEmps()">
-                            <select id="sdEmp" class="form-select form-select-sm"></select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small mb-1">Type</label>
-                            <select id="sdType" class="form-select form-select-sm">
-                                <option>Loan</option>
-                                <option>Advance</option>
-                                <option>Disciplinary</option>
-                                <option>Fine</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small mb-1">Amount (KD)</label>
-                            <input id="sdAmount" type="number" step="0.001"
-                                class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small mb-1">Month</label>
-                            <select id="sdMonth" class="form-select form-select-sm"></select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small mb-1">Remark</label>
-                            <input id="sdRemark" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-md-1">
-                            <button class="btn btn-primary btn-sm w-100" onclick="app.addSchedDeduct()">Add</button>
-                        </div>
-                    </div>
-                    <div id="sdStatus" class="mt-2"></div>
-                    <div class="text-muted small mt-1">
-                        Split a fine across months by adding one row per month. Payroll auto-applies the month's
-                        pending rows, then locks them.
-                    </div>
-                </div>
-                <div class="table-container">
-                    <div class="page-toolbar mb-2">
-                        <h6 class="mb-0">Scheduled</h6>
-                        <button class="btn btn-outline-secondary btn-sm" onclick="app.loadSchedDeduct()">↺</button>
-                    </div>
-                    <div id="sdTableWrap" class="table-responsive">
-                        <div class="text-muted small">Loading…</div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 LEAVE BALANCES — pre-baked. All IDs match leave-ui.js.
-                 ================================================ -->
-            <div class="page-section" id="page-leavebal">
-                <!-- View balances -->
-                <div class="table-container mb-4">
-                    <div class="page-toolbar mb-3">
-                        <h5>Leave Balances</h5>
-                        <div class="d-flex gap-2">
-                            <input type="text" id="balSearch" class="form-control form-control-sm"
-                                style="width:170px" placeholder="Filter by Employee ID">
-                            <button class="btn btn-outline-secondary btn-sm" onclick="app.loadLeaveBalances()">
-                                ↺ Load
-                            </button>
-                        </div>
-                    </div>
-                    <div id="balTableWrap" class="table-responsive">
-                        <div class="text-muted small">Click Load to view balances.</div>
-                    </div>
-                </div>
-                <!-- Add/Edit + Encash -->
-                <div class="row g-4 mb-4">
-                    <div class="col-lg-6">
-                        <div class="table-container h-100">
-                            <h6 class="mb-3">Add / Edit Balance</h6>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <label class="form-label small mb-1">Employee ID</label>
-                                    <input id="ubEmp" class="form-control form-control-sm" placeholder="HR-EMP-00001">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small mb-1">Type</label>
-                                    <select id="ubType" class="form-select form-select-sm"></select>
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small mb-1">Entitled</label>
-                                    <input id="ubEnt" type="number" class="form-control form-control-sm">
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small mb-1">Taken</label>
-                                    <input id="ubTaken" type="number" class="form-control form-control-sm" value="0">
-                                </div>
-                                <div class="col-4">
-                                    <label class="form-label small mb-1">Encashed</label>
-                                    <input id="ubEnc" type="number" class="form-control form-control-sm" value="0">
-                                </div>
-                            </div>
-                            <button class="btn btn-primary btn-sm mt-3" onclick="app.saveLeaveBalance()">
-                                Save Balance
-                            </button>
-                            <div id="ubStatus" class="mt-2"></div>
-                            <div class="text-muted small mt-1">
-                                Remaining is computed as Entitled − Taken − Encashed.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="table-container h-100">
-                            <h6 class="mb-3">Encash Leave</h6>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <label class="form-label small mb-1">Employee ID</label>
-                                    <input id="enEmp" class="form-control form-control-sm" placeholder="HR-EMP-00001">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small mb-1">Type (encashable only)</label>
-                                    <select id="enType" class="form-select form-select-sm"></select>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small mb-1">Days</label>
-                                    <input id="enDays" type="number" class="form-control form-control-sm" min="1">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small mb-1">Encash Date</label>
-                                    <input id="enDate" type="date" class="form-control form-control-sm">
-                                </div>
-                            </div>
-                            <button class="btn btn-success btn-sm mt-3" onclick="app.encashLeave()">
-                                Encash
-                            </button>
-                            <div id="enStatus" class="mt-2"></div>
-                            <div class="text-muted small mt-1">
-                                Amount = Basic ÷ 30 × days (60 days = 2 basic salaries). Reduces Remaining
-                                and is paid in the run ending on/after the encash date.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Bulk Upload + Migration -->
-                <div class="row g-4 mb-4">
-                    <div class="col-lg-7">
-                        <div class="table-container h-100">
-                            <h6 class="mb-3">Bulk Upload Balances</h6>
-                            <div class="text-muted small mb-1">
-                                Paste rows: <code>EmployeeID, Type, Entitled, Taken, Encashed</code>
-                                (one per line; Taken/Encashed optional).
-                            </div>
-                            <textarea id="bulkText" class="form-control form-control-sm" rows="6"
-                                placeholder="HR-EMP-00001, Annual, 30, 4, 0&#10;HR-EMP-00002, Sick, 15, 0, 0"></textarea>
-                            <button class="btn btn-primary btn-sm mt-2" onclick="app.bulkUploadLeave()">
-                                Upload
-                            </button>
-                            <div id="bulkStatus" class="mt-2"></div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <div class="table-container h-100">
-                            <h6 class="mb-3">Migrate Old Balances</h6>
-                            <div class="text-muted small mb-2">
-                                Pulls the old Vacation / Sick Leave tabs and matches names to Employee IDs.
-                                Preview first, then commit.
-                            </div>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-outline-secondary btn-sm" onclick="app.migrateLeave(false)">
-                                    Preview
-                                </button>
-                                <button class="btn btn-warning btn-sm" onclick="app.migrateLeave(true)">
-                                    Commit
-                                </button>
-                            </div>
-                            <div id="migStatus" class="mt-2"></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Encashment History -->
-                <div class="table-container">
-                    <div class="page-toolbar mb-2">
-                        <h6 class="mb-0">Encashment History</h6>
-                        <button class="btn btn-outline-secondary btn-sm" onclick="app.loadEncashHistory()">
-                            ↺ Load
-                        </button>
-                    </div>
-                    <div id="encHistWrap" class="table-responsive">
-                        <div class="text-muted small">Click Load to view past encashments and reprint vouchers.</div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 LEAVE TYPES — pre-baked. ltTableWrap required.
-                 ================================================ -->
-            <div class="page-section" id="page-leavetypes">
-                <div class="table-container">
-                    <div class="page-toolbar mb-3">
-                        <h5>Leave Types</h5>
-                        <button class="btn btn-primary btn-sm" onclick="app.openLeaveType()">+ New Type</button>
-                    </div>
-                    <div id="ltTableWrap" class="table-responsive">
-                        <div class="text-muted small">Loading…</div>
-                    </div>
-                    <div class="text-muted small mt-2">
-                        <b>Is Paid = No</b> → payroll deducts those days (Basic ÷ 26 × days).
-                        <b>Excludes From Payroll = Yes</b> → status flips to On Leave.
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 LEAVE ALLOCATION — pre-baked. All IDs match leavetypes-ui.js.
-                 ================================================ -->
-            <div class="page-section" id="page-leavealloc">
-                <div class="table-container mb-4">
-                    <h5 class="mb-3">Allocate Leave</h5>
-                    <div class="row g-2 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label small mb-1">Leave Type</label>
-                            <select id="alType" class="form-select form-select-sm"></select>
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small mb-1">Days</label>
-                            <input id="alDays" type="number" class="form-control form-control-sm" min="0">
-                        </div>
-                        <div class="col-md-2">
-                            <label class="form-label small mb-1">Mode</label>
-                            <select id="alMode" class="form-select form-select-sm">
-                                <option value="set">Set to</option>
-                                <option value="topup">Top-up (add)</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label small mb-1">Apply to</label>
-                            <select id="alScope" class="form-select form-select-sm" onchange="app.allocScopeChange()">
-                                <option value="all">All employees</option>
-                                <option value="branch">A branch</option>
-                                <option value="ids">Specific IDs</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button class="btn btn-primary btn-sm w-100" onclick="app.doAllocate()">Allocate</button>
-                        </div>
-                        <div class="col-md-6" id="alScopeExtraWrap" style="display:none">
-                            <label class="form-label small mb-1" id="alScopeExtraLabel"></label>
-                            <input id="alScopeExtra" class="form-control form-control-sm">
-                        </div>
-                    </div>
-                    <div id="alStatus" class="mt-2"></div>
-                </div>
-                <div class="table-container">
-                    <h6 class="mb-2">One-time migration: Remaining Vacation → Annual</h6>
-                    <div class="text-muted small mb-2">
-                        Seeds each employee's current HR HR <b>Remaining Vacation</b> into their
-                        <b>Annual</b> balance. Run once. Preview first.
-                    </div>
-                    <button class="btn btn-outline-secondary btn-sm" onclick="app.migrateAnnual(true)">Preview</button>
-                    <button class="btn btn-warning btn-sm ms-2" onclick="app.migrateAnnual(false)">Commit</button>
-                    <div id="migAnnualStatus" class="mt-2"></div>
-                </div>
-            </div>
-
-
-            <!-- ================================================
-                 GRANT LEAVE — pre-baked. All IDs match grant-ui.js.
-                 ================================================ -->
-            <div class="page-section" id="page-grantleave">
-                <div id="reactivateWrap"></div>
-                <div class="table-container">
-                    <div class="page-toolbar mb-3">
-                        <h5>Grant Leave</h5>
-                        <div class="d-flex gap-2">
-                            <input type="text" id="grantSearch" class="form-control form-control-sm"
-                                style="width:200px" placeholder="Search name / ID">
-                            <button class="btn btn-warning btn-sm" onclick="app.applyStatusNow()"
-                                title="Flip anyone currently on leave to On Leave, and list those to reactivate">
-                                Apply Status Changes Now
-                            </button>
-                            <button class="btn btn-outline-secondary btn-sm" onclick="app.loadGrantPage()">
-                                ↺ Refresh
-                            </button>
-                        </div>
-                    </div>
-                    <div id="grantTableWrap" class="table-responsive">
-                        <div class="text-muted small">Loading…</div>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- /#content -->
-    </div><!-- /.wrapper -->
-</div><!-- /#mainApp -->
-
-
-<!-- ============================================================
-     MODALS — unchanged from original; Bootstrap handles display
-     ============================================================ -->
-
-<!-- Employee Modal -->
-<div class="modal fade" id="employeeModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="employeeModalTitle">Add Employee</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="employeeForm">
-                    <div class="row">
-                        <div class="col-12"><h6 class="border-bottom pb-2 mb-3">Personal Information</h6></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Name (English) <span class="text-danger">*</span></label><input type="text" class="form-control" id="empNameEnglish" required></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Name (Arabic) <span class="text-danger">*</span></label><input type="text" class="form-control" id="empNameArabic" required></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Civil ID <span class="text-danger">*</span></label><input type="text" class="form-control" id="empCivilId" required></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">IBAN</label><input type="text" class="form-control" id="empIban" placeholder="KW.. (optional)"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Passport No</label><input type="text" class="form-control" id="empPassport"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Nationality</label><input type="text" class="form-control" id="empNationality"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Designation</label><input type="text" class="form-control" id="empDesignation"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Email</label><input type="email" class="form-control" id="empEmail"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Mobile</label><input type="text" class="form-control" id="empMobile"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">WhatsApp</label><input type="text" class="form-control" id="empWhatsapp"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Salary <span class="text-danger">*</span></label><input type="number" class="form-control" id="empSalary" required step="0.01"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Date of Join</label><input type="date" class="form-control" id="empDateOfJoin"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label">Status</label>
-                            <select class="form-control" id="empStatus">
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="On Leave">On Leave</option>
-                            </select>
-                        </div>
-                        <div class="col-12 mt-3"><h6 class="border-bottom pb-2 mb-3">Document Details</h6></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Health Card Issued</label><input type="date" class="form-control" id="empHealthIssued"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Health Card Expiry</label><input type="date" class="form-control" id="empHealthExpiry"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">CID Issued</label><input type="date" class="form-control" id="empCidIssued"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">CID Expiry</label><input type="date" class="form-control" id="empCidExpiry"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Passport Issued</label><input type="date" class="form-control" id="empPassportIssued"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Passport Expiry</label><input type="date" class="form-control" id="empPassportExpiry"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Contact (Kuwait)</label><input type="text" class="form-control" id="empContactKuwait"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Contact (Home)</label><input type="text" class="form-control" id="empContactHome"></div>
-                        <div class="col-12 mt-3"><h6 class="border-bottom pb-2 mb-3">Leave &amp; Vacation</h6></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Total Vacation Days</label><input type="number" class="form-control" id="empTotalVacation" value="0"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Vacation Taken</label><input type="number" class="form-control" id="empVacationTaken" value="0"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Remaining Vacation</label><input type="number" class="form-control" id="empRemainingVacation" value="0"></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Sick Days Taken</label><input type="number" class="form-control" id="empSickDays" value="0"></div>
-                        <div class="col-md-6 mb-3"><label class="form-label">Last Vacation Start</label><input type="date" class="form-control" id="empLastVacationStart"></div>
-                        <div class="col-md-6 mb-3"><label class="form-label">Last Vacation End</label><input type="date" class="form-control" id="empLastVacationEnd"></div>
-                        <div class="col-12 mb-3"><label class="form-label">Remarks</label><textarea class="form-control" id="empRemarks" rows="2"></textarea></div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="app.saveEmployee()">Save Employee</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Attendance Modal -->
-<div class="modal fade" id="attendanceModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Mark Attendance</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="attendanceForm">
-                    <div class="mb-3">
-                        <label class="form-label">Search / Select Employee</label>
-                        <input type="text" class="form-control" id="attendanceEmployeeSearch"
-                            placeholder="Type ID or Name to search…" onkeyup="app.filterAttendanceEmployeeList()">
-                        <select class="form-select mt-2" id="attendanceEmployeeSelect" size="4"
-                            onchange="app.selectAttendanceEmployee()">
-                            <option value="" disabled selected>Select an employee…</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Selected Employee</label>
-                        <input type="text" class="form-control" id="attendanceEmployeeName" readonly
-                            placeholder="Employee Name will appear here">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Date</label>
-                        <input type="date" class="form-control" id="attendanceDate">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Stage</label>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <button type="button" class="btn btn-outline-primary btn-sm"
-                                onclick="app.setAttendanceStage('Check In')">Check In</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm"
-                                onclick="app.setAttendanceStage('Break Out')">Break Out</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm"
-                                onclick="app.setAttendanceStage('Break In')">Break In</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm"
-                                onclick="app.setAttendanceStage('Check Out')">Check Out</button>
-                        </div>
-                        <input type="text" class="form-control mt-2" id="attendanceStage" readonly
-                            placeholder="Select a stage above">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="app.submitAttendance()">Submit Attendance</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Leave Request Modal -->
-<div class="modal fade" id="leaveModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">New Leave Request</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="leaveForm">
-                    <div class="mb-3">
-                        <label class="form-label">Search / Select Employee</label>
-                        <input type="text" class="form-control" id="leaveEmployeeSearch"
-                            placeholder="Type ID or Name to search…" onkeyup="app.filterLeaveEmployeeList()">
-                        <select class="form-select mt-2" id="leaveEmployeeSelect" size="4"
-                            onchange="app.selectLeaveEmployee()">
-                            <option value="" disabled selected>Select an employee…</option>
-                        </select>
-                    </div>
-                    <div class="mb-3 p-2 bg-light rounded">
-                        <div class="d-flex justify-content-between">
-                            <span><strong>Employee Name:</strong> <span id="leaveEmployeeName">-</span></span>
-                            <span><strong>Available Balance:</strong>
-                                <span id="leaveBalanceDisplay" class="fw-bold" style="color:var(--hr-accent)">0 days</span>
-                            </span>
-                        </div>
-                        <div id="leaveErrorDisplay" class="mt-1 text-danger small"></div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Start Date</label>
-                        <input type="date" class="form-control" id="leaveStart" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">End Date</label>
-                        <input type="date" class="form-control" id="leaveEnd" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Leave Type</label>
-                        <select class="form-control" id="leaveType">
-                            <option value="Annual">Annual</option>
-                            <option value="Sick">Sick</option>
-                            <option value="Personal">Personal</option>
-                            <option value="Maternity">Maternity</option>
-                            <option value="Paternity">Paternity</option>
-                            <option value="Emergency">Emergency</option>
-                            <option value="Unpaid">Unpaid</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Reason</label>
-                        <textarea class="form-control" id="leaveReason" rows="2"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="app.submitLeaveRequest()">Submit Request</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Performance Review Modal -->
-<div class="modal fade" id="reviewModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add Performance Review</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="reviewForm">
-                    <div class="mb-3"><label class="form-label">Employee ID</label><input type="text" class="form-control" id="reviewEmpId" required></div>
-                    <div class="mb-3"><label class="form-label">Employee Name</label><input type="text" class="form-control" id="reviewEmployeeName" required></div>
-                    <div class="mb-3"><label class="form-label">Review Date</label><input type="date" class="form-control" id="reviewDate" required></div>
-                    <div class="mb-3"><label class="form-label">Reviewer</label><input type="text" class="form-control" id="reviewer" required></div>
-                    <div class="mb-3"><label class="form-label">Rating (1–5)</label><input type="number" class="form-control" id="reviewRating" min="1" max="5" value="3" required></div>
-                    <div class="mb-3"><label class="form-label">Comments</label><textarea class="form-control" id="reviewComments" rows="3"></textarea></div>
-                    <div class="mb-3"><label class="form-label">Goals / Next Steps</label><textarea class="form-control" id="reviewGoals" rows="2"></textarea></div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="app.submitReview()">Save Review</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- ============================================================
-     SCRIPTS — order unchanged from original
-     ============================================================ -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script src="list-filter.js"></script>
-<script src="config.js"></script>
-<!-- session.js wraps fetch so every API call carries the token and the
-     selected company. It must load before anything that calls the API. -->
-<script src="session.js"></script>
-<script src="auth.js"></script>
-<script src="api.js"></script>
-<script src="app.js"></script>
-<script src="attendance-ui.js"></script>
-<script src="payroll-ui.js"></script>
-<script src="payroll-review-ui.js"></script>
-<script src="scheduled-deductions-ui.js"></script>
-<script src="leave-ui.js"></script>
-<script src="grant-ui.js"></script>
-<script src="leavetypes-ui.js"></script>
-<script src="shifts-ui.js"></script>
-<script src="locations-ui.js"></script>
-<script src="companies-ui.js"></script>
-<script src="ot-ui.js"></script>
-<script src="ot-review-ui.js"></script>
-<script src="roster-view-ui.js"></script>
-<script src="leavesalary-ui.js"></script>
-<!-- Recruitment — candidates from abroad, agencies and their portal PINs.
-     Adds its own sidebar link and page; nothing else in this file changes. -->
-<script src="recruitment-ui.js"></script>
-
-<!-- Google Sign-In bootstrap -->
 <script>
-    function safeInitGoogle() {
-        if (typeof google !== 'undefined' && typeof initGoogleAuth === 'function') {
-            initGoogleAuth();
-            return true;
-        }
-        return false;
-    }
-    if (!safeInitGoogle()) {
-        window.addEventListener('load', function () { safeInitGoogle(); });
-    }
-</script>
+/* ===========================================================
+   SET THESE, then push to GitHub Pages.
+   PINs live in Code.gs (BAHAR_PIN / MUSTAFA_PIN), not here.
+   =========================================================== */
+const API_URL = 'https://script.google.com/macros/s/AKfycbyXBed7k9DwS3-HhvFVmV4YdkTA2QL3sKWR0-76AT7_RfzVtb3tOMFaXy00vqUR66cyNg/exec';
+const TOKEN   = 'CHANGE_ME_petty_cash_secret_123';   // must match SHARED_SECRET in Code.gs
 
-<!-- ============================================================
-     PAGE ROUTING PATCH
-     Runs after all JS loads.
-     - Intercepts sidebar nav clicks to set correct title + group label.
-     - Populates sdMonth select with current + next 11 months.
-     - Populates otDate and prEnd / payrollPeriodEnd defaults to today.
-     ============================================================ -->
-<script>
-// ── Global timestamp formatters — available to all *-ui.js files ──────
-// Kuwait is UTC+3. GAS serialises Date objects as ISO UTC strings.
-// fmtTs('2026-09-04T20:36:34.000Z') → '04-09-2026 23:36'
-window.fmtTs = function (val) {
-    if (!val) return '—';
-    var s = String(val).trim();
-    if (/^\d{2}-\d{2}-\d{4}/.test(s)) return s; // already dd-mm-yyyy …
-    var d = new Date(s);
-    if (isNaN(d.getTime())) return s;
-    var kw  = new Date(d.getTime() + 3 * 3600000); // UTC → Kuwait (+3)
-    var pad = function(n) { return String(n).padStart(2,'0'); };
-    return pad(kw.getUTCDate())    + '-' +
-           pad(kw.getUTCMonth()+1) + '-' +
-           kw.getUTCFullYear()     + ' ' +
-           pad(kw.getUTCHours())   + ':' +
-           pad(kw.getUTCMinutes());
+/* Expense categories (English stored in sheet, Bangla shown to Bahar). */
+const CATEGORIES = [
+  {en:'Fuel', bn:'তেল'}, {en:'Car Wash', bn:'গাড়ি ধোয়া'}, {en:'Maintenance', bn:'মেরামত'},
+  {en:'Parking', bn:'পার্কিং'}, {en:'Food', bn:'খাবার'}, {en:'Supplies', bn:'সরঞ্জাম'}, {en:'Other', bn:'অন্যান্য'}
+];
+/* =========================================================== */
+
+const $ = id => document.getElementById(id);
+const fmt = n => (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:3,maximumFractionDigits:3});
+let selectedCategory = CATEGORIES[0].en;
+let receiptData = null, receiptName = null;
+let currentPin = null, currentRole = null;
+
+/* safe storage (works on GitHub Pages; degrades silently if blocked) */
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
 };
-// fmtDate — date only, no time
-window.fmtDate = function (val) {
-    if (!val) return '—';
-    var s = String(val).trim();
-    if (/^\d{2}-\d{2}-\d{4}$/.test(s)) return s;
-    var d = new Date(s);
-    if (isNaN(d.getTime())) return s;
-    var kw  = new Date(d.getTime() + 3 * 3600000);
-    var pad = function(n) { return String(n).padStart(2,'0'); };
-    return pad(kw.getUTCDate()) + '-' + pad(kw.getUTCMonth()+1) + '-' + kw.getUTCFullYear();
-};
-</script>
 
-<script>
-(function () {
-    'use strict';
+/* ---------- sections ---------- */
+const sections = { login:$('login'), bahar:$('bahar'), mustafa:$('mustafa') };
+function show(name){
+  Object.values(sections).forEach(s=>s.classList.add('hidden'));
+  sections[name].classList.remove('hidden');
+  $('logoutBtn').classList.toggle('hidden', name==='login');
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('[data-refresh]').forEach(b=>b.addEventListener('click', loadStatus));
 
-    /* Page metadata: maps data-page value → {title, group} */
-    var PAGE_META = {
-        dashboard    : { title: 'Dashboard',            group: 'Overview' },
-        employees    : { title: 'Employees',            group: 'People'   },
-        reviews      : { title: 'Performance Reviews',  group: 'People'   },
-        attendance   : { title: 'Attendance',           group: 'Time'     },
-        shifts       : { title: 'Shifts',               group: 'Time'     },
-        locations    : { title: 'Locations',            group: 'Time'     },
-        ot           : { title: 'Overtime',             group: 'Time'     },
-        otreview     : { title: 'OT Review',            group: 'Time'     },
-        payroll      : { title: 'Payroll',              group: 'Pay'      },
-        payrollreview: { title: 'Payroll Review',       group: 'Pay'      },
-        scheddeduct  : { title: 'Scheduled Deductions', group: 'Pay'      },
-        leavebal     : { title: 'Leave Balances',       group: 'Admin'    },
-        leavetypes   : { title: 'Leave Types',          group: 'Admin'    },
-        leavealloc   : { title: 'Leave Allocation',     group: 'Admin'    },
-        grantleave   : { title: 'Grant Leave',          group: 'Admin'    }
+/* ---------- config check ---------- */
+if(API_URL.indexOf('http')!==0){ $('cfgWarn').classList.remove('hidden'); }
+
+/* ---------- dates ---------- */
+function todayISO(){ const d=new Date(),p=n=>('0'+n).slice(-2);
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+function isoToBackend(iso){ if(!iso) return ''; const [y,m,d]=iso.split('-'); return d+'-'+m+'-'+y; }
+$('expDate').value = todayISO();
+$('cashDate').value = todayISO();
+
+/* ---------- category chips (bilingual for Bahar) ---------- */
+const chipWrap = $('expChips');
+CATEGORIES.forEach((c,i)=>{
+  const el=document.createElement('button');
+  el.type='button'; el.className='chip'+(i===0?' on':'');
+  el.innerHTML='<span class="bn">'+c.bn+'</span><span class="en">'+c.en+'</span>';
+  el.addEventListener('click', ()=>{
+    chipWrap.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+    el.classList.add('on'); selectedCategory=c.en;
+  });
+  chipWrap.appendChild(el);
+});
+
+/* ---------- receipt (downscaled) ---------- */
+$('expReceipt').addEventListener('change', e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      const max=1200, scale=Math.min(1,max/Math.max(img.width,img.height));
+      const cv=document.createElement('canvas');
+      cv.width=img.width*scale; cv.height=img.height*scale;
+      cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+      receiptData=cv.toDataURL('image/jpeg',0.8); receiptName=file.name||'receipt.jpg';
+      const t=$('expThumb'); t.src=receiptData; t.classList.remove('hidden');
+      $('expClear').classList.remove('hidden');
     };
+    img.src=ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+$('expClear').addEventListener('click', ()=>{
+  receiptData=null; receiptName=null; $('expReceipt').value='';
+  $('expThumb').classList.add('hidden'); $('expClear').classList.add('hidden');
+});
 
-    var titleEl = document.getElementById('pageTitle');
-    var groupEl = document.getElementById('pageGroup');
+/* ---------- opening balance toggle ---------- */
+$('cashOpening').addEventListener('change', e=>{
+  const note=$('cashNote');
+  if(e.target.checked){ note.value='Opening balance'; note.disabled=true; }
+  else { note.value=''; note.disabled=false; }
+});
 
-    /* Event delegation on sidebar — fires AFTER app.js element-level handlers */
-    var sidebar = document.getElementById('sidebar');
-    if (sidebar) {
-        sidebar.addEventListener('click', function (e) {
-            var link = e.target.closest('[data-page]');
-            if (!link) return;
-            var pid  = link.getAttribute('data-page');
-            var meta = PAGE_META[pid];
-            if (!meta) return;
-            if (titleEl) titleEl.innerText = meta.title;
-            if (groupEl) groupEl.innerText  = meta.group;
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg, kind){
+  const t=$('toast'); t.innerHTML=msg; t.className='toast show '+(kind||'');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), 2800);
+}
 
-            /* Trigger data loads for every page whose *-ui.js click handler is skipped
-               because nav items are pre-baked. Each line mirrors exactly what the
-               original click handler called in the corresponding *-ui.js file. */
-            setTimeout(function () {
-                if (typeof app === 'undefined') return;
-                if (pid === 'shifts'      && app.loadShiftsPage)     app.loadShiftsPage();
-                if (pid === 'locations'   && app.loadLocations)      app.loadLocations();
-                if (pid === 'ot'          && app.otLoadRoster)       app.otLoadRoster();
-                if (pid === 'scheddeduct' && app.loadSchedDeduct)    app.loadSchedDeduct();
-                if (pid === 'leavebal'    && app.loadLeaveTypes)     app.loadLeaveTypes();
-                if (pid === 'grantleave'  && app.loadGrantPage)      app.loadGrantPage();
-                if (pid === 'leavetypes'  && app.loadLeaveTypesPage) app.loadLeaveTypesPage();
-                if (pid === 'leavealloc'  && app.loadAllocPage)      app.loadAllocPage();
-            }, 0);
-        });
-    }
+/* ---------- API ---------- */
+async function api(payload){
+  const res = await fetch(API_URL, {
+    method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload)
+  });
+  return res.json();
+}
 
-    /* Populate sdMonth with current + next 11 months (matches scheduled-deductions-ui.js) */
-    document.addEventListener('DOMContentLoaded', function () {
-        var sdMonth = document.getElementById('sdMonth');
-        if (sdMonth && sdMonth.options.length === 0) {
-            var now = new Date();
-            for (var i = 0; i < 12; i++) {
-                var d   = new Date(now.getFullYear(), now.getMonth() + i, 1);
-                var lbl = d.toLocaleString('en-US', { month: 'short' }) + '-' + d.getFullYear();
-                var opt = document.createElement('option');
-                opt.text = lbl;
-                sdMonth.add(opt);
-            }
-        }
+/* ---------- login ---------- */
+async function doLogin(pin){
+  if(API_URL.indexOf('http')!==0) return toast('Not connected yet.', 'err');
+  if(!pin) return toast('<span class="bn">পিন দিন</span> / Enter PIN', 'err');
+  await withBusy($('pinBtn'), async ()=>{
+    const d = await api({action:'login', token:TOKEN, pin:pin});
+    if(!d || d.ok===false) throw new Error('bad pin');
+    currentPin=pin; currentRole=d.role;
+    store.set('pcRole', d.role); store.set('pcPin', pin);
+    enterRole(d.role);
+  }, '<span class="bn">ভুল পিন</span> / Wrong PIN');
+}
+function enterRole(role){
+  $('pinInput').value='';
+  show(role);
+  loadStatus();
+}
+$('pinBtn').addEventListener('click', ()=>doLogin($('pinInput').value.trim()));
+$('pinInput').addEventListener('keydown', e=>{ if(e.key==='Enter') $('pinBtn').click(); });
 
-        /* Set today defaults on date inputs where UI files normally inject todayIso() */
-        function todayISO() {
-            var d = new Date();
-            return d.getFullYear() + '-' +
-                   String(d.getMonth() + 1).padStart(2, '0') + '-' +
-                   String(d.getDate()).padStart(2, '0');
-        }
-        var today = todayISO();
-        ['otDate', 'orTo', 'prEnd', 'payrollPeriodEnd'].forEach(function (id) {
-            var el = document.getElementById(id);
-            if (el && !el.value) el.value = today;
-        });
-        /* enDate default for encash */
-        var enDate = document.getElementById('enDate');
-        if (enDate && !enDate.value) enDate.value = today;
+$('logoutBtn').addEventListener('click', ()=>{
+  currentPin=null; currentRole=null;
+  store.del('pcRole'); store.del('pcPin');
+  show('login');
+});
 
-        /* Wire listeners that *-ui.js normally attaches inside their page-section
-           creation blocks — those blocks are skipped because sections are pre-baked.
-           These must run after all scripts have loaded, so we use a short delay. */
-        setTimeout(function () {
-            /* Grant Leave: filter input */
-            var gs = document.getElementById('grantSearch');
-            if (gs && !gs._wired) {
-                gs._wired = true;
-                gs.addEventListener('input', function () {
-                    if (typeof app !== 'undefined' && app.renderGrantTable)
-                        app.renderGrantTable(this.value.trim().toLowerCase());
-                });
-            }
-            /* OT Review: search filter + flagged-only toggle */
-            var ors = document.getElementById('orSearch');
-            if (ors && !ors._wired) {
-                ors._wired = true;
-                ors.addEventListener('input', function () {
-                    if (typeof app !== 'undefined' && app.renderOtDraft) app.renderOtDraft();
-                });
-            }
-            var orf = document.getElementById('orFlagsOnly');
-            if (orf && !orf._wired) {
-                orf._wired = true;
-                orf.addEventListener('change', function () {
-                    if (typeof app !== 'undefined' && app.renderOtDraft) app.renderOtDraft();
-                });
-            }
-        }, 300);
+/* ---------- load balance + activity ---------- */
+async function loadStatus(){
+  if(API_URL.indexOf('http')!==0) return;
+  setBalLoading(true);
+  try{
+    const d = await api({action:'getStatus'});
+    if(!d || d.ok===false) throw new Error(d && d.error || 'load failed');
+    paintBalance(d); paintFeed(d.recent||[]);
+  }catch(err){ toast('Could not load balance.', 'err'); }
+  finally{ setBalLoading(false); }
+}
+function setBalLoading(on){
+  $('balBahar').classList.toggle('loading', on);
+  $('balMustafa').classList.toggle('loading', on);
+}
+function paintBalance(d){
+  const bal=Number(d.balance)||0;
+  const cls = bal<0 ? 'neg' : (bal>0 ? 'pos' : '');
+  ['Bahar','Mustafa'].forEach(w=>{
+    const amt=$('amt'+w);
+    amt.innerHTML='<span class="kd">KD</span>'+fmt(bal);
+    amt.className='amt tnum '+cls;
+  });
+  $('inBahar').textContent=fmt(d.totalIn); $('outBahar').textContent=fmt(d.totalOut);
+  $('inMustafa').textContent=fmt(d.totalIn); $('outMustafa').textContent=fmt(d.totalOut);
+}
+function paintFeed(recent){
+  const html = recent.length ? recent.map(r=>{
+    const isIn=r.type==='in';
+    return '<div class="row">'+
+      '<div class="dot '+(isIn?'in':'out')+'">'+(isIn?'+':'\u2212')+'</div>'+
+      '<div class="info"><div class="l">'+esc(r.label)+'</div><div class="d">'+esc(r.date)+'</div></div>'+
+      '<div class="val '+(isIn?'in':'out')+'">'+(isIn?'+':'\u2212')+' '+fmt(r.amount)+'</div>'+
+    '</div>';
+  }).join('') : '<div class="empty">No activity yet.</div>';
+  $('feedBahar').innerHTML=html; $('feedMustafa').innerHTML=html;
+}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------- submit: expense (Bahar) ---------- */
+$('expSubmit').addEventListener('click', async ()=>{
+  const amt=parseFloat($('expAmount').value);
+  if(!(amt>0)) return toast('<span class="bn">কত খরচ হয়েছে লিখুন</span> / Enter amount', 'err');
+  await withBusy($('expSubmit'), async ()=>{
+    const d = await api({
+      action:'addExpense', token:TOKEN, pin:currentPin,
+      amount:amt, category:selectedCategory, description:$('expDesc').value.trim(),
+      date:isoToBackend($('expDate').value), receipt:receiptData, receiptName:receiptName
     });
+    if(!d || d.ok===false) throw new Error(d && d.error || 'save failed');
+    toast('<span class="bn">খরচ জমা হয়েছে</span> \u2713 / Saved', 'ok');
+    $('expAmount').value=''; $('expDesc').value=''; $('expClear').click();
+    loadStatus();
+  }, '<span class="bn">জমা করা যায়নি</span> / Could not save');
+});
 
+/* ---------- submit: cash in (Mustafa) ---------- */
+$('cashSubmit').addEventListener('click', async ()=>{
+  const amt=parseFloat($('cashAmount').value);
+  if(!(amt>0)) return toast('Enter the amount given.', 'err');
+  const note = $('cashOpening').checked ? 'Opening balance' : $('cashNote').value.trim();
+  await withBusy($('cashSubmit'), async ()=>{
+    const d = await api({
+      action:'addCashIn', token:TOKEN, pin:currentPin,
+      amount:amt, note:note, date:isoToBackend($('cashDate').value)
+    });
+    if(!d || d.ok===false) throw new Error(d && d.error || 'save failed');
+    toast('Cash recorded \u2713', 'ok');
+    $('cashAmount').value=''; $('cashNote').value='';
+    $('cashOpening').checked=false; $('cashNote').disabled=false;
+    loadStatus();
+  }, 'Could not record cash.');
+});
+
+async function withBusy(btn, fn, errMsg){
+  const label=btn.innerHTML; btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span>';
+  try{ await fn(); }
+  catch(err){ toast(errMsg||'Something went wrong.', 'err'); }
+  finally{ btn.disabled=false; btn.innerHTML=label; }
+}
+
+/* ---------- auto-login if this device is remembered ---------- */
+(function(){
+  const role=store.get('pcRole'), pin=store.get('pcPin');
+  if(role && pin){ currentRole=role; currentPin=pin; enterRole(role); }
+  else { show('login'); }
 })();
 </script>
-
 </body>
 </html>

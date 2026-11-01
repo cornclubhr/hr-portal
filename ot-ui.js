@@ -89,7 +89,7 @@
               '<div class="col-auto"><label class="form-label small mb-1">Date</label>' +
                 '<input type="date" id="otDate" class="form-control form-control-sm" value="' + todayIso() + '"></div>' +
               '<div class="col-auto position-relative"><label class="form-label small mb-1">Employee (name / ID / Civil ID)</label>' +
-                '<input type="text" id="otEmpSearch" class="form-control form-control-sm" style="min-width:240px" placeholder="Type name, MT-ID or Civil ID" autocomplete="off">' +
+                '<input type="text" id="otEmpSearch" class="form-control form-control-sm" style="min-width:240px" placeholder="Type name, employee ID or Civil ID" autocomplete="off">' +
                 '<input type="hidden" id="otEmp">' +
                 '<select id="otEmpResults" class="form-select form-select-sm mt-1" size="5" style="display:none;position:absolute;z-index:30;min-width:240px" onchange="app.otPickEmployee(this.value)"></select>' +
                 '<div id="otEmpPicked" class="small text-success mt-1"></div></div>' +

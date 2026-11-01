@@ -15,7 +15,7 @@
  * Called from the kiosk when an employee logs a missed Day Off.
  *
  * Params (all strings via GET):
- *   empId  — employee ID (MT-XXXXX)
+ *   empId  — employee ID, e.g. CC-00042
  *   pin    — employee PIN
  *   date   — dd-mm-yyyy  (must be in the past, not today)
  *   lat    — latitude (optional, empty if unavailable)

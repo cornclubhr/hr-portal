@@ -261,9 +261,10 @@ function sv_yesterday_() {
   return sv_dateToStr_(new Date(t.getTime() - 86400000));
 }
 
-// "Keshab Alemagar (EMP-00000)" → "EMP-00000"
+// "Ali Hassan (CC-00042)" → "CC-00042". The prefix comes from
+// EMPLOYEE_ID_PREFIX, so this works whatever a deployment numbers its people.
 function sv_idFromBy_(by) {
-  const m = String(by || '').match(/\((MT-\d+)\)\s*$/i);
+  const m = String(by || '').match(new RegExp('\\((' + empIdRegexSource_() + ')\\)\\s*$', 'i'));
   return m ? m[1].toUpperCase() : '';
 }
 
@@ -1457,7 +1458,7 @@ function sv_restoreSelfOt_(commit) {
         const txt = r.map(c => String(c == null ? '' : c)).join(' | ');
         const m = txt.match(/cleared "([^"]*)" given by (.+?) on his own claim/);
         if (!m) return;
-        const idm = txt.match(/MT-\d+/i);
+        const idm = txt.match(new RegExp(empIdRegexSource_(), 'i'));
         const d = r.map(c => sv_norm_(c)).find(v => /^\d{2}-\d{2}-\d{4}$/.test(v) && sv_iso_(v) > sv_iso_(SV_MANUAL_UNTIL))
                || r.map(c => sv_norm_(c)).find(v => /^\d{2}-\d{2}-\d{4}$/.test(v));
         if (!idm || !d) return;

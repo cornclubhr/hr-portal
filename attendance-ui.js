@@ -5,7 +5,7 @@
 //
 // BACKEND NOTE: getAttendanceLog only accepts:
 //   date=dd-mm-yyyy  (single date — sent when From=To)
-//   empId=MT-XXXXX
+//   empId=<employee id>
 //   location=name
 // Date range is filtered client-side when From ≠ To.
 // ============================================================

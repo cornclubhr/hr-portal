@@ -99,12 +99,23 @@ if os.path.isdir(WEB):
 # name on the employee tab. Branding and personal data are different failures;
 # both are checked here.
 BRANDS = ['maya', 'maya tex', 'mayatex']
-ID_PAT = re.compile(r"\bMT-\d{3,}\b")          # the old employee id format
+# The old employee-id format, in every shape it actually appeared in:
+#   MT-00042   a real id
+#   MT-XXXXX   a placeholder in a comment
+#   MT-#####   a placeholder in a comment
+#   MT-ID      a UI placeholder ("Type name, MT-ID or Civil ID")
+#   MT-\d+     a hardcoded prefix inside a REGEX — the dangerous one, because
+#              it silently matches nothing once ids are numbered differently
+# The first version of this check only looked for the first shape, so the
+# other four shipped. Prefixes belong in EMPLOYEE_ID_PREFIX, never in code.
+ID_PAT = re.compile(r"\bMT-(?:\d{2,}|[Xx#]{2,}|\\d|ID\b)")
 for root, label in ((GAS, 'gas'), (WEB, 'web')):
     if not os.path.isdir(root):
         continue
     for f in sorted(os.listdir(root)):
-        if not f.endswith(('.js', '.html', '.json', '.md')):
+        # .css and .txt were not scanned before, which is how a stylesheet
+        # header carrying the other company's name got through.
+        if not f.endswith(('.js', '.html', '.json', '.md', '.css', '.txt')):
             continue
         src = open(os.path.join(root, f), encoding='utf-8', errors='replace').read()
         low = src.lower()

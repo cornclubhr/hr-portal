@@ -7,14 +7,14 @@
 // Overrides app.saveEmployee to actually persist to the employee tab, and injects
 // an "Edit existing employee" search into the Add Employee modal so you
 // can load a person, change fields, and save an update. New employee
-// (no edit selected) appends a new row with the next MT-##### and a PIN.
+// (no edit selected) appends a new row with the next employee ID and a PIN.
 // Backend: saveEmployee, getRoster, getEmployeeById (EmployeeAdmin.gs).
 // ============================================================
 
 (function () {
   const EXEC_URL = CONFIG.API_URL;
   let ROSTER = [];
-  let editingId = ''; // '' = adding new; MT-xxxxx = editing
+  let editingId = ''; // '' = adding new; an id = editing
 
   const $ = (id) => document.getElementById(id);
   function val(id) { const el = $(id); return el ? el.value : ''; }

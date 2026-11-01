@@ -69,3 +69,14 @@ function sameCalendarDate_(date1, date2) {
 function tz_() {
   return Session.getScriptTimeZone() || 'Asia/Kuwait';
 }
+/**
+ * The employee-id pattern, built from EMPLOYEE_ID_PREFIX — never written into
+ * the code. Several places read an id out of free text ("Ali Hassan (CC-00042)",
+ * an amendment note, a kiosk log line), and a prefix hardcoded there matches
+ * nothing the moment a deployment numbers its people differently. Returns the
+ * regex SOURCE so callers can anchor it however they need.
+ */
+function empIdRegexSource_() {
+  const prefix = String(cfg_('EMPLOYEE_ID_PREFIX', 'HR-EMP-'));
+  return prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\d+';
+}

@@ -52,6 +52,26 @@ const IMPORT_MAP = {
 /** Without these, payroll cannot run for that person. */
 const IMPORT_PAYROLL_FIELDS = ['Basic Salary', 'Date of Join', 'IBAN', 'Payroll Cycle'];
 
+/**
+ * A staging cell as TEXT, whatever Sheets decided it was. This tab is pasted
+ * or imported into, and Sheets coerces: a civil id becomes a number,
+ * "26-01-2026" becomes a date serial. getValues() then hands back a Number and
+ * a Date, and String()-ing that Date gives "Mon Jan 26 2026 00:00:00 GMT+0300
+ * (Arabian Standard Time)" -- which would be written into CID Expiry for every
+ * date, for everybody.
+ */
+function impCell_(v) {
+  if (v === null || v === undefined) return '';
+  if (Object.prototype.toString.call(v) === '[object Date]') {
+    return isNaN(v.getTime()) ? '' : formatDdMmYyyy_(v);
+  }
+  if (typeof v === 'number') {
+    if (!isFinite(v)) return '';
+    return (Math.floor(v) === v) ? v.toFixed(0) : String(v);
+  }
+  return String(v).trim();
+}
+
 function importStagingRows_() {
   const ss = openMain_();
   const sh = ss.getSheetByName(IMPORT_TAB);
@@ -67,8 +87,7 @@ function importStagingRows_() {
     const rec = {};
     var any = false;
     hdr.forEach(function (h, j) {
-      const v = d[i][j];
-      rec[h] = (v === null || v === undefined) ? '' : String(v).trim();
+      rec[h] = impCell_(d[i][j]);
       if (rec[h]) any = true;
     });
     if (any) { rec.__row = i + 1; rows.push(rec); }

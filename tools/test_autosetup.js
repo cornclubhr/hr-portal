@@ -12,7 +12,7 @@
 'use strict';
 const fs = require('fs');
 const vm = require('vm');
-const GAS = '/home/claude/naeem-hr/gas';
+const { GAS, WEB } = require('./paths');
 
 let TABS = {};
 function sheetApi(name) {

@@ -17,7 +17,7 @@
 'use strict';
 const fs = require('fs');
 const vm = require('vm');
-const GAS = '/home/claude/naeem-hr/gas';
+const { GAS, WEB } = require('./paths');
 
 const files = fs.readdirSync(GAS).filter(f => f.endsWith('.js')).sort();
 

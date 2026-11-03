@@ -8,6 +8,7 @@
 'use strict';
 const fs = require('fs');
 const vm = require('vm');
+const { WEB } = require('./paths');
 
 const calls = [];
 const inits = [];
@@ -53,7 +54,7 @@ vm.createContext(sandbox);
 vm.runInContext(
   "const CONFIG = { API_URL: 'https://script.google.com/macros/s/ABC/exec'," +
   " ALL_COMPANIES: '__ALL__', COMPANY_NAME: 'Corn Club Group' };\n" +
-  fs.readFileSync('/home/claude/naeem-hr/web/session.js', 'utf8'),
+  fs.readFileSync(require('path').join(WEB, 'session.js'), 'utf8'),
   sandbox, { filename: 'config+session.js' });
 // what a UI module does: fetch(EXEC_URL + '?' + qs)
 const API = 'https://script.google.com/macros/s/ABC/exec';

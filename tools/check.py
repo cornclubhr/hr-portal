@@ -10,8 +10,27 @@ Checks, in order:
 """
 import os, re, subprocess, sys
 
-ROOT = sys.argv[1] if len(sys.argv) > 1 else '/home/claude/naeem-hr'
-GAS, WEB = os.path.join(ROOT, 'gas'), os.path.join(ROOT, 'web')
+
+def _resolve_root():
+    """Where the code lives, worked out from this file, not hardcoded.
+
+    Supports the repository layout (<repo>/tools, <repo>/gas, web files at the
+    repo root) and the working-copy layout (<wc>/tools, <wc>/naeem-hr/gas,
+    <wc>/naeem-hr/web). An explicit path as argv[1] always wins.
+    """
+    if len(sys.argv) > 1:
+        return sys.argv[1]
+    here = os.path.dirname(os.path.abspath(__file__))
+    up = os.path.dirname(here)
+    if os.path.isdir(os.path.join(up, 'gas')):
+        return up
+    if os.path.isdir(os.path.join(up, 'naeem-hr', 'gas')):
+        return os.path.join(up, 'naeem-hr')
+    return up
+
+ROOT = _resolve_root()
+GAS = os.path.join(ROOT, 'gas')
+WEB = os.path.join(ROOT, 'web') if os.path.isdir(os.path.join(ROOT, 'web')) else ROOT
 fail = []
 def bad(section, msg):
     fail.append((section, msg))

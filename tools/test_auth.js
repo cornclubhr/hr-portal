@@ -9,7 +9,7 @@
 const fs = require('fs');
 const vm = require('vm');
 
-const GAS = '/home/claude/naeem-hr/gas';
+const { GAS, WEB } = require('./paths');
 
 // ---- in-memory spreadsheet -------------------------------------------------
 const TABS = {};

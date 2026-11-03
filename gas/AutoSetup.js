@@ -214,6 +214,32 @@ function uiAlert_(title, body) {
 }
 
 /**
+ * Import entry points for a STANDALONE deployment.
+ *
+ * The HR System sheet menu only exists for a container-bound script, and the
+ * editor's Run dropdown hides any function whose name ends in "_" -- so
+ * menuPreviewImport_/menuCommitImport_ cannot be reached here at all.
+ *
+ * These two can. They also write the result into the Execution log, because
+ * the editor does not show a function's return value: run one of these and the
+ * log tells you what happened, instead of completing silently.
+ *
+ * ALWAYS run the preview first and read it. commitImportEmployees writes
+ * employee rows and issues PINs, and there is no undo.
+ */
+function runImportPreview() {
+  const r = previewImportEmployees({});
+  Logger.log(JSON.stringify(r, null, 2));
+  return r;
+}
+
+function runImportCommit() {
+  const r = commitImportEmployees({});
+  Logger.log(JSON.stringify(r, null, 2));
+  return r;
+}
+
+/**
  * What setup did, for the frontend. Useful right after deploying, before
  * anyone has opened the sheet.
  */

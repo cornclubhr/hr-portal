@@ -79,13 +79,23 @@
     },
 
     /**
-     * Exchange a verified Google address for a server session.
-     * The address is checked server-side — the browser list in config.js only
-     * decides what to show.
+     * Exchange the Google credential for a server session.
+     *
+     * The CREDENTIAL goes to the server, not the email. The server verifies the
+     * token with Google and reads the address off the verified payload. Sending
+     * a bare email would be meaningless: the authorised addresses are published
+     * in config.js, so anyone could ask for a token for one of them.
+     *
+     * POSTed as text/plain so the browser issues no CORS preflight, which is
+     * how every other write in this app talks to Apps Script.
      */
-    async login(email) {
-      const url = CONFIG.API_URL + '?method=authLogin&email=' + encodeURIComponent(email);
-      const res = await fetch(url, { cache: 'no-store' });
+    async login(credential) {
+      const res = await fetch(CONFIG.API_URL + '?method=authLogin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ credential: credential }),
+        cache: 'no-store'
+      });
       const data = await res.json();
       if (data && data.success) {
         this.setToken(data.token);

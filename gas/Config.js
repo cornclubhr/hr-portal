@@ -30,6 +30,10 @@ const CFG_KEYS = {
   HR_MANAGER_EMAILS        : 'HR_MANAGER_EMAILS',     // comma separated
   API_TOKEN                : 'API_TOKEN',             // guards non-kiosk methods
   ORG_NAME                 : 'ORG_NAME',
+  // The OAuth client id the frontend signs in with. authLogin verifies every
+  // Google credential against THIS value: a token minted for some other
+  // application must not buy a session here.
+  GOOGLE_CLIENT_ID         : 'GOOGLE_CLIENT_ID',
   CURRENCY                 : 'CURRENCY',
   TIMEZONE                 : 'TIMEZONE'
 };

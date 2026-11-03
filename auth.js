@@ -20,9 +20,10 @@ async function handleCredentialResponse(response) {
     const responsePayload = decodeJwtResponse(response.credential);
     const userEmail = responsePayload.email;
 
-    // Browser-side check: decides what to SHOW. It is not the security
-    // boundary — the server checks the address again in authLogin, and
-    // refuses every non-kiosk method without the session it issues.
+    // Browser-side check: decides what to SHOW, and nothing more. Anyone can
+    // edit this list or skip this file entirely. The security boundary is
+    // authLogin, which verifies the signed credential with Google and reads the
+    // address off the verified token rather than trusting one sent to it.
     const normalizedEmail = userEmail.trim().toLowerCase();
     const isAuthorized = CONFIG.AUTHORIZED_EMAILS
         .map(e => e.trim().toLowerCase())
@@ -37,9 +38,12 @@ async function handleCredentialResponse(response) {
     // The server has the final say. Without a session every admin method is
     // refused, so a failure here must stop the sign-in rather than show an
     // app whose every request will fail.
+    // The signed credential goes to the server, not the address we decoded
+    // above. The decode is only so this page can show a useful message before
+    // the round trip; the server does the real verification.
     let session;
     try {
-        session = await HRSession.login(normalizedEmail);
+        session = await HRSession.login(response.credential);
     } catch (err) {
         alert('Could not reach the HR server. Check API_URL in config.js.\n\n' + err);
         handleSignOut();

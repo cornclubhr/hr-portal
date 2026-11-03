@@ -45,7 +45,7 @@ function sheetApi(name) {
     setFrozenRows: () => {}, hideSheet: () => {}, deleteRow: i => TABS[name].splice(i - 1, 1)
   };
 }
-let PROPS = {
+let PROPS = { GOOGLE_CLIENT_ID: 'TEST-CLIENT-ID.apps.googleusercontent.com',
   MAIN_SPREADSHEET_ID: 's1',
   ADMIN_EMAILS: 'naeem@example.com',
   HR_MANAGER_EMAILS: 'hr@example.com',
@@ -56,6 +56,22 @@ let PROPS = {
 };
 const sandbox = {
   console,
+  // Fake Google tokeninfo. A valid credential is "GOOD:<email>"; anything else
+  // is rejected the way Google rejects a forged or stale token. This is what
+  // makes the authLogin tests meaningful: a bare email must buy nothing.
+  UrlFetchApp: { fetch: (url) => {
+    const m = String(url).match(/id_token=([^&]*)/);
+    const tok = m ? decodeURIComponent(m[1]) : '';
+    if (tok.indexOf('GOOD:') !== 0) {
+      return { getResponseCode: () => 400, getContentText: () => '{"error":"invalid_token"}' };
+    }
+    return { getResponseCode: () => 200, getContentText: () => JSON.stringify({
+      aud: 'TEST-CLIENT-ID.apps.googleusercontent.com',
+      iss: 'https://accounts.google.com',
+      email: tok.slice(5), email_verified: 'true',
+      exp: String(Math.floor(Date.now() / 1000) + 3600)
+    }) };
+  } },
   PropertiesService: { getScriptProperties: () => ({
     getProperties: () => Object.assign({}, PROPS), setProperty: (k, v) => { PROPS[k] = String(v); } }) },
   SpreadsheetApp: { openById: () => ({
@@ -98,10 +114,10 @@ TABS['OT_Pending'] = [
   ['OT1', 'HR-EMP-00001', 'Aisha', '05-11-2026', 3, 'kiosk', 'Pending', '', '', ''],
   ['OT2', 'HR-EMP-00002', 'Bilal', '05-11-2026', 2, 'kiosk', 'Pending', '', '', '']
 ];
-const admin   = sandbox.authLogin({ email: 'naeem@example.com' });
-const hr      = sandbox.authLogin({ email: 'hr@example.com' });
-const supCorn = sandbox.authLogin({ email: 'sup.corn@example.com' });
-const supGood = sandbox.authLogin({ email: 'sup.good@example.com' });
+const admin   = sandbox.authLogin({ credential: 'GOOD:' + 'naeem@example.com' });
+const hr      = sandbox.authLogin({ credential: 'GOOD:' + 'hr@example.com' });
+const supCorn = sandbox.authLogin({ credential: 'GOOD:' + 'sup.corn@example.com' });
+const supGood = sandbox.authLogin({ credential: 'GOOD:' + 'sup.good@example.com' });
 
 console.log('\n=== the queue is scoped ===');
 let q = sandbox.getOtForApproval({ token: supCorn.token, stage: 'supervisor' });

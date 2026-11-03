@@ -47,7 +47,7 @@ function sheetApi(name) {
     setFrozenRows: () => {}, hideSheet: () => {}, deleteRow: i => TABS[name].splice(i - 1, 1)
   };
 }
-let PROPS = {};
+let PROPS = { GOOGLE_CLIENT_ID: 'TEST-CLIENT-ID.apps.googleusercontent.com' };
 const SS = {
   getId: () => 'SHEET-ID-1',
   getName: () => 'HR Master',
@@ -57,6 +57,22 @@ const SS = {
 };
 const sandbox = {
   console,
+  // Fake Google tokeninfo. A valid credential is "GOOD:<email>"; anything else
+  // is rejected the way Google rejects a forged or stale token. This is what
+  // makes the authLogin tests meaningful: a bare email must buy nothing.
+  UrlFetchApp: { fetch: (url) => {
+    const m = String(url).match(/id_token=([^&]*)/);
+    const tok = m ? decodeURIComponent(m[1]) : '';
+    if (tok.indexOf('GOOD:') !== 0) {
+      return { getResponseCode: () => 400, getContentText: () => '{"error":"invalid_token"}' };
+    }
+    return { getResponseCode: () => 200, getContentText: () => JSON.stringify({
+      aud: 'TEST-CLIENT-ID.apps.googleusercontent.com',
+      iss: 'https://accounts.google.com',
+      email: tok.slice(5), email_verified: 'true',
+      exp: String(Math.floor(Date.now() / 1000) + 3600)
+    }) };
+  } },
   PropertiesService: { getScriptProperties: () => ({
     getProperties: () => Object.assign({}, PROPS),
     setProperty: (k, v) => { PROPS[k] = String(v); } }) },
@@ -95,7 +111,7 @@ function check(label, got, want) {
 const reset = () => { vm.runInContext('_cfgCache=null;_cfgSheetCache=null;_empCache=null;_ensuredThisExecution=false;', sandbox); };
 
 console.log('\n=== an empty workbook, nobody runs anything ===');
-TABS = {}; PROPS = {}; reset();
+TABS = {}; PROPS = { GOOGLE_CLIENT_ID: 'TEST-CLIENT-ID.apps.googleusercontent.com' }; reset();
 let r = sandbox.ensureWorkbook_();
 check('setup ran', r.ok, true);
 const expected = Object.keys(sandbox.SETUP_TABS);
@@ -112,10 +128,10 @@ check('OT_Pending has the HR stage', TABS['OT_Pending'][0].indexOf('HR By') !== 
 console.log('\n=== the owner can sign in straight away ===');
 reset();
 check('ADMIN_EMAILS seeded', sandbox.adminEmails_(), ['cornclubhr@gmail.com']);
-const login = sandbox.authLogin({ email: 'cornclubhr@gmail.com' });
+const login = sandbox.authLogin({ credential: 'GOOD:' + 'cornclubhr@gmail.com' });
 check('owner admitted', login.success, true);
 check('as admin', login.role, 'admin');
-check('a stranger is not', sandbox.authLogin({ email: 'someone@else.com' }).success, false);
+check('a stranger is not', sandbox.authLogin({ credential: 'GOOD:' + 'someone@else.com' }).success, false);
 
 console.log('\n=== the workbook id resolved itself ===');
 check('no manual id needed', PROPS['MAIN_SPREADSHEET_ID'], 'SHEET-ID-1');
@@ -150,12 +166,12 @@ check('Bank Account added', ch.indexOf('Bank Account') !== -1, true);
 check('existing headers kept in place', ch.slice(0, 2), ['Name', 'Short Code']);
 
 console.log('\n=== a configured owner is never overwritten ===');
-TABS = {}; PROPS = { ADMIN_EMAILS: 'someone.else@company.com' }; reset();
+TABS = {}; PROPS = { GOOGLE_CLIENT_ID: 'TEST-CLIENT-ID.apps.googleusercontent.com', ADMIN_EMAILS: 'someone.else@company.com' }; reset();
 sandbox.ensureWorkbook_(true);
 check('left alone', sandbox.adminEmails_(), ['someone.else@company.com']);
 
 console.log('\n=== status report ===');
-TABS = {}; PROPS = {}; reset();
+TABS = {}; PROPS = { GOOGLE_CLIENT_ID: 'TEST-CLIENT-ID.apps.googleusercontent.com' }; reset();
 const st = sandbox.getSetupStatus();
 check('reports success', st.success, true);
 check('no missing tabs', st.missingTabs, []);

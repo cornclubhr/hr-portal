@@ -91,11 +91,92 @@ function authCompaniesFor_(email, role) {
  * Issue a session. The frontend calls this after Google Sign-In with the
  * verified address; the address is checked against config here, server-side.
  */
+/**
+ * Verify a Google ID token with Google, and return the address it belongs to.
+ *
+ * The browser gets this credential from Google Identity Services. It is a
+ * signed JWT; anyone can mint a STRING, nobody but Google can mint a valid
+ * signature. We ask Google, then check that the token was issued for THIS
+ * application and that the address on it is verified.
+ *
+ * Returns { ok:true, email } or { ok:false, code, error }.
+ */
+function authVerifyGoogleToken_(credential) {
+  const clientId = cfg_(CFG_KEYS.GOOGLE_CLIENT_ID, '');
+  if (!clientId) {
+    // Fail closed. An unset client id must never mean "accept anything".
+    return { ok: false, code: 'NO_CLIENT_ID',
+             error: 'GOOGLE_CLIENT_ID is not set. Put the OAuth client id from ' +
+                    'config.js into Script Properties before anyone can sign in.' };
+  }
+
+  let data;
+  try {
+    const res = UrlFetchApp.fetch(
+      'https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(credential),
+      { muteHttpExceptions: true });
+    if (res.getResponseCode() !== 200) {
+      return { ok: false, code: 'BAD_TOKEN', error: 'Google rejected this sign-in.' };
+    }
+    data = JSON.parse(res.getContentText());
+  } catch (err) {
+    return { ok: false, code: 'VERIFY_FAILED',
+             error: 'Could not verify the sign-in with Google: ' + err };
+  }
+
+  // Issued for this application, by Google, to a verified address, not expired.
+  if (String(data.aud || '') !== String(clientId)) {
+    return { ok: false, code: 'WRONG_AUDIENCE',
+             error: 'This sign-in was issued for a different application.' };
+  }
+  const iss = String(data.iss || '');
+  if (iss !== 'accounts.google.com' && iss !== 'https://accounts.google.com') {
+    return { ok: false, code: 'WRONG_ISSUER', error: 'Not issued by Google.' };
+  }
+  if (data.email_verified !== true && String(data.email_verified) !== 'true') {
+    return { ok: false, code: 'EMAIL_UNVERIFIED',
+             error: 'This Google account has no verified email address.' };
+  }
+  const expMs = Number(data.exp || 0) * 1000;
+  if (!expMs || expMs < Date.now()) {
+    return { ok: false, code: 'EXPIRED', error: 'Sign-in expired. Sign in again.' };
+  }
+  const email = String(data.email || '').trim().toLowerCase();
+  if (!email) return { ok: false, code: 'NO_EMAIL', error: 'No email on the token.' };
+
+  return { ok: true, email: email };
+}
+
+/**
+ * Exchange a Google sign-in for a session token.
+ *
+ * WHY THIS TAKES A CREDENTIAL AND NOT AN EMAIL
+ * --------------------------------------------
+ * It used to take an email and check it against the allowlist. That is not
+ * authentication. The web app is deployed ANYONE_ANONYMOUS because the kiosk
+ * link needs it, and the authorised addresses are published in config.js in a
+ * public repository -- so a single unauthenticated request asking for a token
+ * for the owner's address returned admin, with canSeeSensitive true, which
+ * opens every civil id, passport number, salary and IBAN in the system.
+ *
+ * The address now comes from a Google-verified token and never from a
+ * parameter the caller controls.
+ */
 function authLogin(params) {
   try {
     params = params || {};
-    const email = String(params.email || '').trim().toLowerCase();
-    if (!email) return { success: false, error: 'Email required.' };
+
+    const credential = String(params.credential || '').trim();
+    if (!credential) {
+      return { success: false, code: 'NO_CREDENTIAL',
+               error: 'Sign in with Google. This endpoint no longer accepts a bare email address.' };
+    }
+
+    const verified = authVerifyGoogleToken_(credential);
+    if (!verified.ok) {
+      return { success: false, error: verified.error, code: verified.code };
+    }
+    const email = verified.email;
 
     const role = authRoleFor_(email);
     if (!role) {

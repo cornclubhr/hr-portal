@@ -63,6 +63,7 @@ const SETUP_TABS = {
 /** Settings seeded into Admin_Settings, with a note explaining each. */
 const SETUP_SETTINGS = [
   ['ORG_NAME', '', 'Shown on payslips and vouchers'],
+  ['GOOGLE_CLIENT_ID', '', 'OAuth client id from config.js — sign-in is REFUSED until this is set'],
   ['CURRENCY', 'KWD', 'Currency code'],
   ['EMPLOYEE_ID_PREFIX', 'HR-EMP-', 'Prefix for new employee ids'],
   ['EMPLOYEE_ID_DIGITS', '5', 'How many digits after the prefix'],

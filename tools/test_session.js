@@ -10,6 +10,7 @@ const fs = require('fs');
 const vm = require('vm');
 
 const calls = [];
+const inits = [];
 const store = {};
 const sandbox = {
   console,
@@ -33,6 +34,7 @@ const sandbox = {
   matchMedia: () => ({ matches: false, addEventListener: () => {} }),
   fetch: (url, init) => {
     calls.push(String(url));
+    inits.push(init || null);
     return Promise.resolve({
       ok: true,
       json: () => Promise.resolve({
@@ -72,10 +74,19 @@ const qp = (url, k) => { const m = String(url).match(new RegExp('[?&]' + k + '=(
   await sandbox.fetchThrough('x');
   check('no token yet', qp(last(), 'token'), null);
 
-  console.log('\n=== sign-in stores the token ===');
-  const d = await S.login('hr@example.com');
+  console.log('\n=== sign-in sends the SIGNED CREDENTIAL, never a bare email ===');
+  // authLogin used to accept an email, which meant anyone could ask for a token
+  // for a published address. The browser must hand over Google's signed token
+  // and let the server verify it.
+  const d = await S.login('HEADER.PAYLOAD.SIGNATURE');
   check('login succeeded', d.success, true);
   check('token kept', S.token, 'TOK123');
+  const li = inits[inits.length - 1] || {};
+  check('sent as POST', li.method, 'POST');
+  check('text/plain, so no CORS preflight', (li.headers || {})['Content-Type'], 'text/plain;charset=utf-8');
+  check('credential in the body', JSON.parse(li.body || '{}').credential, 'HEADER.PAYLOAD.SIGNATURE');
+  check('no email on the wire', qp(last(), 'email'), null);
+  check('no credential in the url either', qp(last(), 'credential'), null);
 
   console.log('\n=== every API call now carries the token ===');
   await sandbox.fetchThrough('?method=getEmployees');
@@ -130,7 +141,7 @@ const qp = (url, k) => { const m = String(url).match(new RegExp('[?&]' + k + '=(
       success: true, token: 'T2', email: 'sup@example.com', role: 'supervisor',
       companies: ['Corn Club'], canSeeAll: false }) });
   };
-  await S.login('sup@example.com');
+  await S.login('HEADER.PAYLOAD.SIGNATURE');
   check('moved off all-companies', S.company, 'Corn Club');
   check('scoped', S.isScoped, true);
 
